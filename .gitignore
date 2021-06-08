@@ -30,3 +30,21 @@
 *.exe
 *.out
 *.app
+
+# cmake files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+cmake-build-debug
+CTestTestfile.cmake
+_deps
+main
+test_*
+.idea
+.DS_Store
