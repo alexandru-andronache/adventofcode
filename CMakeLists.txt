@@ -7,6 +7,7 @@ SET(COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/common)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 include(${COMMON_SOURCES}/cmake/gtest.cmake)
+include(${COMMON_SOURCES}/cmake/openssl.cmake)
 
 file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
 
@@ -55,9 +56,9 @@ add_dependencies(2020.all.tests googletest_utilities)
 add_dependencies(all.tests googletest_utilities)
 
 
-target_compile_definitions(2015.all.tests PRIVATE TESTING=1)
+target_compile_definitions(2015.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(2020.all.tests PRIVATE TESTING=1)
-target_compile_definitions(all.tests PRIVATE TESTING=1)
+target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         set(CMAKE_DEBUG_POSTFIX d)
@@ -66,10 +67,14 @@ endif()
 
 target_link_libraries(2015.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
+        general ssl
+        general crypto)
 target_link_libraries(2020.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
+        general ssl
+        general crypto)
