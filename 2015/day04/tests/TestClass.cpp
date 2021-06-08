@@ -3,7 +3,7 @@
 
 namespace aoc2015_day04 {
     TEST_F(TestClass, part_1_test) {
-        ASSERT_EQ(part_1("abcdef"), 0);
+        ASSERT_EQ(part_1("abcdef"), 609043);
     }
 
     TEST_F(TestClass, part_1_real_test) {
@@ -11,7 +11,7 @@ namespace aoc2015_day04 {
     }
 
     TEST_F(TestClass, part_2_test) {
-        ASSERT_EQ(part_2("abcdef"), 0);
+        ASSERT_EQ(part_2("abcdef"), 6742839);
     }
 
     TEST_F(TestClass, part_2_real_test) {

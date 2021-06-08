@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace aoc2015_day04 {
-    int part_1(std::string_view path) {
+    int part_1(const std::string& input) {
         int i = 0;
         while (md5::calculateMD5(input + std::to_string(i)).substr(0, 5) != "00000") {
             i++;
@@ -11,7 +11,7 @@ namespace aoc2015_day04 {
         return i;
     }
 
-    int part_2(std::string_view path) {
+    int part_2(const std::string& input) {
         int i = 0;
         while (md5::calculateMD5(input + std::to_string(i)).substr(0, 6) != "000000") {
             i++;
