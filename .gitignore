@@ -48,3 +48,4 @@ main
 test_*
 .idea
 .DS_Store
+bin
