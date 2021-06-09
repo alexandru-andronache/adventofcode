@@ -3,18 +3,18 @@
 
 namespace aoc2015_day10{
     TEST_F(TestClass, part_1_test) {
-        ASSERT_EQ(part_1("../2015/day10/input_test.in"), 0);
+        ASSERT_EQ(part_1("1"), 82350);
     }
 
     TEST_F(TestClass, part_1_real_test) {
-        ASSERT_EQ(part_1("../2015/day10/input.in"), 0);
+        ASSERT_EQ(part_1("3113322113"), 329356);
     }
 
     TEST_F(TestClass, part_2_test) {
-        ASSERT_EQ(part_2("../2015/day10/input_test.in"), 0);
+        ASSERT_EQ(part_2("1"), 1166642);
     }
 
     TEST_F(TestClass, part_2_real_test) {
-        ASSERT_EQ(part_2("../2015/day10/input.in"), 0);
+        ASSERT_EQ(part_2("3113322113"), 4666278);
     }
 }
