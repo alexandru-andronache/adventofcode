@@ -1,13 +1,43 @@
 #include "file.h"
 #include <iostream>
+#include <vector>
 
 namespace aoc2015_day08 {
-    int part_1(std::string_view path) {
-        return 0;
+    unsigned int part_1(std::string_view path) {
+        std::vector<std::string> input = file::readFileAsArrayString(path);
+        unsigned int totalLength = 0;
+        unsigned int stringLength = 0;
+        for (const auto& line : input) {
+            totalLength += line.size();
+            for (int i = 1; i < line.size() - 1; ++i) {
+                if (line[i] == '\\') {
+                    if (line[i + 1] == 'x') {
+                        i = i + 3;
+                    }
+                    else {
+                        i = i + 1;
+                    }
+                }
+                stringLength++;
+            }
+        }
+        return totalLength - stringLength;
     }
 
-    int part_2(std::string_view path) {
-        return 0;
+    unsigned int part_2(std::string_view path) {
+        std::vector<std::string> input = file::readFileAsArrayString(path);
+        unsigned int totalLength = 0;
+        unsigned int stringLength = 0;
+
+        for (const auto& line : input) {
+            totalLength += line.size();
+            for (const auto& c : line) {
+                stringLength += ((c == '"') || (c == '\\')) + 1;
+            }
+            stringLength += 2;
+        }
+
+        return stringLength - totalLength;
     }
 }
 
