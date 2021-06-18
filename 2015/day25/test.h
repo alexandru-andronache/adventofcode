@@ -5,5 +5,5 @@
 #pragma once
 
 namespace aoc2015_day25 {
-    int part_1(std::string_view path);
+    long long part_1(int row, int column);
 }
