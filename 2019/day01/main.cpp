@@ -3,12 +3,35 @@
 #include <vector>
 
 namespace aoc2019_day01 {
+    int getCost(int fuel) {
+        return std::max((fuel / 3) - 2, 0);
+    }
+
+    int getTotalCost(int fuel) {
+        int totalCost = 0;
+        while (fuel > 0) {
+            fuel = getCost(fuel);
+            totalCost += fuel;
+        }
+        return totalCost;
+    }
+
     int part_1(std::string_view path) {
-        return 0;
+        std::vector<int> input = file::readFileAsArrayInt(path);
+        int sol = 0;
+        for (const auto& it : input) {
+            sol += getCost(it);
+        }
+        return sol;
     }
 
     int part_2(std::string_view path) {
-        return 0;
+        std::vector<int> input = file::readFileAsArrayInt(path);
+        int sol = 0;
+        for (const auto& it : input) {
+            sol += getTotalCost(it);
+        }
+        return sol;
     }
 }
 
