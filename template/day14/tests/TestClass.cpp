@@ -11,7 +11,7 @@ namespace aocXXXX_day14{
     }
 
     TEST_F(TestClass, part_2_test) {
-        ASSERT_EQ(part_2("../XXXX/day14/input_test2.in"), 0);
+        ASSERT_EQ(part_2("../XXXX/day14/input_test.in"), 0);
     }
 
     TEST_F(TestClass, part_2_real_test) {
