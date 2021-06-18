@@ -3,6 +3,6 @@
 #include <string>
 
 namespace aoc2015_day20 {
-    unsigned long long part_1(std::string_view path);
-    unsigned long long part_2(std::string_view path);
+    int part_1(int total);
+    int part_2(int total);
 }
