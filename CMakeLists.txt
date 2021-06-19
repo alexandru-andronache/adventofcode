@@ -75,7 +75,7 @@ add_dependencies(all.tests googletest_utilities)
 
 
 target_compile_definitions(2015.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
-target_compile_definitions(2016.all.tests PRIVATE TESTING=1)
+target_compile_definitions(2016.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(2020.all.tests PRIVATE TESTING=1)
 target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 
@@ -91,7 +91,9 @@ target_link_libraries(2015.all.tests
         general crypto)
 target_link_libraries(2016.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
+        general ssl
+        general crypto)
 target_link_libraries(2020.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
