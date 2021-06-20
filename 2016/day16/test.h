@@ -3,6 +3,6 @@
 #include <string>
 
 namespace aoc2016_day16 {
-    int part_1(std::string_view path);
-    int part_2(std::string_view path);
+    std::string part_1(const std::string& input);
+    std::string part_2(const std::string& input);
 }

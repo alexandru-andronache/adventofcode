@@ -2,19 +2,11 @@
 #include "../test.h"
 
 namespace aoc2016_day16 {
-    TEST_F(TestClass, part_1_test) {
-        ASSERT_EQ(part_1("../2016/day16/input_test.in"), 0);
-    }
-
     TEST_F(TestClass, part_1_real_test) {
-        ASSERT_EQ(part_1("../2016/day16/input.in"), 0);
-    }
-
-    TEST_F(TestClass, part_2_test) {
-        ASSERT_EQ(part_2("../2016/day16/input_test.in"), 0);
+        ASSERT_EQ(part_1("00101000101111010"), "10010100110011100");
     }
 
     TEST_F(TestClass, part_2_real_test) {
-        ASSERT_EQ(part_2("../2016/day16/input.in"), 0);
+        ASSERT_EQ(part_2("00101000101111010"), "01100100101101100");
     }
 }
