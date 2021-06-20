@@ -8,4 +8,5 @@ namespace utils {
     std::vector<int> splitStringToInt(std::string_view str, std::string_view delimeters);
     int decimalToInt(std::string_view str, char character = '1');
     int decimalToInt(const std::vector<bool>& str, bool defaultValue = true);
+    int manhattanDistance(int x1, int y1, int x2, int y2);
 }
