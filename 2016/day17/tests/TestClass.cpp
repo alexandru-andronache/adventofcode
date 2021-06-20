@@ -3,18 +3,34 @@
 
 namespace aoc2016_day17{
     TEST_F(TestClass, part_1_test) {
-        ASSERT_EQ(part_1("../2016/day17/input_test.in"), 0);
+        ASSERT_EQ(part_1("ihgpwlah"), "DDRRRD");
+    }
+
+    TEST_F(TestClass, part_1_test_2) {
+        ASSERT_EQ(part_1("kglvqrro"), "DDUDRLRRUDRD");
+    }
+
+    TEST_F(TestClass, part_1_test_3) {
+        ASSERT_EQ(part_1("ulqzkmiv"), "DRURDRUDDLLDLUURRDULRLDUUDDDRR");
     }
 
     TEST_F(TestClass, part_1_real_test) {
-        ASSERT_EQ(part_1("../2016/day17/input.in"), 0);
+        ASSERT_EQ(part_1("yjjvjgan"), "RLDRUDRDDR");
     }
 
     TEST_F(TestClass, part_2_test) {
-        ASSERT_EQ(part_2("../2016/day17/input_test.in"), 0);
+        ASSERT_EQ(part_2("ihgpwlah"), 370);
+    }
+
+    TEST_F(TestClass, part_2_test_2) {
+        ASSERT_EQ(part_2("kglvqrro"), 492);
+    }
+
+    TEST_F(TestClass, part_2_test_3) {
+        ASSERT_EQ(part_2("ulqzkmiv"), 830);
     }
 
     TEST_F(TestClass, part_2_real_test) {
-        ASSERT_EQ(part_2("../2016/day17/input.in"), 0);
+        ASSERT_EQ(part_2("yjjvjgan"), 498);
     }
 }
