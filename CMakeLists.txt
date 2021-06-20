@@ -63,21 +63,31 @@ add_executable(all.tests
                ${2020_src_files_h}
                ${utils_src})
 
+#
+file(GLOB utils_src "common/src/*.cpp")
+file(GLOB tests_src "common/tests/*.cpp")
+file(GLOB tests_include "common/tests/*.h")
+add_executable(test_utilities ${tests_include} common/test.cpp ${tests_src} ${utils_src})
+
+
 target_include_directories(2015.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(2016.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(2020.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(all.tests PRIVATE ${COMMON_SOURCES}/include)
+target_include_directories(test_utilities PRIVATE ${COMMON_SOURCES}/include)
 
 add_dependencies(2015.all.tests googletest_utilities)
 add_dependencies(2016.all.tests googletest_utilities)
 add_dependencies(2020.all.tests googletest_utilities)
 add_dependencies(all.tests googletest_utilities)
+add_dependencies(test_utilities googletest_utilities)
 
 
 target_compile_definitions(2015.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(2016.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(2020.all.tests PRIVATE TESTING=1)
 target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
+target_compile_definitions(test_utilities PRIVATE USE_OPENSSL=1)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         set(CMAKE_DEBUG_POSTFIX d)
@@ -98,6 +108,11 @@ target_link_libraries(2020.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(all.tests
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
+        general ssl
+        general crypto)
+target_link_libraries(test_utilities
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
         general ssl

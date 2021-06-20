@@ -46,3 +46,7 @@ TEST_F(UtilitiesTest, decimal_to_int_from_str) {
 TEST_F(UtilitiesTest, decimal_to_int_from_vector) {
     ASSERT_EQ(decimalToInt({true, false, true, false, true, false}), 42);
 }
+
+TEST_F(UtilitiesTest, manhattan_distance) {
+    ASSERT_EQ(manhattanDistance(0, 4, -2, 3), 3);
+}
