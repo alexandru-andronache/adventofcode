@@ -1,7 +1,6 @@
 #include "file.h"
 #include "utilities.h"
 #include "grid.h"
-#include "direction.h"
 #include <iostream>
 #include <set>
 #include <deque>
@@ -58,10 +57,10 @@ namespace aoc2019_day24 {
         }
     }
 
-    int part_2(std::string_view path, int minutes = 200) {
+    unsigned int part_2(std::string_view path, int minutes = 200) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         std::deque<std::vector<std::vector<bool>>> board(1, std::vector<std::vector<bool>>(lines.size(), std::vector<bool>(lines[0].size(), false)));
-//        std::vector<std::vector<std::vector<bool>>> board(300, std::vector<std::vector<bool>>(lines.size(), std::vector<bool>(lines[0].size(), false)));
+
         for (int i = 0; i < lines.size(); ++i) {
             for (int j = 0; j < lines[0].size(); ++j) {
                 board[0][i][j] = lines[i][j] == '#';
@@ -80,235 +79,61 @@ namespace aoc2019_day24 {
             std::deque<std::vector<std::vector<bool>>> newBoard = board;
 
             for (int i = 0; i < board.size(); ++i) {
-                int j = 0;
-                for (int k = 0; k < 5; ++k) {
-                    // board[i][0][k]
-                    /*
-                    * [i][0][0] - [i][0][1], [i][1][0], [i - 1][2][1], [i - 1][1][3]
-                    * [i][0][1] - [i][0][0], [i][0][2], [i][1][1], [i - 1][1][3]
-                    * [i][0][2] - [i][0][1], [i][0][3], [i][1][2], [i - 1][1][3]
-                    * [i][0][3] - [i][0][2], [i][0][4], [i][1][3], [i - 1][1][3]
-                    * [i][0][4] - [i][0][3], [i][1][4], [i - 1][2][3], [i - 1][1][3]
-                    */
-                    int neighbours = 0;
-                    if (i > 0) {
-                        neighbours += board[i - 1][1][2];
-                    }
+                for (int j = 0; j < board[i].size(); ++j) {
+                    for (int k = 0; k < board[i][j].size(); ++k) {
+                        int neighbours = grid::numberOfNeighbors4Directions(board[i], j, k, true);
 
-                    for (const auto& dir : direction::directions) {
-                        if (j + dir.x >= 0 && j + dir.x <= 4 &&
-                            k + dir.y >= 0 && k + dir.y <= 4) {
-                            neighbours += board[i][j + dir.x][k + dir.y];
+                        if (j == 0 && i > 0) {
+                            neighbours += board[i - 1][1][2];
                         }
-                    }
-                    if (k == 0 && i > 0) {
-                        neighbours += board[i - 1][2][1];
-                    }
-                    else if (k == 4 && i > 0) {
-                        neighbours += board[i - 1][2][3];
-                    }
-
-                    if (board[i][j][k] && neighbours != 1) {
-                        newBoard[i][j][k] = false;
-                    }
-                    else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
-                        newBoard[i][j][k] = true;
-                    }
-                    else {
-                        newBoard[i][j][k] = board[i][j][k];
-                    }
-                }
-
-                j = 1;
-                for (int k = 0; k < 5; ++k) {
-                    // board[i][1][k]
-                    /*
-                     * [i][1][0] - [i][0][0], [i][1][1], [i][2][0], [i - 1][2][1]
-                     * [i][1][1] - [i] +/- 1
-                     * [i][1][2] - [i][1][1], [i][1][3], [i][0][2], [i + 1][0][0]-> ...[0][4]
-                     * [i][1][3] - [i] +/- 1
-                     * [i][1][4] - [i][1][3], [i][0][4], [i][2][4], [i - 1][2][3]
-                     */
-                    int neighbours = 0;
-                    for (const auto& dir : direction::directions) {
-                        if (j + dir.x >= 0 && j + dir.x <= 4 &&
-                            k + dir.y >= 0 && k + dir.y <= 4) {
-                            neighbours += board[i][j + dir.x][k + dir.y];
-                        }
-                    }
-                    if (k == 0 && i > 0) {
-                        neighbours += board[i - 1][2][1];
-                    }
-                    else if (k == 4 && i > 0) {
-                        neighbours += board[i - 1][2][3];
-                    }
-                    else if (k == 2) {
-                        if (i + 1 < board.size()) {
+                        else if (j == 1 && k == 2 && i + 1 < board.size()) {
                             for (int l = 0; l < 5; ++l) {
                                 neighbours += board[i + 1][0][l];
                             }
                         }
-                    }
-
-                    if (board[i][j][k] && neighbours != 1) {
-                        newBoard[i][j][k] = false;
-                    }
-                    else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
-                        newBoard[i][j][k] = true;
-                    }
-                    else {
-                        newBoard[i][j][k] = board[i][j][k];
-                    }
-                }
-
-                j = 2;
-                for (int k = 0; k < 5; ++k) {
-                    // board[i][2][k]
-                    /*
-                     * [i][2][0] - [i - 1][2][1]
-                     * [i][2][1] - [i] +/- 1, [i + 1][0][0] -> [4][0]
-                     * [i][2][2] - no
-                     * [i][2][3] - [i] +/- 1, [i + 1][0][4] -> [4][4]
-                     * [i][2][4] - [i - 1][2][3]
-                     */
-
-                    int neighbours = 0;
-                    for (const auto& dir : direction::directions) {
-                        if (j + dir.x >= 0 && j + dir.x <= 4 &&
-                            k + dir.y >= 0 && k + dir.y <= 4) {
-                            neighbours += board[i][j + dir.x][k + dir.y];
-                        }
-                    }
-
-                    if (k == 0 && i > 0) {
-                        neighbours += board[i - 1][2][1];
-                    }
-                    else if (k == 4 && i > 0) {
-                        neighbours += board[i - 1][2][3];
-                    }
-                    else if (k == 1) {
-                        if (i + 1 < board.size()) {
+                        else if (j == 2 && k == 1 && i + 1 < board.size()) {
                             for (int l = 0; l < 5; ++l) {
                                 neighbours += board[i + 1][l][0];
                             }
                         }
-                    }
-                    else if (k == 3) {
-                        if (i + 1 < board.size()) {
+                        else if (j == 2 && k == 3 && i + 1 < board.size()) {
                             for (int l = 0; l < 5; ++l) {
                                 neighbours += board[i + 1][l][4];
                             }
                         }
-                    }
-
-                    if (board[i][j][k] && neighbours != 1) {
-                        newBoard[i][j][k] = false;
-                    }
-                    else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
-                        newBoard[i][j][k] = true;
-                    }
-                    else {
-                        newBoard[i][j][k] = board[i][j][k];
-                    }
-
-                    newBoard[i][j][2] = false;
-                }
-
-                j = 3;
-                for (int k = 0; k < 5; ++k) {
-                    // board[i][3][k]
-                    /*
-                     * [i][3][0] - [i - 1][2][1]
-                     * [i][3][1] - [i] +/- 1
-                     * [i][3][2] - [i] +/- 1, [i + 1][4][0] -> [4][4]
-                     * [i][3][3] - [i] +/- 1
-                     * [i][3][4] - [i] +/- 1, [i - 1][2][3]
-                     */
-
-                    int neighbours = 0;
-                    for (const auto& dir : direction::directions) {
-                        if (j + dir.x >= 0 && j + dir.x <= 4 &&
-                            k + dir.y >= 0 && k + dir.y <= 4) {
-                            neighbours += board[i][j + dir.x][k + dir.y];
-                        }
-                    }
-
-                    if (k == 0 && i > 0) {
-                        neighbours += board[i - 1][2][1];
-                    }
-                    else if (k == 4 && i > 0) {
-                        neighbours += board[i - 1][2][3];
-                    }
-                    else if (k == 2) {
-                        if (i + 1 < board.size()) {
+                        else if (j == 3 && k == 2 && i + 1 < board.size()) {
                             for (int l = 0; l < 5; ++l) {
                                 neighbours += board[i + 1][4][l];
                             }
                         }
-                    }
-
-                    if (board[i][j][k] && neighbours != 1) {
-                        newBoard[i][j][k] = false;
-                    }
-                    else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
-                        newBoard[i][j][k] = true;
-                    }
-                    else {
-                        newBoard[i][j][k] = board[i][j][k];
-                    }
-                }
-
-                j = 4;
-                for (int k = 0; k < 5; ++k) {
-                    // board[i][4][k]
-                    /*
-                     * [i][4][0] - [i - 1][2][1] + [i - 1][3][2]
-                     * [i][4][1] - [i - 1][3][2]
-                     * [i][4][2] - [i - 1][3][2]
-                     * [i][4][3] - [i - 1][3][2]
-                     * [i][4][4] - [i - 1][2][3] + [i - 1][3][2]
-                     */
-
-                    int neighbours = 0;
-                    if (i > 0) {
-                        neighbours += board[i - 1][3][2];
-                    }
-                    for (const auto& dir : direction::directions) {
-                        if (j + dir.x >= 0 && j + dir.x <= 4 &&
-                            k + dir.y >= 0 && k + dir.y <= 4) {
-                            neighbours += board[i][j + dir.x][k + dir.y];
+                        else if (j == 4 && i > 0) {
+                            neighbours += board[i - 1][3][2];
                         }
-                    }
 
-                    if (k == 0 && i > 0) {
-                        neighbours += board[i - 1][2][1];
-                    }
-                    else if (k == 4 && i > 0) {
-                        neighbours += board[i - 1][2][3];
-                    }
+                        if (k == 0 && i > 0) {
+                            neighbours += board[i - 1][2][1];
+                        }
+                        else if (k == 4 && i > 0) {
+                            neighbours += board[i - 1][2][3];
+                        }
 
-                    if (board[i][j][k] && neighbours != 1) {
-                        newBoard[i][j][k] = false;
-                    }
-                    else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
-                        newBoard[i][j][k] = true;
-                    }
-                    else {
-                        newBoard[i][j][k] = board[i][j][k];
+                        if (board[i][j][k] && neighbours != 1) {
+                            newBoard[i][j][k] = false;
+                        }
+                        else if (!board[i][j][k] && (neighbours == 2 || neighbours == 1)) {
+                            newBoard[i][j][k] = true;
+                        }
+                        newBoard[i][2][2] = false;
                     }
                 }
             }
             board = newBoard;
         }
 
-        int total = 0;
-        for (int i = 0; i < board.size(); ++i) {
-            for (int j = 0; j < 5; ++j) {
-                for (int k = 0; k < 5; ++k) {
-                    if (board[i][j][k]) {
-                        total++;
-                    }
-                }
+        unsigned int total = 0;
+        for (const auto& floor : board) {
+            for (int j = 0; j < floor.size(); ++j) {
+                total += std::count(floor[j].begin(), floor[j].end(), true);
             }
         }
 
