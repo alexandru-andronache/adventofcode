@@ -14,4 +14,13 @@ namespace grid {
         neighbors += (x + 1 < grid.size() && y + 1 < grid[0].size() && grid[x + 1][y + 1] == value);
         return neighbors;
     }
+
+    template <class T>
+    int numberOfNeighbors4Directions(const std::vector<std::vector<T>>& grid, int x, int y, T value) {
+        int neighbors = (x > 0 && grid[x - 1][y] == value);
+        neighbors += (y > 0 && grid[x][y - 1] == value);
+        neighbors += (y + 1 < grid[0].size() && grid[x][y + 1] == value);
+        neighbors += (x + 1 < grid.size() && grid[x + 1][y] == value);
+        return neighbors;
+    }
 }
