@@ -39,6 +39,20 @@ add_executable(2016.all.tests
                ${2016_src_files_h}
                ${utils_src})
 
+# 2019 files
+file(GLOB_RECURSE 2019_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/2019/*.h")
+file(GLOB_RECURSE 2019_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/2019/*.cpp")
+
+list(FILTER 2019_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
+list(FILTER 2019_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
+list(FILTER 2019_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
+
+add_executable(2019.all.tests
+               all.tests.cpp
+               ${2019_src_files_cpp}
+               ${2019_src_files_h}
+               ${utils_src})
+
 # 2020 files
 file(GLOB_RECURSE 2020_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/2020/*.h")
 file(GLOB_RECURSE 2020_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/2020/*.cpp")
@@ -59,6 +73,8 @@ add_executable(all.tests
                ${2015_src_files_h}
                ${2016_src_files_cpp}
                ${2016_src_files_h}
+               ${2019_src_files_cpp}
+               ${2019_src_files_h}
                ${2020_src_files_cpp}
                ${2020_src_files_h}
                ${utils_src})
@@ -72,12 +88,14 @@ add_executable(test_utilities ${tests_include} common/test.cpp ${tests_src} ${ut
 
 target_include_directories(2015.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(2016.all.tests PRIVATE ${COMMON_SOURCES}/include)
+target_include_directories(2019.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(2020.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(test_utilities PRIVATE ${COMMON_SOURCES}/include)
 
 add_dependencies(2015.all.tests googletest_utilities)
 add_dependencies(2016.all.tests googletest_utilities)
+add_dependencies(2019.all.tests googletest_utilities)
 add_dependencies(2020.all.tests googletest_utilities)
 add_dependencies(all.tests googletest_utilities)
 add_dependencies(test_utilities googletest_utilities)
@@ -85,6 +103,7 @@ add_dependencies(test_utilities googletest_utilities)
 
 target_compile_definitions(2015.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(2016.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
+target_compile_definitions(2019.all.tests PRIVATE TESTING=1)
 target_compile_definitions(2020.all.tests PRIVATE TESTING=1)
 target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(test_utilities PRIVATE USE_OPENSSL=1)
@@ -104,6 +123,9 @@ target_link_libraries(2016.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
         general ssl
         general crypto)
+target_link_libraries(2019.all.tests
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(2020.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
