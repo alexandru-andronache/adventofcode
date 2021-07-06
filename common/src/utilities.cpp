@@ -1,4 +1,5 @@
 #include "utilities.h"
+#include <array>
 
 namespace utils {
 
@@ -81,5 +82,21 @@ namespace utils {
 
     int manhattanDistance(int x1, int y1, int x2, int y2) {
         return std::abs(x1 - x2) + std::abs(y1 - y2);
+    }
+
+    bool isAnagram(std::string_view s1, std::string_view s2) {
+        if (s1.size() != s2.size()) return false;
+        std::array<int, 26> letters;
+        letters.fill(0);
+        for (const auto& l : s1) {
+            letters[l - 'a']++;
+        }
+        for (const auto& l : s2) {
+            letters[l - 'a']--;
+        }
+        for (const auto& e : letters) {
+            if (e != 0) return false;
+        }
+        return true;
     }
 }

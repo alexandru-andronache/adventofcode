@@ -22,4 +22,5 @@ namespace utils {
     int decimalToInt(std::string_view str, char character = '1');
     int decimalToInt(const std::vector<bool>& str, bool defaultValue = true);
     int manhattanDistance(int x1, int y1, int x2, int y2);
+    bool isAnagram(std::string_view s1, std::string_view s2);
 }
