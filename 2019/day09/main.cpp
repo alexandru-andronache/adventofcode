@@ -1,13 +1,21 @@
 #include "file.h"
+#include "intcode.h"
 #include <iostream>
+#include <vector>
 
 namespace aoc2019_day09 {
-    int part_1(std::string_view path) {
-        return 0;
+    unsigned long long part_1(std::string_view path, int id = 1) {
+        std::vector<long long> input = file::readFileAsArrayLongLong(path, ",");
+
+        intcode::IntCode calc{input, {id, 0}};
+        return calc.advance().returnValue;
     }
 
-    int part_2(std::string_view path) {
-        return 0;
+    unsigned long long part_2(std::string_view path, int id = 2) {
+        std::vector<long long> input = file::readFileAsArrayLongLong(path, ",");
+
+        intcode::IntCode calc{input, {id, 0}};
+        return calc.advance().returnValue;
     }
 }
 
