@@ -1,14 +1,87 @@
 #include "file.h"
 #include "utilities.h"
+#include "direction.h"
 #include <iostream>
 
 namespace aoc2017_day19 {
-    int part_1(std::string_view path) {
-        return 0;
+    std::string part_1(std::string_view path) {
+        std::vector<std::string> lines = file::readFileAsArrayString(path);
+
+        std::string sol;
+        int startY = 0;
+        while (lines[0][startY] == ' ') {
+            startY++;
+        }
+        int startX = 0;
+        utils::point dir = direction::DOWN;
+        while (true) {
+            startX += dir.x;
+            startY += dir.y;
+
+            if (lines[startX][startY] >= 'A' && lines[startX][startY] <= 'Z') {
+                sol += lines[startX][startY];
+            }
+            else if (lines[startX][startY] == '+') {
+                if (dir.x == 0) {
+                    if (startX > 0 && lines[startX - 1][startY] == ' ') {
+                        dir = direction::DOWN;
+                    }
+                    else {
+                        dir = direction::UP;
+                    }
+                }
+                else {
+                    if (startY > 0 && lines[startX][startY - 1] == ' ') {
+                        dir = direction::RIGHT;
+                    }
+                    else {
+                        dir = direction::LEFT;
+                    }
+                }
+            }
+            else if (lines[startX][startY] == ' ') {
+                return sol;
+            }
+        }
     }
 
     unsigned long long part_2(std::string_view path) {
-        return 0;
+        std::vector<std::string> lines = file::readFileAsArrayString(path);
+
+        int sol = 0;
+        int startY = 0;
+        while (lines[0][startY] == ' ') {
+            startY++;
+        }
+        int startX = 0;
+        utils::point dir = direction::DOWN;
+        while (true) {
+            startX += dir.x;
+            startY += dir.y;
+            sol++;
+
+            if (lines[startX][startY] == '+') {
+                if (dir.x == 0) {
+                    if (startX > 0 && lines[startX - 1][startY] == ' ') {
+                        dir = direction::DOWN;
+                    }
+                    else {
+                        dir = direction::UP;
+                    }
+                }
+                else {
+                    if (startY > 0 && lines[startX][startY - 1] == ' ') {
+                        dir = direction::RIGHT;
+                    }
+                    else {
+                        dir = direction::LEFT;
+                    }
+                }
+            }
+            else if (lines[startX][startY] == ' ') {
+                return sol;
+            }
+        }
     }
 }
 
