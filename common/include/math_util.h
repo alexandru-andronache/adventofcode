@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 namespace math {
     // https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
     __int128_t modularInverse(__int128_t a, __int128_t b);
@@ -21,4 +23,6 @@ namespace math {
     __int128_t modular_divide(__int128_t a, __int128_t b, __int128_t m);
 
     bool coliniar(int x1, int y1, int x2, int y2, int x3, int y3);
+
+    std::pair<long long, long long> solvequadratic(double a, double b, double c);
 }
