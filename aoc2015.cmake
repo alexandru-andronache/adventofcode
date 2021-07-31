@@ -6,6 +6,8 @@ list(FILTER 2015_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
 list(FILTER 2015_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
 list(FILTER 2015_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
 
+list(APPEND ALL_TESTS_FILES ${2015_src_files_cpp} ${2015_src_files_h})
+
 add_executable(2015.all.tests
                all.tests.cpp
                ${2015_src_files_cpp}

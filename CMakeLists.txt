@@ -11,6 +11,8 @@ include(${COMMON_SOURCES}/cmake/openssl.cmake)
 
 file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
 
+SET(ALL_TESTS_FILES all.tests all.tests.cpp)
+
 include(${COMMON_SOURCES}/../aoc2015.cmake)
 include(${COMMON_SOURCES}/../aoc2016.cmake)
 include(${COMMON_SOURCES}/../aoc2017.cmake)
@@ -30,19 +32,9 @@ add_executable(2019.all.tests
                ${2019_src_files_h}
                ${utils_src})
 
-SET(ALL_TESTS_EXE all.tests all.tests.cpp)
-
-add_executable(${ALL_TESTS_EXE}
-               ${2015_src_files_cpp}
-               ${2015_src_files_h}
-               ${2016_src_files_cpp}
-               ${2016_src_files_h}
-               ${2017_src_files_cpp}
-               ${2017_src_files_h}
+add_executable(${ALL_TESTS_FILES}
                ${2019_src_files_cpp}
                ${2019_src_files_h}
-               ${2020_src_files_cpp}
-               ${2020_src_files_h}
                ${utils_src})
 
 #
