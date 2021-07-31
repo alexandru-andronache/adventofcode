@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include "../test.h"
 
-class TestClass : public testing::Test {
+class TestsXXXXDay20 : public testing::Test {
 
 };
 
