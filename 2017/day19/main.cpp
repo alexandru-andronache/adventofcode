@@ -13,7 +13,7 @@ namespace aoc2017_day19 {
             startY++;
         }
         int startX = 0;
-        utils::point dir = direction::DOWN;
+        utils::point dir = direction::Direction::DOWN;
         while (true) {
             startX += dir.x;
             startY += dir.y;
@@ -24,18 +24,18 @@ namespace aoc2017_day19 {
             else if (lines[startX][startY] == '+') {
                 if (dir.x == 0) {
                     if (startX > 0 && lines[startX - 1][startY] == ' ') {
-                        dir = direction::DOWN;
+                        dir = direction::Direction::DOWN;
                     }
                     else {
-                        dir = direction::UP;
+                        dir = direction::Direction::UP;
                     }
                 }
                 else {
                     if (startY > 0 && lines[startX][startY - 1] == ' ') {
-                        dir = direction::RIGHT;
+                        dir = direction::Direction::RIGHT;
                     }
                     else {
-                        dir = direction::LEFT;
+                        dir = direction::Direction::LEFT;
                     }
                 }
             }
@@ -54,7 +54,7 @@ namespace aoc2017_day19 {
             startY++;
         }
         int startX = 0;
-        utils::point dir = direction::DOWN;
+        utils::point dir = direction::Direction::DOWN;
         while (true) {
             startX += dir.x;
             startY += dir.y;
@@ -63,18 +63,18 @@ namespace aoc2017_day19 {
             if (lines[startX][startY] == '+') {
                 if (dir.x == 0) {
                     if (startX > 0 && lines[startX - 1][startY] == ' ') {
-                        dir = direction::DOWN;
+                        dir = direction::Direction::DOWN;
                     }
                     else {
-                        dir = direction::UP;
+                        dir = direction::Direction::UP;
                     }
                 }
                 else {
                     if (startY > 0 && lines[startX][startY - 1] == ' ') {
-                        dir = direction::RIGHT;
+                        dir = direction::Direction::RIGHT;
                     }
                     else {
-                        dir = direction::LEFT;
+                        dir = direction::Direction::LEFT;
                     }
                 }
             }

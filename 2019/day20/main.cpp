@@ -97,10 +97,12 @@ namespace aoc2019_day20 {
             }
         }
 
+        direction::Direction dir;
+
         while (!positions.empty()) {
             std::vector<point> newPositions;
             for (const auto& pos : positions) {
-                for (const auto& direction : direction::directions) {
+                for (const auto& direction : dir.directions) {
                     if (pos.x + direction.x >= 0 && pos.x + direction.x < board.size() &&
                         pos.y + direction.y >= 0 && pos.y + direction.y < board[0].size() &&
                         !board[pos.x + direction.x][pos.y + direction.y].wall &&
@@ -205,10 +207,12 @@ namespace aoc2019_day20 {
             }
         }
 
+        direction::Direction dir;
+
         while (!positions.empty()) {
             std::vector<point> newPositions;
             for (const auto& pos : positions) {
-                for (const auto& direction : direction::directions) {
+                for (const auto& direction : dir.directions) {
                     if (pos.x + direction.x >= 0 && pos.x + direction.x < board.size() &&
                         pos.y + direction.y >= 0 && pos.y + direction.y < board[0].size() &&
                         !board[pos.x + direction.x][pos.y + direction.y].wall &&
