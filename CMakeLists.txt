@@ -13,25 +13,14 @@ file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
 
 SET(ALL_TESTS_FILES all.tests all.tests.cpp)
 
-include(${COMMON_SOURCES}/../aoc2015.cmake)
-include(${COMMON_SOURCES}/../aoc2016.cmake)
-include(${COMMON_SOURCES}/../aoc2017.cmake)
-include(${COMMON_SOURCES}/../aoc2018.cmake)
-include(${COMMON_SOURCES}/../aoc2020.cmake)
+include(${COMMON_SOURCES}/../aoc_common.cmake)
 
-# 2019 files
-file(GLOB_RECURSE 2019_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/2019/*.h")
-file(GLOB_RECURSE 2019_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/2019/*.cpp")
-
-list(FILTER 2019_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
-list(FILTER 2019_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
-list(FILTER 2019_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
-
-add_executable(2019.all.tests
-               all.tests.cpp
-               ${2019_src_files_cpp}
-               ${2019_src_files_h}
-               ${utils_src})
+add_year(2015 1)
+add_year(2016 1)
+add_year(2017 1)
+add_year(2018 0)
+add_year(2019 0)
+add_year(2020 0)
 
 add_executable(${ALL_TESTS_FILES}
                ${2019_src_files_cpp}
@@ -44,15 +33,12 @@ file(GLOB tests_src "common/tests/*.cpp")
 file(GLOB tests_include "common/tests/*.h")
 add_executable(test_utilities ${tests_include} common/test.cpp ${tests_src} ${utils_src})
 
-target_include_directories(2019.all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(all.tests PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(test_utilities PRIVATE ${COMMON_SOURCES}/include)
 
-add_dependencies(2019.all.tests googletest_utilities)
 add_dependencies(all.tests googletest_utilities)
 add_dependencies(test_utilities googletest_utilities)
 
-target_compile_definitions(2019.all.tests PRIVATE TESTING=1)
 target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
 target_compile_definitions(test_utilities PRIVATE USE_OPENSSL=1)
 
