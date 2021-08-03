@@ -55,4 +55,15 @@ namespace file {
         f.close();
         return output;
     }
+
+    std::vector<std::vector<std::string>> readFileAndSplit(std::string_view path, std::string_view tokens) {
+        std::ifstream f(path);
+        std::string line;
+        std::vector<std::vector<std::string>> output;
+        while (std::getline(f, line)) {
+            output.emplace_back(utils::splitString(line, tokens));
+        }
+        f.close();
+        return output;
+    }
 }
