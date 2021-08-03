@@ -16,6 +16,7 @@ SET(ALL_TESTS_FILES all.tests all.tests.cpp)
 include(${COMMON_SOURCES}/../aoc2015.cmake)
 include(${COMMON_SOURCES}/../aoc2016.cmake)
 include(${COMMON_SOURCES}/../aoc2017.cmake)
+include(${COMMON_SOURCES}/../aoc2018.cmake)
 include(${COMMON_SOURCES}/../aoc2020.cmake)
 
 # 2019 files
@@ -74,6 +75,9 @@ target_link_libraries(2017.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
         general ssl
         general crypto)
+target_link_libraries(2018.all.tests
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(2019.all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
