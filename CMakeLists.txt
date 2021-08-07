@@ -15,12 +15,12 @@ SET(ALL_TESTS_FILES all.tests all.tests.cpp)
 
 include(${COMMON_SOURCES}/../aoc_common.cmake)
 
-add_year(2015 1)
-add_year(2016 1)
-add_year(2017 1)
-add_year(2018 0)
-add_year(2019 0)
-add_year(2020 0)
+add_year(2015 "USE_SSL")
+add_year(2016 "USE_SSL")
+add_year(2017 "USE_SSL")
+add_year(2018 "NOT_USE_SSL")
+add_year(2019 "NOT_USE_SSL")
+add_year(2020 "NOT_USE_SSL")
 
 add_executable(${ALL_TESTS_FILES}
                ${2019_src_files_cpp}

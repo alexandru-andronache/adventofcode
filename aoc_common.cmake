@@ -18,5 +18,12 @@ function(add_year YEAR USE_SSL)
 
     add_dependencies(${YEAR}.all.tests googletest_utilities)
 
-    target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1 USE_OPENSSL={USE_SSL})
+    if (${USE_SSL} STREQUAL "USE_SSL")
+        message("USE SSL")
+        target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
+    ELSE ()
+        message(${USE_SSL})
+        message("not use ssl")
+        target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
+    endif ()
 endfunction()
