@@ -3,6 +3,6 @@
 #include <string>
 
 namespace aoc2018_day14 {
-    int part_1(std::string_view path);
-    int part_2(std::string_view path);
+    std::string part_1(int n);
+    int part_2(int n);
 }
