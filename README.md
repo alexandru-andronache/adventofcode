@@ -1,4 +1,5 @@
-# adventofcode
+# Advent of Code Solutions (C++)
+My personal solutions for the annual [Advent of Code](https://adventofcode.com/) challenge.
 
 
 # How to generate another year
