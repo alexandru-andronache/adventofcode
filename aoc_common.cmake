@@ -18,12 +18,21 @@ function(add_year YEAR USE_SSL)
 
     add_dependencies(${YEAR}.all.tests googletest_utilities)
 
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        set(CMAKE_DEBUG_POSTFIX d)
+    endif()
+
     if (${USE_SSL} STREQUAL "USE_SSL")
-        message("USE SSL")
         target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
+        target_link_libraries(${YEAR}.all.tests
+                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
+                general ssl
+                general crypto)
     ELSE ()
-        message(${USE_SSL})
-        message("not use ssl")
         target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
+        target_link_libraries(${YEAR}.all.tests
+                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
     endif ()
 endfunction()
