@@ -1,4 +1,4 @@
-function(add_year YEAR USE_SSL)
+function(add_year YEAR)
     file(GLOB_RECURSE ${YEAR}_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.h")
     file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
 
@@ -22,17 +22,8 @@ function(add_year YEAR USE_SSL)
         set(CMAKE_DEBUG_POSTFIX d)
     endif()
 
-    if (${USE_SSL} STREQUAL "USE_SSL")
-        target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
-        target_link_libraries(${YEAR}.all.tests
-                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
-                general ssl
-                general crypto)
-    ELSE ()
-        target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
-        target_link_libraries(${YEAR}.all.tests
-                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-                general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
-    endif ()
+    target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
+    target_link_libraries(${YEAR}.all.tests
+            general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
+            general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 endfunction()

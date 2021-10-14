@@ -1,6 +1,4 @@
-#ifdef USE_OPENSSL
 #include "md5.h"
-#include <openssl/md5.h>
 #include <sstream>
 #include <iomanip>
 
@@ -256,5 +254,3 @@ namespace md5 {
         return md5(hash.c_str(), hash.length());
     }
 }
-
-#endif

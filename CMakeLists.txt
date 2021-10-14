@@ -7,20 +7,16 @@ SET(COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/common)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 include(${COMMON_SOURCES}/cmake/gtest.cmake)
-include(${COMMON_SOURCES}/cmake/openssl.cmake)
-
+include(${COMMON_SOURCES}/../aoc_common.cmake)
 file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
-
 SET(ALL_TESTS_FILES all.tests all.tests.cpp)
 
-include(${COMMON_SOURCES}/../aoc_common.cmake)
-
-add_year(2015 "USE_SSL")
-add_year(2016 "USE_SSL")
-add_year(2017 "USE_SSL")
-add_year(2018 "NOT_USE_SSL")
-add_year(2019 "NOT_USE_SSL")
-add_year(2020 "NOT_USE_SSL")
+add_year(2015)
+add_year(2016)
+add_year(2017)
+add_year(2018)
+add_year(2019)
+add_year(2020)
 
 add_executable(${ALL_TESTS_FILES}
                ${utils_src})
@@ -36,8 +32,8 @@ target_include_directories(test_utilities PRIVATE ${COMMON_SOURCES}/include)
 add_dependencies(all.tests googletest_utilities)
 add_dependencies(test_utilities googletest_utilities)
 
-target_compile_definitions(all.tests PRIVATE TESTING=1 USE_OPENSSL=1)
-target_compile_definitions(test_utilities PRIVATE USE_OPENSSL=1)
+target_compile_definitions(all.tests PRIVATE TESTING=1)
+target_compile_definitions(test_utilities PRIVATE)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         set(CMAKE_DEBUG_POSTFIX d)
@@ -45,11 +41,7 @@ endif()
 
 target_link_libraries(all.tests
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
-        general ssl
-        general crypto)
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(test_utilities
         general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
-        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a
-        general ssl
-        general crypto)
+        general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
