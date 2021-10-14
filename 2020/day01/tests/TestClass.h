@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-class TestClass2020_01 : public testing::Test {
+class Tests2020Day01 : public testing::Test {
 
 };
 

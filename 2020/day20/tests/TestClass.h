@@ -1,14 +1,10 @@
-//
-// Created by Alexandru Andronache  on 04/12/2019.
-//
-
 #ifndef TEST_TESTCLASS_H
 #define TEST_TESTCLASS_H
 
 #include <gtest/gtest.h>
 #include "../test.h"
 
-class TestClass : public testing::Test {
+class Tests2020Day20 : public testing::Test {
 
 };
 
