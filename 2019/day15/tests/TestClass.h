@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-class TestClass : public testing::Test {
+class Tests2019Day15 : public testing::Test {
 
 };
 
