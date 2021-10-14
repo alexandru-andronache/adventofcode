@@ -1,3 +1,15 @@
+function(get_files_for_year YEAR LIST_OF_SOURCE_FILES)
+    file(GLOB_RECURSE ${YEAR}_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.h")
+    file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
+
+    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
+    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
+    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
+
+    list(APPEND TMP_LIST_OF_SOURCE_FILES ${${YEAR}_src_files_cpp} ${${YEAR}_src_files_h})
+    set("${LIST_OF_SOURCE_FILES}" "${TMP_LIST_OF_SOURCE_FILES}" PARENT_SCOPE)
+endfunction()
+
 function(add_year YEAR)
     file(GLOB_RECURSE ${YEAR}_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.h")
     file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
@@ -6,12 +18,11 @@ function(add_year YEAR)
     list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
     list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
 
-    list(APPEND ALL_TESTS_FILES ${${YEAR}_src_files_cpp} ${${YEAR}_src_files_h})
+    get_files_for_year(${YEAR} LIST_OF_SOURCE_FILES)
 
     add_executable(${YEAR}.all.tests
-                   all.tests.cpp
-                   ${${YEAR}_src_files_cpp}
-                   ${${YEAR}_src_files_h}
+                   common/test.cpp
+                   ${LIST_OF_SOURCE_FILES}
                    ${utils_src})
 
     target_include_directories(${YEAR}.all.tests PRIVATE ${COMMON_SOURCES}/include)
