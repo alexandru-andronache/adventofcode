@@ -1,3 +1,0 @@
-[submodule "common/external/openssl-cmake"]
-	path = common/external/openssl-cmake
-	url = git@github.com:viaduck/openssl-cmake.git
