@@ -1,5 +1,4 @@
 #include "TestClass.h"
-#include "../test.h"
 
 namespace aoc2019_day20 {
     TEST_F(Tests2019Day20, part_1_test) {
