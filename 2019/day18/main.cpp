@@ -1,154 +1,157 @@
 #include "file.h"
 #include "utilities.h"
+#include "direction.h"
 #include <iostream>
 #include <map>
 #include <array>
 
 namespace aoc2019_day18 {
+
     int part_1(std::string_view path) {
-        std::vector<std::string> input = file::readFileAsArrayString(path);
         struct connections {
-            int distance;
+            int distance{};
             std::bitset<32> gates;
         };
+        struct position {
+            int x{};
+            int y{};
+            std::bitset<32> gates;
+        };
+        struct state {
+            int totalDistance{};
+            int gate{};
+            std::bitset<32> gates;
+        };
+
+        std::vector<std::string> input = file::readFileAsArrayString(path);
         std::vector<std::vector<char>> board(input.size(), std::vector<char>(input[0].size(), ' '));
+        std::vector<std::pair<int, int>> startPoints;
+
         int size = 1;
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[0].size(); ++j) {
-                board[i][j] = input[i][j];
-                if (board[i][j] >= 'a' && board[i][j] <= 'z') {
-                    size++;
-                }
-            }
+        for (const auto& line : input) {
+            size += std::count_if(line.begin(), line.end(), [](const auto& l) {
+                return l >= 'a' && l <= 'z';
+            });
         }
 
         std::vector<std::vector<connections>> distance(size, std::vector<connections>(size, {std::numeric_limits<int>::max(), {}}));
 
-        struct pp {
-            int x;
-            int y;
-            int startGate;
-            connections connection;
-        };
+        for (int i = 0; i < input.size(); ++i) {
+            std::copy(input[i].begin(), input[i].end(), board[i].begin());
+        }
 
-        std::vector<std::pair<int, int>> directions {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-        for (int k = 0; k < size; ++k) {
-            int startX = 0, startY = 0;
-            char c = '@';
-            if (k > 0) {
-                c = 'a' + k - 1;
+        for (int i = 0; i < board.size(); ++i) {
+            for (int j = 0; j < board[i].size(); ++j) {
+                if (board[i][j] == '@') {
+                    startPoints.emplace_back(i, j);
+                    board[i][j] = '.';
+                }
             }
+        }
+
+        for (int k = 'a'; k <= 'z'; ++k) {
             for (int i = 0; i < board.size(); ++i) {
-                for (int j = 0; j < board[0].size(); ++j) {
-                    if (board[i][j] == c) {
-                        startX = i;
-                        startY = j;
+                for (int j = 0; j < board[i].size(); ++j) {
+                    if (board[i][j] == k) {
+                        startPoints.emplace_back(i, j);
                     }
                 }
             }
+        }
 
-            std::vector<pp> positions {{startX, startY, k, {0, {}}}};
-            std::vector<std::vector<int>> distances(board.size(), std::vector<int>(board[0].size(), -1));
-            distances[startX][startY] = 0;
+        for (int k = 0; k < startPoints.size(); ++k) {
+            std::vector<std::vector<int>> dist(input.size(),
+                                               std::vector<int>(input[0].size(), std::numeric_limits<int>::max() - 10));
+            std::vector<position> positions;
+            direction::Direction dir;
+
+            positions.push_back({startPoints[k].first, startPoints[k].second, {}});
+            dist[startPoints[k].first][startPoints[k].second] = 0;
+
             while (!positions.empty()) {
-                std::vector<pp> next;
-                for (const auto& p : positions) {
-                    for (const auto& dir : directions) {
-                        if ((distances[p.x + dir.first][p.y + dir.second] == -1 || distances[p.x + dir.first][p.y + dir.second] + 1 < p.connection.distance)
-                        && board[p.x + dir.first][p.y + dir.second] != '#') {
-                            distances[p.x + dir.first][p.y + dir.second] = p.connection.distance + 1;
-                            if (board[p.x + dir.first][p.y + dir.second] == '.' || board[p.x + dir.first][p.y + dir.second] == '@') {
-                                next.push_back({p.x + dir.first, p.y + dir.second, p.startGate, {p.connection.distance + 1, p.connection.gates}});
-                            }
-                            else if (board[p.x + dir.first][p.y + dir.second] >= 'A' && board[p.x + dir.first][p.y + dir.second] <= 'Z') {
-                                std::bitset<32> tmp = p.connection.gates;
-                                tmp.set(board[p.x + dir.first][p.y + dir.second] - 'A' + 1);
-                                next.push_back({p.x + dir.first, p.y + dir.second, p.startGate, {p.connection.distance + 1, tmp}});
-                            }
-                            else if (board[p.x + dir.first][p.y + dir.second] >= 'a' && board[p.x + dir.first][p.y + dir.second] <= 'z') {
-                                if (distance[p.startGate][board[p.x + dir.first][p.y + dir.second] - 'a' + 1].distance > p.connection.distance + 1) {
-                                    distance[p.startGate][board[p.x + dir.first][p.y + dir.second] - 'a' + 1].distance = p.connection.distance + 1;
-                                    distance[p.startGate][board[p.x + dir.first][p.y + dir.second] - 'a' + 1].gates = p.connection.gates;
-                                }
-                                next.push_back({p.x + dir.first, p.y + dir.second, p.startGate, {p.connection.distance + 1, p.connection.gates}});
+                std::vector<position> newPositions;
+                for (const auto &p: positions) {
+                    for (const auto &d: dir.directions) {
+                        int xx = p.x + d.x;
+                        int yy = p.y + d.y;
+
+                        if (xx >= 0 && xx < board.size() && yy >= 0 && yy < board[0].size()) {
+                            if (board[xx][yy] == '.' && dist[xx][yy] > dist[p.x][p.y] + 1) {
+                                dist[xx][yy] = dist[p.x][p.y] + 1;
+                                newPositions.push_back({xx, yy, p.gates});
+                            } else if (board[xx][yy] >= 'a' && board[xx][yy] <= 'z' && dist[xx][yy] > dist[p.x][p.y] + 1) {
+                                dist[xx][yy] = dist[p.x][p.y] + 1;
+                                distance[k][board[xx][yy] - 'a' + 1].distance = dist[p.x][p.y] + 1;
+                                distance[k][board[xx][yy] - 'a' + 1].gates = p.gates;
+                                std::bitset<32> tmp = p.gates;
+                                tmp.set(board[xx][yy] - 'a' + 1);
+                                newPositions.push_back({xx, yy, tmp});
+                            } else if (board[xx][yy] >= 'A' && board[xx][yy] <= 'Z' && dist[xx][yy] > dist[p.x][p.y] + 1) {
+                                dist[xx][yy] = dist[p.x][p.y] + 1;
+                                std::bitset<32> tmp = p.gates;
+                                tmp.set(board[xx][yy] - 'A' + 1);
+                                newPositions.push_back({xx, yy, tmp});
                             }
                         }
                     }
                 }
-                positions = next;
+                positions = newPositions;
             }
         }
 
-        struct rr {
-            int currentIndex;
-            int totalDistance;
-            std::bitset<32> collectedKeys;
-            std::bitset<32> visited;
-        };
-        int minDistance = std::numeric_limits<int>::max();
-        rr startPos;
-        startPos.currentIndex = 0;
-        startPos.totalDistance = 0;
-        startPos.collectedKeys.set(0);
-        startPos.visited.set(0);
-        std::vector<rr> routes {startPos};
 
-        struct Comparer {
-            bool operator() (const std::pair<int, std::bitset<32>> &b1, const std::pair<int, std::bitset<32>> &b2) const {
-                if (b1.first != b2.first) {
-                    return b1.first < b2.first;
+
+        std::vector<state> states;
+        states.push_back({0, 0, {}});
+        states[0].gates[0] = true;
+        int sol = std::numeric_limits<int>::max();
+
+        while (!states.empty()) {
+            std::vector<state> newStates;
+            struct Comparer {
+                bool operator() (const std::pair<std::bitset<32>, int> &b1, const std::pair<std::bitset<32>, int> &b2) const {
+                    return b1.first.to_ullong() * 100 + b1.second < b2.first.to_ullong() * 100 + b2.second;
                 }
-                return b1.second.to_ulong() < b2.second.to_ulong();
-            }
-        };
-
-        std::map<std::pair<int, std::bitset<32>>, int, Comparer> minimDistances;
-        while (!routes.empty()) {
-            std::vector<rr> newRoutes;
-            for (const auto& r : routes) {
-                if (r.totalDistance < minDistance) {
-                    for (int i = 0; i < size; ++i) {
-                        if (distance[r.currentIndex][i].distance != std::numeric_limits<int>::max() && !r.visited[i]) {
-                            auto gates = distance[r.currentIndex][i].gates;
-                            bool foundAllKeys = true;
-                            for (int j = 1; j < size; ++j) {
-                                if (gates[j] && !r.collectedKeys[j]) {
-                                    foundAllKeys = false;
+            };
+            std::map<std::pair<std::bitset<32>, int>, int, Comparer> minDistance;
+            for (const auto& s : states) {
+                for (int i = 0; i < size; ++i) {
+                    if (!s.gates[i] && i != s.gate) {
+                        std::bitset<32> keys = distance[s.gate][i].gates;
+                        bool found = true;
+                        for (int k = 0; k < keys.size(); ++k) {
+                            if (keys[k]) {
+                                if (!s.gates[k]) {
+                                    found = false;
                                 }
                             }
-                            if (foundAllKeys) {
-                                std::bitset<32> collectedKeys = r.collectedKeys;
-                                collectedKeys[i] = true;
-                                std::bitset<32> visited = r.visited;
-                                visited[i] = true;
-                                if (minimDistances.find({i, collectedKeys}) == minimDistances.end()) {
-                                    minimDistances[{i, collectedKeys}] = r.totalDistance + distance[r.currentIndex][i].distance;
-                                    newRoutes.push_back({i, r.totalDistance + distance[r.currentIndex][i].distance, collectedKeys, visited});
-                                }
-                                else {
-                                    if (minimDistances[{i, collectedKeys}] > r.totalDistance + distance[r.currentIndex][i].distance) {
-                                        minimDistances[{i, collectedKeys}] = r.totalDistance + distance[r.currentIndex][i].distance;
-                                        newRoutes.push_back({i, r.totalDistance + distance[r.currentIndex][i].distance, collectedKeys, visited});
-                                    }
-                                }
+                        }
+                        if (found) {
+                            std::bitset<32> tmp = s.gates;
+                            tmp.set(i);
+                            if (minDistance.count({tmp, i}) == 0 || (minDistance.count({tmp, i}) > 0 && minDistance[{tmp, i}] > s.totalDistance + distance[s.gate][i].distance)) {
+                                newStates.push_back({s.totalDistance + distance[s.gate][i].distance, i, tmp});
+                                minDistance[{tmp, i}] = s.totalDistance + distance[s.gate][i].distance;
                             }
                         }
                     }
                 }
             }
-            routes = newRoutes;
-
-            for (const auto& r : routes) {
-                if (r.collectedKeys.count() == size) {
-                    if (minDistance > r.totalDistance) {
-                        minDistance = r.totalDistance;
+            states = newStates;
+            for (const auto& s : states) {
+                bool valid = true;
+                for (int i = 0; i < size; ++i) {
+                    if (!s.gates[i]) {
+                        valid = false;
                     }
+                }
+                if (valid) {
+                    sol = std::min(sol, s.totalDistance);
                 }
             }
         }
 
-        return minDistance;
+        return sol;
     }
 
     int part_2(std::string_view path) {
