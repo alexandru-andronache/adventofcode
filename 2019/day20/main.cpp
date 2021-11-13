@@ -248,7 +248,8 @@ namespace aoc2019_day20 {
             positions = newPositions;
         }
 
-        return board[gates["ZZ"].p1.x][gates["ZZ"].p1.y].steps[0];
+        int sol = board[gates["ZZ"].p1.x][gates["ZZ"].p1.y].steps[0];
+        return sol;
     }
 
 }
