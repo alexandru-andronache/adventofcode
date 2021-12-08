@@ -17,6 +17,15 @@ namespace aoc2021_day08 {
         return sol;
     }
 
+    char getMissingLetter(std::string_view str, const std::vector<char>& letters) {
+        for (const auto& l : str) {
+            if (std::find(letters.begin(), letters.end(), l) == letters.end()) {
+                return l;
+            }
+        }
+        return ' ';
+    }
+
     int part_2(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
         int sum = 0;
@@ -35,29 +44,24 @@ namespace aoc2021_day08 {
             // find 7
             for (const auto& w : words) {
                 if (w.size() == 3) {
-                    for (const auto& l : w) {
-                        if (l != topRight && l != bottomRight) {
-                            top = l;
-                        }
-                    }
+                    top = getMissingLetter(w, {topRight, bottomRight});
                 }
             }
 
             // find 3
             for (const auto& w : words) {
-                if (w.size() == 5) {
-                    if (std::count(w.begin(), w.end(), topRight) == 1 &&
-                        std::count(w.begin(), w.end(), bottomRight) == 1) {
-                        for (const auto& l : w) {
-                            if (l != topRight && l != bottomRight && l != top) {
-                                if (middle != 'x') {
-                                    if (bottom == 'x') {
-                                        bottom = l;
-                                    }
+                if (w.size() == 5 &&
+                    std::count(w.begin(), w.end(), topRight) == 1 &&
+                    std::count(w.begin(), w.end(), bottomRight) == 1) {
+                    for (const auto& l : w) {
+                        if (l != topRight && l != bottomRight && l != top) {
+                            if (middle != 'x') {
+                                if (bottom == 'x') {
+                                    bottom = l;
                                 }
-                                else {
-                                    middle = l;
-                                }
+                            }
+                            else {
+                                middle = l;
                             }
                         }
                     }
@@ -69,19 +73,11 @@ namespace aoc2021_day08 {
                 if (w.size() == 4) {
                     for (const auto& l : w) {
                         if (l == middle) {
-                            for (const auto& l1 : w) {
-                                if (l1 != topRight && l1 != bottomRight && l1 != middle) {
-                                    topLeft = l1;
-                                }
-                            }
+                            topLeft = getMissingLetter(w, {topRight, bottomRight, middle});
                         }
                         else if (l == bottom) {
                             std::swap(middle, bottom);
-                            for (const auto& l1 : w) {
-                                if (l1 != topRight && l1 != bottomRight && l1 != middle) {
-                                    topLeft = l1;
-                                }
-                            }
+                            topLeft = getMissingLetter(w, {topRight, bottomRight, middle});
                         }
                     }
                 }
@@ -91,11 +87,7 @@ namespace aoc2021_day08 {
             for (const auto& w : words) {
                 if (w.size() == 6) {
                     if (std::count(w.begin(), w.end(), middle) == 0) {
-                        for (const auto& l : w) {
-                            if (l != top && l != bottom && l != topRight && l != bottomRight && l != topLeft) {
-                                bottomLeft = l;
-                            }
-                        }
+                        bottomLeft = getMissingLetter(w, {top, bottom, topRight, bottomRight, topLeft});
                     }
                 }
             }
