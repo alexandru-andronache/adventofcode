@@ -5,14 +5,7 @@
 
 namespace aoc2021_day09 {
     int part_1(std::string_view path) {
-        std::vector<std::string> input = file::readFileAsArrayString(path);
-        std::vector<std::vector<int>> map(input.size(), std::vector<int>(input[0].size(), 0));
-
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[0].size(); ++j) {
-                map[i][j] = input[i][j] - '0';
-            }
-        }
+        std::vector<std::vector<int>> map = file::readFileAsMap(path);
 
         int risk = 0;
 
@@ -36,16 +29,7 @@ namespace aoc2021_day09 {
     }
 
     int part_2(std::string_view path) {
-        std::vector<std::string> input = file::readFileAsArrayString(path);
-        std::vector<std::vector<int>> map(input.size(), std::vector<int>(input[0].size(), 0));
-
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[0].size(); ++j) {
-                map[i][j] = input[i][j] - '0';
-            }
-        }
-
-        int risk = 0;
+        std::vector<std::vector<int>> map = file::readFileAsMap(path);
 
         direction::Direction dir;
         std::vector<int> basins;
