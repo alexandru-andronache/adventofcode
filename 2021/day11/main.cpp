@@ -6,7 +6,7 @@
 #include <set>
 
 namespace aoc2021_day11 {
-    std::vector<std::vector<int>> map(10, std::vector<int>(10, 0));
+    std::vector<std::vector<int>> map;
     std::set<std::pair<int, int>> explosions;
     int sol1 = 0;
     void calculate(int x, int y) {
@@ -24,15 +24,8 @@ namespace aoc2021_day11 {
         }
     }
     int part_1(std::string_view path) {
-        std::vector<std::string> input = file::readFileAsArrayString(path);
+        map = file::readFileAsMap(path);
         sol1 = 0;
-
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[i].size(); ++j) {
-                map[i][j] = input[i][j] - '0';
-            }
-        }
-
 
         for (int step = 0; step < 100; ++step) {
             explosions.clear();
@@ -55,14 +48,7 @@ namespace aoc2021_day11 {
     }
 
     int part_2(std::string_view path) {
-        std::vector<std::string> input = file::readFileAsArrayString(path);
-        sol1 = 0;
-
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[i].size(); ++j) {
-                map[i][j] = input[i][j] - '0';
-            }
-        }
+        map = file::readFileAsMap(path);
 
         int step = 0;
         while (true) {
@@ -74,7 +60,6 @@ namespace aoc2021_day11 {
                     if (map[i][j] > 9 && explosions.count({i, j}) == 0) {
                         explosions.insert({i, j});
                         map[i][j] = 0;
-                        sol1++;
                         calculate(i, j);
                     }
                 }

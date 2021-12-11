@@ -66,4 +66,17 @@ namespace file {
         f.close();
         return output;
     }
+
+    std::vector<std::vector<int>> readFileAsMap(std::string_view path) {
+        std::vector<std::string> lines = file::readFileAsArrayString(path);
+        std::vector<std::vector<int>> output;
+        for (const auto& line : lines) {
+            std::vector<int> numbers;
+            for (const auto& c : line) {
+                numbers.push_back(c - '0');
+            }
+            output.push_back(numbers);
+        }
+        return output;
+    }
 }
