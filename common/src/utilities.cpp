@@ -1,4 +1,5 @@
 #include "utilities.h"
+#include "direction.h"
 #include <array>
 
 namespace utils {
@@ -98,5 +99,27 @@ namespace utils {
             if (e != 0) return false;
         }
         return true;
+    }
+
+    std::vector<point> getListOfNeighbours4Directions(int x, int y, const std::vector<std::vector<int>>& map) {
+        direction::Direction dir;
+        std::vector<point> neighbours;
+        for (const auto& d : dir.directions) {
+            if (x + d.x >= 0 && x + d.x < map.size() && y + d.y >= 0 && y + d.y < map[0].size()) {
+                neighbours.push_back({x + d.x, y + d.y});
+            }
+        }
+        return neighbours;
+    }
+
+    std::vector<point> getListOfNeighboursAllDirections(int x, int y, const std::vector<std::vector<int>>& map) {
+        direction::Direction dir;
+        std::vector<point> neighbours;
+        for (const auto& d : dir.fullDirections) {
+            if (x + d.x >= 0 && x + d.x < map.size() && y + d.y >= 0 && y + d.y < map[0].size()) {
+                neighbours.push_back({x + d.x, y + d.y});
+            }
+        }
+        return neighbours;
     }
 }

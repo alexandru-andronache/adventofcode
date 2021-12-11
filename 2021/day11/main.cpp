@@ -10,16 +10,14 @@ namespace aoc2021_day11 {
     std::set<std::pair<int, int>> explosions;
     int sol1 = 0;
     void calculate(int x, int y) {
-        direction::Direction dir;
-        for (const auto &d: dir.fullDirections) {
-            if (x + d.x >= 0 && x + d.x < map.size() && y + d.y >= 0 && y + d.y < map[0].size()) {
-                map[x + d.x][y + d.y]++;
-                if (map[x + d.x][y + d.y] > 9 && explosions.count({x + d.x, y + d.y}) == 0) {
-                    explosions.insert({x + d.x, y + d.y});
-                    map[x + d.x][y + d.y] = 0;
-                    sol1++;
-                    calculate(x + d.x, y + d.y);
-                }
+        std::vector<utils::point> neighbours = utils::getListOfNeighboursAllDirections(x, y, map);
+        for (const auto& n : neighbours) {
+            map[n.x][n.y]++;
+            if (map[n.x][n.y] > 9 && explosions.count({n.x, n.y}) == 0) {
+                explosions.insert({n.x, n.y});
+                map[n.x][n.y] = 0;
+                sol1++;
+                calculate(n.x, n.y);
             }
         }
     }

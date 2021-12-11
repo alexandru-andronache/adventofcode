@@ -23,4 +23,6 @@ namespace utils {
     int decimalToInt(const std::vector<bool>& str, bool defaultValue = true);
     int manhattanDistance(int x1, int y1, int x2, int y2);
     bool isAnagram(std::string_view s1, std::string_view s2);
+    std::vector<point> getListOfNeighbours4Directions(int x, int y, const std::vector<std::vector<int>>& map);
+    std::vector<point> getListOfNeighboursAllDirections(int x, int y, const std::vector<std::vector<int>>& map);
 }
