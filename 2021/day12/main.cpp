@@ -4,7 +4,6 @@
 #include "string_util.h"
 #include <iostream>
 #include <vector>
-#include <map>
 
 namespace aoc2021_day12 {
     int part_1(std::string_view path) {
@@ -107,46 +106,48 @@ namespace aoc2021_day12 {
         int end = caves.getIndex("end");
 
         struct history {
-            history(const std::vector<int>& his, bool small) {
-                h = his;
+            history(int size, bool small = false) {
+                h = std::vector<int>(size, 0);
                 smallCaveVisitedTwice = small;
             }
-            history(std::vector<int>& his, bool small) {
-                h = his;
-                smallCaveVisitedTwice = small;
+            void add(int index) {
+                h[index]++;
+                path.push_back(index);
             }
             std::vector<int> h;
+            std::vector<int> path;
             bool smallCaveVisitedTwice;
         };
 
         for (int i = 0; i < caves.getSize(); ++i) {
             if (map[start][i]) {
-                std::vector<history> paths {{{start, i}, false}};
+                history h(caves.getSize());
+                h.add(start);
+                h.add(i);
+                std::vector<history> paths{h};
                 while (!paths.empty()) {
                     std::vector<history> newPaths;
                     for (const auto& p : paths) {
-                        for (int j = 0; j < 30; ++j) {
-                            if (map[p.h.back()][j]) {
+                        for (int j = 0; j < caves.getSize(); ++j) {
+                            if (map[p.path.back()][j]) {
                                 if (j == end) {
                                     sol++;
                                 }
-                                else if (j == start) {
-
-                                }
                                 else if (upperCasesCaves[j]) {
-                                    std::vector<int> temp = p.h;
-                                    temp.push_back(j);
-                                    newPaths.push_back({temp, p.smallCaveVisitedTwice});
+                                    history h1 = p;
+                                    h1.add(j);
+                                    newPaths.push_back(h1);
                                 }
-                                else {
-                                    std::vector<int> temp = p.h;
-                                    if (std::find(temp.begin(), temp.end(), j) == temp.end()) {
-                                        temp.push_back(j);
-                                        newPaths.push_back({temp, p.smallCaveVisitedTwice});
+                                else if (j != start) {
+                                    history h1 = p;
+                                    if (p.h[j] == 0) {
+                                        h1.add(j);
+                                        newPaths.push_back(h1);
                                     }
-                                    else if (std::count(temp.begin(), temp.end(), j) == 1 && !p.smallCaveVisitedTwice) {
-                                        temp.push_back(j);
-                                        newPaths.push_back({temp, true});
+                                    else if (p.h[j] == 1 && !p.smallCaveVisitedTwice) {
+                                        h1.add(j);
+                                        h1.smallCaveVisitedTwice = true;
+                                        newPaths.push_back(h1);
                                     }
                                 }
                             }
