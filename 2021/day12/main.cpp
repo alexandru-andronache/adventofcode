@@ -1,6 +1,7 @@
 #include "file.h"
 #include "utilities.h"
 #include "StringToIntMap.h"
+#include "string_util.h"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -10,13 +11,22 @@ namespace aoc2021_day12 {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         stringtointmap::StringToIntMap caves;
         int sol = 0;
-        std::vector<std::vector<bool>> map(30, std::vector<bool>(30, false));
+
         for (const auto& line : lines) {
             std::vector<std::string> tokens = utils::splitString(line, "-");
             caves.addString(tokens[0]);
             caves.addString(tokens[1]);
+        }
+
+        std::vector<std::vector<bool>> map(caves.getSize(), std::vector<bool>(caves.getSize(), false));
+        for (const auto& line : lines) {
+            std::vector<std::string> tokens = utils::splitString(line, "-");
             map[caves.getIndex(tokens[0])][caves.getIndex(tokens[1])] = true;
             map[caves.getIndex(tokens[1])][caves.getIndex(tokens[0])] = true;
+        }
+        std::vector<bool> upperCasesCaves(caves.getSize(), false);
+        for (int i = 0; i < caves.getSize(); ++i) {
+            upperCasesCaves[i] = string::isUpperCaseString(caves.getString(i));
         }
 
         int start = caves.getIndex("start");
@@ -32,7 +42,7 @@ namespace aoc2021_day12 {
             std::vector<int> h;
         };
 
-        for (int i = 0; i < 30; ++i) {
+        for (int i = 0; i < caves.getSize(); ++i) {
             if (map[start][i]) {
                 std::vector<history> paths {{{start, i}}};
                 while (!paths.empty()) {
@@ -40,20 +50,13 @@ namespace aoc2021_day12 {
                     for (const auto& p : paths) {
                         for (int j = 0; j < 30; ++j) {
                             if (map[p.h.back()][j]) {
-                                std::string cave = caves.getString(j);
-                                bool allUpperCase = true;
-                                for (const auto& c : cave) {
-                                    if (c >= 'a' && c <= 'z') {
-                                        allUpperCase = false;
-                                    }
-                                }
                                 if (j == end) {
                                     sol++;
                                 }
                                 else if (j == start) {
 
                                 }
-                                else if (allUpperCase) {
+                                else if (upperCasesCaves[j]) {
                                     std::vector<int> temp = p.h;
                                     temp.push_back(j);
                                     newPaths.push_back(temp);
@@ -78,30 +81,28 @@ namespace aoc2021_day12 {
 
     int part_2(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
+        stringtointmap::StringToIntMap caves;
         int sol = 0;
-        std::vector<std::vector<bool>> map(30, std::vector<bool>(30, false));
-        std::map<std::string, int> caves;
-        std::map<int, std::string> cavesReverse;
-        int index = 0;
+
         for (const auto& line : lines) {
             std::vector<std::string> tokens = utils::splitString(line, "-");
-            if (caves.find(tokens[0]) == caves.end()) {
-                caves.insert({tokens[0], index});
-                cavesReverse.insert({index, tokens[0]});
-                index++;
-            }
-            if (caves.find(tokens[1]) == caves.end()) {
-                caves.insert({tokens[1], index});
-                cavesReverse.insert({index, tokens[1]});
-
-                index++;
-            }
-            map[caves[tokens[0]]][caves[tokens[1]]] = true;
-            map[caves[tokens[1]]][caves[tokens[0]]] = true;
+            caves.addString(tokens[0]);
+            caves.addString(tokens[1]);
         }
 
-        int start = caves["start"];
-        int end = caves["end"];
+        std::vector<std::vector<bool>> map(caves.getSize(), std::vector<bool>(caves.getSize(), false));
+        for (const auto& line : lines) {
+            std::vector<std::string> tokens = utils::splitString(line, "-");
+            map[caves.getIndex(tokens[0])][caves.getIndex(tokens[1])] = true;
+            map[caves.getIndex(tokens[1])][caves.getIndex(tokens[0])] = true;
+        }
+        std::vector<bool> upperCasesCaves(caves.getSize(), false);
+        for (int i = 0; i < caves.getSize(); ++i) {
+            upperCasesCaves[i] = string::isUpperCaseString(caves.getString(i));
+        }
+
+        int start = caves.getIndex("start");
+        int end = caves.getIndex("end");
 
         struct history {
             history(const std::vector<int>& his, bool small) {
@@ -116,7 +117,7 @@ namespace aoc2021_day12 {
             bool smallCaveVisitedTwice;
         };
 
-        for (int i = 0; i < 30; ++i) {
+        for (int i = 0; i < caves.getSize(); ++i) {
             if (map[start][i]) {
                 std::vector<history> paths {{{start, i}, false}};
                 while (!paths.empty()) {
@@ -124,20 +125,13 @@ namespace aoc2021_day12 {
                     for (const auto& p : paths) {
                         for (int j = 0; j < 30; ++j) {
                             if (map[p.h.back()][j]) {
-                                std::string cave = cavesReverse[j];
-                                bool allUpperCase = true;
-                                for (const auto& c : cave) {
-                                    if (c >= 'a' && c <= 'z') {
-                                        allUpperCase = false;
-                                    }
-                                }
                                 if (j == end) {
                                     sol++;
                                 }
                                 else if (j == start) {
 
                                 }
-                                else if (allUpperCase) {
+                                else if (upperCasesCaves[j]) {
                                     std::vector<int> temp = p.h;
                                     temp.push_back(j);
                                     newPaths.push_back({temp, p.smallCaveVisitedTwice});

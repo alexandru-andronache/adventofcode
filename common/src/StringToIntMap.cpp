@@ -27,3 +27,7 @@ std::string StringToIntMap::getString(int index) {
     }
     return mReverseMap[index];
 }
+
+int StringToIntMap::getSize() {
+    return mIndex;
+}

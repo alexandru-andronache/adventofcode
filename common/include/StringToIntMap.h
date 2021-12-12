@@ -14,6 +14,7 @@ namespace stringtointmap {
         void addString(const std::string &str);
         int getIndex(const std::string &str);
         std::string getString(int index);
+        int getSize();
 
     private:
         std::map<std::string, int, std::less<>> mMap;
