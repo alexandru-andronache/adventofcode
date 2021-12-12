@@ -1,5 +1,6 @@
 #include "file.h"
 #include "utilities.h"
+#include "StringToIntMap.h"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -7,30 +8,19 @@
 namespace aoc2021_day12 {
     int part_1(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
+        stringtointmap::StringToIntMap caves;
         int sol = 0;
         std::vector<std::vector<bool>> map(30, std::vector<bool>(30, false));
-        std::map<std::string, int> caves;
-        std::map<int, std::string> cavesReverse;
-        int index = 0;
         for (const auto& line : lines) {
             std::vector<std::string> tokens = utils::splitString(line, "-");
-            if (caves.find(tokens[0]) == caves.end()) {
-                caves.insert({tokens[0], index});
-                cavesReverse.insert({index, tokens[0]});
-                index++;
-            }
-            if (caves.find(tokens[1]) == caves.end()) {
-                caves.insert({tokens[1], index});
-                cavesReverse.insert({index, tokens[1]});
-
-                index++;
-            }
-            map[caves[tokens[0]]][caves[tokens[1]]] = true;
-            map[caves[tokens[1]]][caves[tokens[0]]] = true;
+            caves.addString(tokens[0]);
+            caves.addString(tokens[1]);
+            map[caves.getIndex(tokens[0])][caves.getIndex(tokens[1])] = true;
+            map[caves.getIndex(tokens[1])][caves.getIndex(tokens[0])] = true;
         }
 
-        int start = caves["start"];
-        int end = caves["end"];
+        int start = caves.getIndex("start");
+        int end = caves.getIndex("end");
 
         struct history {
             history(const std::vector<int>& his) {
@@ -50,7 +40,7 @@ namespace aoc2021_day12 {
                     for (const auto& p : paths) {
                         for (int j = 0; j < 30; ++j) {
                             if (map[p.h.back()][j]) {
-                                std::string cave = cavesReverse[j];
+                                std::string cave = caves.getString(j);
                                 bool allUpperCase = true;
                                 for (const auto& c : cave) {
                                     if (c >= 'a' && c <= 'z') {
