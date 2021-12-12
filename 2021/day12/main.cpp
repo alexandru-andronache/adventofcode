@@ -33,39 +33,41 @@ namespace aoc2021_day12 {
         int end = caves.getIndex("end");
 
         struct history {
-            history(const std::vector<int>& his) {
-                h = his;
+            history(int size) {
+                h = std::vector<int>(size, 0);
             }
-            history(std::vector<int>& his) {
-                h = his;
+            void add(int index) {
+                h[index]++;
+                path.push_back(index);
             }
             std::vector<int> h;
+            std::vector<int> path;
         };
 
         for (int i = 0; i < caves.getSize(); ++i) {
             if (map[start][i]) {
-                std::vector<history> paths {{{start, i}}};
+                history h(caves.getSize());
+                h.add(start);
+                h.add(i);
+                std::vector<history> paths{h};
                 while (!paths.empty()) {
                     std::vector<history> newPaths;
                     for (const auto& p : paths) {
-                        for (int j = 0; j < 30; ++j) {
-                            if (map[p.h.back()][j]) {
+                        for (int j = 0; j < caves.getSize(); ++j) {
+                            if (map[p.path.back()][j]) {
                                 if (j == end) {
                                     sol++;
                                 }
-                                else if (j == start) {
-
-                                }
                                 else if (upperCasesCaves[j]) {
-                                    std::vector<int> temp = p.h;
-                                    temp.push_back(j);
-                                    newPaths.push_back(temp);
+                                    history h1 = p;
+                                    h1.add(j);
+                                    newPaths.push_back(h1);
                                 }
-                                else {
-                                    std::vector<int> temp = p.h;
-                                    if (std::find(temp.begin(), temp.end(), j) == temp.end()) {
-                                        temp.push_back(j);
-                                        newPaths.push_back(temp);
+                                else if (j != start) {
+                                    history h1 = p;
+                                    if (p.h[j] == 0) {
+                                        h1.add(j);
+                                        newPaths.push_back(h1);
                                     }
                                 }
                             }
