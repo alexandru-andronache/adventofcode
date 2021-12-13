@@ -3,11 +3,11 @@
 
 namespace aoc2021_day13 {
     TEST_F(Tests2021Day13, part_1_test) {
-        ASSERT_EQ(part_1("../2021/day13/input_test.in"), 0);
+        ASSERT_EQ(part_1("../2021/day13/input_test.in"), 17);
     }
 
     TEST_F(Tests2021Day13, part_1_real_test) {
-        ASSERT_EQ(part_1("../2021/day13/input.in"), 0);
+        ASSERT_EQ(part_1("../2021/day13/input.in"), 638);
     }
 
     TEST_F(Tests2021Day13, part_2_test) {
