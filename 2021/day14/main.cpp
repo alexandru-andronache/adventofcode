@@ -4,11 +4,9 @@
 #include <map>
 #include <vector>
 
-
 namespace aoc2021_day14 {
     unsigned long long solve(std::string_view path, int steps) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
-
         std::map<std::string, std::vector<std::string>> rules;
         for (int i = 2; i < input.size(); ++i) {
             std::vector<std::string> tokens = utils::splitString(input[i], " ->");
@@ -28,12 +26,11 @@ namespace aoc2021_day14 {
         for (int step = 0; step < steps; ++step) {
             std::map<std::string, unsigned long long> newState;
             for (const auto& c : state) {
-                auto r = rules[c.first];
-                for (int i = 0; i < 2; ++i) {
-                    if (newState.find(r[i]) == newState.end()) {
-                        newState[r[i]] = c.second;
+                for (const auto& rule : rules[c.first]) {
+                    if (newState.find(rule) == newState.end()) {
+                        newState[rule] = c.second;
                     } else {
-                        newState[r[i]] += c.second;
+                        newState[rule] += c.second;
                     }
                 }
             }
