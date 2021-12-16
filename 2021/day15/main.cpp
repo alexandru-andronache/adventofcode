@@ -52,18 +52,19 @@ namespace aoc2021_day15 {
         risk[0][0] = 0;
 
         std::vector<utils::point> positions {{0, 0}};
-        while (!positions.empty()) {
-            std::vector<utils::point> newPositions;
-            for (const auto& position : positions) {
-                std::vector<utils::point> neighbours = utils::getListOfNeighbours4Directions(position.x, position.y, map);
+        int start = 0, end = 1;
+        while (start < end) {
+            for (int i = start; i < end; ++i) {
+                std::vector<utils::point> neighbours = utils::getListOfNeighbours4Directions(positions[i].x, positions[i].y, map);
                 for (const auto& n : neighbours) {
-                    if (risk[position.x][position.y] + map[n.x][n.y] < risk[n.x][n.y]) {
-                        risk[n.x][n.y] = risk[position.x][position.y] + map[n.x][n.y];
-                        newPositions.push_back({n.x, n.y});
+                    if (risk[positions[i].x][positions[i].y] + map[n.x][n.y] < risk[n.x][n.y]) {
+                        risk[n.x][n.y] = risk[positions[i].x][positions[i].y] + map[n.x][n.y];
+                        positions.push_back({n.x, n.y});
                     }
                 }
             }
-            positions = newPositions;
+            start = end;
+            end = positions.size();
         }
 
         return risk.back().back();

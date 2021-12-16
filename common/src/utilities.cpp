@@ -59,8 +59,8 @@ namespace utils {
      * return the decimal value of binary string str with 1 being represented by the character
      * typically call this with '1' as default but sometimes the value might be represented by another character
      */
-    int decimalToInt(std::string_view str, char character) {
-        int nr = 0;
+    unsigned long long decimalToInt(std::string_view str, char character) {
+        unsigned long long nr = 0;
         for (const auto& c : str) {
             nr *= 2;
             if (c == character) {
