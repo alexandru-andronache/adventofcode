@@ -49,7 +49,6 @@ namespace aoc2021_day16 {
         std::string str;
         if (index < hex.size()) {
             // skip package version
-//            sum += calculateValue(hex, index, 3);
             index += 3;
             int typeValue = calculateValue(hex, index, 3);
             index += 3;
@@ -83,11 +82,9 @@ namespace aoc2021_day16 {
                     return std::accumulate(values.begin(), values.end(), 0ULL);
                 }
                 else if (typeValue == 1) {
-                    unsigned long long prod = 1;
-                    for (const auto& v : values) {
-                        prod = prod * v;
-                    }
-                    return prod;
+                    return std::accumulate(values.begin(), values.end(), 1ULL, [](const auto& a, const auto&b) {
+                        return a * b;
+                    });
                 }
                 else if (typeValue == 2) {
                     return *std::min_element(values.begin(), values.end());
