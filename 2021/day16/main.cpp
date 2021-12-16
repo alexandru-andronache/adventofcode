@@ -16,15 +16,8 @@ namespace aoc2021_day16 {
         }
         return 0;
     }
-    unsigned long long calculateValue(const std::vector<int>& bits, int start, int size) {
-        std::string str;
-        for (int i = start; i < start + size; ++i) {
-            str += bits[i] + '0';
-        }
-        return utils::decimalToInt(str);
-    }
 
-    void calculateSum(std::string bits, int& index, int& sum) {
+    void calculateSum(std::string_view bits, int& index, int& sum) {
         if (index < bits.size()) {
             sum += binaryToInt(bits, index, 3);
             index += 3;
@@ -59,37 +52,37 @@ namespace aoc2021_day16 {
         }
     }
 
-    unsigned long long calculatePart2(const std::vector<int>& hex, int& index) {
+    unsigned long long calculatePart2(std::string_view bits, int& index) {
         std::string str;
-        if (index < hex.size()) {
+        if (index < bits.size()) {
             // skip package version
             index += 3;
-            int typeValue = calculateValue(hex, index, 3);
+            int typeValue = binaryToInt(bits, index, 3);
             index += 3;
 
             if (typeValue != 4) {
                 int nr = 0;
                 int length = 0;
-                if (hex[index] == 0) {
+                if (bits[index] == '0') {
                     index++;
-                    length = calculateValue(hex, index, 15);
+                    length = binaryToInt(bits, index, 15);
                     index += 15;
                 }
                 else {
                     index++;
-                    nr = calculateValue(hex, index, 11);
+                    nr = binaryToInt(bits, index, 11);
                     index += 11;
                 }
                 std::vector<unsigned long long> values;
                 if (nr > 0) {
                     for (int i = 0; i < nr; ++i) {
-                        values.push_back(calculatePart2(hex, index));
+                        values.push_back(calculatePart2(bits, index));
                     }
                 }
                 else {
                     int start = index;
                     while (index < start + length) {
-                        values.push_back(calculatePart2(hex, index));
+                        values.push_back(calculatePart2(bits, index));
                     }
                 }
                 if (typeValue == 0) {
@@ -117,16 +110,12 @@ namespace aoc2021_day16 {
                 }
             }
             else {
-                while (index < hex.size() && hex[index] == 1) {
-                    for (int i = index + 1; i < index + 5; ++i) {
-                        str += hex[i] + '0';
-                    }
+                while (index < bits.size() && bits[index] == '1') {
+                    str += bits.substr(index + 1, 4);
                     index += 5;
                 }
-                if (index < hex.size()) {
-                    for (int i = index + 1; i < index + 5; ++i) {
-                        str += hex[i] + '0';
-                    }
+                if (index < bits.size()) {
+                    str += bits.substr(index + 1, 4);
                     index += 5;
                 }
                 return utils::decimalToInt(str);
@@ -150,24 +139,13 @@ namespace aoc2021_day16 {
 
     unsigned long long part_2(std::string_view path) {
         std::string input = file::readFileAsString(path);
-        std::vector<int> hex;
+        std::string bits;
         for (const auto& letter : input) {
-            int value = 0;
-            if (letter >= '0' && letter <= '9') {
-                value = letter - '0';
-            }
-            else {
-                value = letter - 'A' + 10;
-            }
-            std::bitset<4>    bits(value);
-            for (int i = 3; i >= 0; --i) {
-                hex.push_back(bits[i]);
-            }
+            bits += mask[letter];
         }
-        int sum = 0;
         int index = 0;
 
-        return calculatePart2(hex, index);
+        return calculatePart2(bits, index);
     }
 }
 
