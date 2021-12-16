@@ -17,124 +17,111 @@ namespace aoc2021_day16 {
         return 0;
     }
 
-    void calculateSum(std::string_view bits, int& index, int& sum) {
-        if (index < bits.size()) {
-            sum += binaryToInt(bits, index, 3);
-            index += 3;
-            int type = binaryToInt(bits, index, 3);
-            index += 3;
+    unsigned long long calculateSumVersion(std::string_view bits, int& index) {
+        unsigned long long versionSum = binaryToInt(bits, index, 3);
+        index += 3;
+        unsigned long long type = binaryToInt(bits, index, 3);
+        index += 3;
 
-            if (type != 4) {
-                if (bits[index] == '0') {
-                    index++;
-                    int length = binaryToInt(bits, index, 15);
-                    index += 15;
-                    int start = index;
-                    while (index < start + length) {
-                        calculateSum(bits, index, sum);
-                    }
-                }
-                else {
-                    index++;
-                    int nr = binaryToInt(bits, index, 11);
-                    index += 11;
-                    for (int i = 0; i < nr; ++i) {
-                        calculateSum(bits, index, sum);
-                    }
-                }
-            }
-            else {
-                while (bits[index] == '1') {
-                    index += 5;
-                }
+        if (type == 4) {
+            while (bits[index] == '1') {
                 index += 5;
             }
+            index += 5;
+            return versionSum;
         }
+
+        if (bits[index] == '0') {
+            index++;
+            unsigned long long length = binaryToInt(bits, index, 15);
+            index += 15;
+            int start = index;
+            while (index < start + length) {
+                versionSum += calculateSumVersion(bits, index);
+            }
+        }
+        else {
+            index++;
+            unsigned long long nr = binaryToInt(bits, index, 11);
+            index += 11;
+            for (int i = 0; i < nr; ++i) {
+                versionSum += calculateSumVersion(bits, index);
+            }
+        }
+        return versionSum;
     }
 
-    unsigned long long calculatePart2(std::string_view bits, int& index) {
+    unsigned long long calculateSumValue(std::string_view bits, int& index) {
         std::string str;
-        if (index < bits.size()) {
-            // skip package version
-            index += 3;
-            int typeValue = binaryToInt(bits, index, 3);
-            index += 3;
+        index += 3;
+        unsigned long long typeValue = binaryToInt(bits, index, 3);
+        index += 3;
 
-            if (typeValue != 4) {
-                int nr = 0;
-                int length = 0;
-                if (bits[index] == '0') {
-                    index++;
-                    length = binaryToInt(bits, index, 15);
-                    index += 15;
-                }
-                else {
-                    index++;
-                    nr = binaryToInt(bits, index, 11);
-                    index += 11;
-                }
-                std::vector<unsigned long long> values;
-                if (nr > 0) {
-                    for (int i = 0; i < nr; ++i) {
-                        values.push_back(calculatePart2(bits, index));
-                    }
-                }
-                else {
-                    int start = index;
-                    while (index < start + length) {
-                        values.push_back(calculatePart2(bits, index));
-                    }
-                }
-                if (typeValue == 0) {
-                    return std::accumulate(values.begin(), values.end(), 0ULL);
-                }
-                else if (typeValue == 1) {
-                    return std::accumulate(values.begin(), values.end(), 1ULL, [](const auto& a, const auto&b) {
-                        return a * b;
-                    });
-                }
-                else if (typeValue == 2) {
-                    return *std::min_element(values.begin(), values.end());
-                }
-                else if (typeValue == 3) {
-                    return *std::max_element(values.begin(), values.end());
-                }
-                else if (typeValue == 5) {
-                    return values[0] > values[1];
-                }
-                else if (typeValue == 6) {
-                    return values[0] < values[1];
-                }
-                else if (typeValue == 7) {
-                    return values[0] == values[1];
-                }
+        if (typeValue == 4) {
+            while (index < bits.size() && bits[index] == '1') {
+                str += bits.substr(index + 1, 4);
+                index += 5;
             }
-            else {
-                while (index < bits.size() && bits[index] == '1') {
-                    str += bits.substr(index + 1, 4);
-                    index += 5;
-                }
-                if (index < bits.size()) {
-                    str += bits.substr(index + 1, 4);
-                    index += 5;
-                }
-                return utils::decimalToInt(str);
+            if (index < bits.size()) {
+                str += bits.substr(index + 1, 4);
+                index += 5;
+            }
+            return utils::decimalToInt(str);
+        }
+
+        std::vector<unsigned long long> values;
+        if (bits[index] == '0') {
+            index++;
+            unsigned long long length = binaryToInt(bits, index, 15);
+            index += 15;
+            int start = index;
+            while (index < start + length) {
+                values.push_back(calculateSumValue(bits, index));
             }
         }
-        return 0;
+        else {
+            index++;
+            unsigned long long nr = binaryToInt(bits, index, 11);
+            index += 11;
+            for (int i = 0; i < nr; ++i) {
+                values.push_back(calculateSumValue(bits, index));
+            }
+        }
+
+        if (typeValue == 0) {
+            return std::accumulate(values.begin(), values.end(), 0ULL);
+        }
+        if (typeValue == 1) {
+            return std::accumulate(values.begin(), values.end(), 1ULL, [](const auto& a, const auto&b) {
+                return a * b;
+            });
+        }
+        if (typeValue == 2) {
+            return *std::min_element(values.begin(), values.end());
+        }
+        if (typeValue == 3) {
+            return *std::max_element(values.begin(), values.end());
+        }
+        if (typeValue == 5) {
+            return values[0] > values[1];
+        }
+        if (typeValue == 6) {
+            return values[0] < values[1];
+        }
+        if (typeValue == 7) {
+            return values[0] == values[1];
+        }
     }
 
-    int part_1(std::string_view path) {
+    unsigned long long part_1(std::string_view path) {
         std::string input = file::readFileAsString(path);
         std::string bits;
         for (const auto& letter : input) {
             bits += mask[letter];
         }
-        int sum = 0;
         int index = 0;
-        calculateSum(bits, index, sum);
 
-        return sum;
+        return calculateSumVersion(bits, index);
     }
 
     unsigned long long part_2(std::string_view path) {
@@ -145,7 +132,7 @@ namespace aoc2021_day16 {
         }
         int index = 0;
 
-        return calculatePart2(bits, index);
+        return calculateSumValue(bits, index);
     }
 }
 
