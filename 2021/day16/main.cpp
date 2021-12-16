@@ -3,8 +3,19 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
+#include <map>
 
 namespace aoc2021_day16 {
+    std::map<char, std::string> mask {{'0', "0000"}, {'1', "0001"}, {'2', "0010"}, {'3', "0011"},
+                                      {'4', "0100"}, {'5', "0101"}, {'6', "0110"}, {'7', "0111"},
+                                      {'8', "1000"}, {'9', "1001"}, {'A', "1010"}, {'B', "1011"},
+                                      {'C', "1100"}, {'D', "1101"}, {'E', "1110"}, {'F', "1111"}};
+    unsigned long long binaryToInt(std::string_view bits, int start, int size) {
+        if (start + size < bits.size()) {
+            return utils::decimalToInt(bits.substr(start, size));
+        }
+        return 0;
+    }
     unsigned long long calculateValue(const std::vector<int>& bits, int start, int size) {
         std::string str;
         for (int i = start; i < start + size; ++i) {
@@ -13,31 +24,34 @@ namespace aoc2021_day16 {
         return utils::decimalToInt(str);
     }
 
-    void calculateSum(const std::vector<int>& hex, int& index, int& sum) {
-        if (index < hex.size()) {
-            sum += calculateValue(hex, index, 3);
+    void calculateSum(std::string bits, int& index, int& sum) {
+        if (index < bits.size()) {
+            sum += binaryToInt(bits, index, 3);
             index += 3;
-            int type = calculateValue(hex, index, 3);
+            int type = binaryToInt(bits, index, 3);
             index += 3;
 
             if (type != 4) {
-                int nr = 0;
-                if (hex[index] == 0) {
+                if (bits[index] == '0') {
                     index++;
-                    nr = calculateValue(hex, index, 15);
+                    int length = binaryToInt(bits, index, 15);
                     index += 15;
+                    int start = index;
+                    while (index < start + length) {
+                        calculateSum(bits, index, sum);
+                    }
                 }
                 else {
                     index++;
-                    nr = calculateValue(hex, index, 11);
+                    int nr = binaryToInt(bits, index, 11);
                     index += 11;
-                }
-                for (int i = 0; i < nr; ++i) {
-                    calculateSum(hex, index, sum);
+                    for (int i = 0; i < nr; ++i) {
+                        calculateSum(bits, index, sum);
+                    }
                 }
             }
             else {
-                while (hex[index] == 1) {
+                while (bits[index] == '1') {
                     index += 5;
                 }
                 index += 5;
@@ -123,23 +137,13 @@ namespace aoc2021_day16 {
 
     int part_1(std::string_view path) {
         std::string input = file::readFileAsString(path);
-        std::vector<int> hex;
+        std::string bits;
         for (const auto& letter : input) {
-            int value = 0;
-            if (letter >= '0' && letter <= '9') {
-                value = letter - '0';
-            }
-            else {
-                value = letter - 'A' + 10;
-            }
-            std::bitset<4>    bits(value);
-            for (int i = 3; i >= 0; --i) {
-                hex.push_back(bits[i]);
-            }
+            bits += mask[letter];
         }
         int sum = 0;
         int index = 0;
-        calculateSum(hex, index, sum);
+        calculateSum(bits, index, sum);
 
         return sum;
     }
