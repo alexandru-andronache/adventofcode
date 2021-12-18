@@ -9,10 +9,9 @@ namespace aoc2021_day18 {
 
     class Number {
     public:
-        Number() {
-        }
+        Number() = default;
 
-        void add(std::string line) {
+        void add(std::string_view line) {
             bool needClose = false;
             if (!state.empty()) {
                 state.push_front(OPEN);
@@ -91,12 +90,8 @@ namespace aoc2021_day18 {
             auto it = state.begin();
             int braces = 0;
             while (it != state.end()) {
-                if (*it == OPEN) {
-                    braces++;
-                }
-                else if (*it == CLOSE) {
-                    braces--;
-                }
+                braces += (*it == OPEN);
+                braces -= (*it == CLOSE);
                 if (braces > 4) {
                     int value1 = *(std::next(it, 1));
                     int value2 = *(std::next(it, 2));
@@ -146,7 +141,6 @@ namespace aoc2021_day18 {
             while (nr.parse()) {
             }
         }
-
         return nr.magnitude();
     }
 
@@ -161,8 +155,7 @@ namespace aoc2021_day18 {
                     nr.add(input[j]);
                     while (nr.parse()) {
                     }
-                    int magnitude = nr.magnitude();
-                    maxSol = std::max(maxSol, magnitude);
+                    maxSol = std::max(maxSol, nr.magnitude());
                 }
             }
         }
