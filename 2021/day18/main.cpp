@@ -84,6 +84,12 @@ namespace aoc2021_day18 {
             return false;
         }
 
+        void parse2() {
+            while (parse()) {
+
+            }
+        }
+
         // applies the next operation
         // return true if it's not finished
         bool parse() {
@@ -138,8 +144,7 @@ namespace aoc2021_day18 {
         Number nr;
         for (const auto& line : input) {
             nr.add(line);
-            while (nr.parse()) {
-            }
+            nr.parse2();
         }
         return nr.magnitude();
     }

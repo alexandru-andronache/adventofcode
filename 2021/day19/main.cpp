@@ -4,6 +4,7 @@
 
 namespace aoc2021_day19 {
     int part_1(std::string_view path) {
+
         return 0;
     }
 

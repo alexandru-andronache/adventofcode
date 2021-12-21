@@ -23,6 +23,8 @@ namespace aoc2021_day20 {
         for (int step = 0; step < steps; ++step) {
             int newSol = 0;
             std::vector<std::vector<bool>> newMap(N, std::vector<bool>(N, false));
+            utils::point oldStart = start;
+            int oldSize = size;
             start.x -= 1;
             start.y -= 1;
             size += 2;
@@ -32,7 +34,14 @@ namespace aoc2021_day20 {
                     int k = 0;
                     for (int i = -1; i <= 1; ++i) {
                         for (int j = -1; j <= 1; ++j) {
-                            mask[8 - k] = map[x + i][y + j];
+                            if ((x + i >= oldStart.x && x + i < oldStart.x + oldSize &&
+                                y + j >= oldStart.y && y + j < oldStart.y + oldSize) ||
+                                ((input[0][0] != '#'))) { // the zero value doesn't change the state
+                                mask[8 - k] = map[x + i][y + j];
+                            }
+                            else {
+                                mask[8 - k] = (step % 2 != 0);
+                            }
                             k++;
                         }
                     }
@@ -43,15 +52,6 @@ namespace aoc2021_day20 {
                 }
             }
 
-            if (input[0][0] == '#') {
-                for (int i = 0; i < N; ++i) {
-                    for (int j = 0; j < N; ++j) {
-                        if (i < start.x || i >= start.x + size || j < start.y || j >= start.y + size) {
-                            newMap[i][j] = (step % 2 == 0);
-                        }
-                    }
-                }
-            }
             map = newMap;
         }
 
