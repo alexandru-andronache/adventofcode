@@ -50,7 +50,7 @@ namespace aoc2021_day21 {
 
     std::vector<int> weight{0, 0, 0, 1, 3, 6, 7, 6, 3, 1};
 
-    std::pair<unsigned long long, unsigned long long> step2(const int startPos1, const int startPos2, const int score1, const int score2, const int activePlayer) {
+    std::pair<unsigned long long, unsigned long long> solve_part_2(const int startPos1, const int startPos2, const int score1, const int score2, const int activePlayer) {
         unsigned long long winP1 = 0;
         unsigned long long winP2 = 0;
 
@@ -66,7 +66,7 @@ namespace aoc2021_day21 {
                 }
                 else {
                     if (prevScores.find({newStartPos1, startPos2, newScore1, score2, 2}) == prevScores.end()) {
-                        auto r = step2(newStartPos1, startPos2, newScore1, score2, 2);
+                        auto r = solve_part_2(newStartPos1, startPos2, newScore1, score2, 2);
                         prevScores.insert({{newStartPos1, startPos2, newScore1, score2, 2}, r});
                     }
                     auto result = prevScores[{newStartPos1, startPos2, newScore1, score2, 2}];
@@ -85,7 +85,7 @@ namespace aoc2021_day21 {
                 }
                 else {
                     if (prevScores.find({startPos1, newStartPos2, score1, newScore2, 1}) == prevScores.end()) {
-                        auto r = step2(startPos1, newStartPos2, score1, newScore2, 1);
+                        auto r = solve_part_2(startPos1, newStartPos2, score1, newScore2, 1);
                         prevScores.insert({{startPos1, newStartPos2, score1, newScore2, 1}, r});
                     }
                     auto result = prevScores[{startPos1, newStartPos2, score1, newScore2, 1}];
@@ -100,7 +100,7 @@ namespace aoc2021_day21 {
 
     unsigned long long part_2(int startPos1, int startPos2) {
         prevScores.clear();
-        auto result = step2(startPos1, startPos2, 0, 0, 1);
+        auto result = solve_part_2(startPos1, startPos2, 0, 0, 1);
         return std::max(result.first, result.second);
     }
 }
@@ -113,3 +113,5 @@ int main() {
     return 0;
 }
 #endif
+
+#pragma clang diagnostic pop
