@@ -3,8 +3,8 @@ function(get_files_for_year YEAR LIST_OF_SOURCE_FILES)
     file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
 
     list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
-    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
+    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
+    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
 
     list(APPEND TMP_LIST_OF_SOURCE_FILES ${${YEAR}_src_files_cpp} ${${YEAR}_src_files_h})
     set("${LIST_OF_SOURCE_FILES}" "${TMP_LIST_OF_SOURCE_FILES}" PARENT_SCOPE)
@@ -15,8 +15,8 @@ function(add_year YEAR)
     file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
 
     list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
-    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*cmake-build-debug.*")
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*cmake-build-debug.*")
+    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
+    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
 
     get_files_for_year(${YEAR} LIST_OF_SOURCE_FILES)
 
