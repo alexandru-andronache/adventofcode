@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <numeric>
+#include <limits>
+#include <algorithm>
 
 namespace aoc2015_day13 {
     int solve(const std::vector<std::string>& input, int nrPeople) {

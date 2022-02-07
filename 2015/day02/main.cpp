@@ -1,6 +1,7 @@
 #include "file.h"
 #include "utilities.h"
 #include <iostream>
+#include <algorithm>
 
 namespace aoc2015_day02 {
     unsigned long long part_1(std::string_view path) {

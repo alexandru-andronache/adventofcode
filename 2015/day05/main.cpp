@@ -1,6 +1,7 @@
 #include "file.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 namespace aoc2015_day05 {
     bool isNicePart1(std::string_view line) {

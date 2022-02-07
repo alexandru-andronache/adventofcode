@@ -2,6 +2,7 @@
 #include "utilities.h"
 #include <iostream>
 #include <numeric>
+#include <algorithm>
 
 namespace aoc2015_day06 {
     int part_1(std::string_view path) {

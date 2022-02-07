@@ -1,6 +1,7 @@
 #include "file.h"
 #include "utilities.h"
 #include <iostream>
+#include <algorithm>
 
 namespace aoc2015_day21 {
     struct item {

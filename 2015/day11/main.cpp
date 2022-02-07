@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <array>
+#include <algorithm>
 
 namespace aoc2015_day11 {
     std::string nextPassword(std::string password) {

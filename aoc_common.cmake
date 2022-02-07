@@ -35,6 +35,7 @@ function(add_year YEAR)
 
     target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
     target_link_libraries(${YEAR}.all.tests
+            general pthread
             general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_DEBUG_POSTFIX}.a
             general ${source_dir}/../googletest_utilities-build/googletest/${CMAKE_BUILD_TYPE}Libs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_DEBUG_POSTFIX}.a)
 endfunction()

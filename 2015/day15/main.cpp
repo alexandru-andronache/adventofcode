@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <numeric>
+#include <limits>
 
 namespace aoc2015_day15 {
     struct ingredient {

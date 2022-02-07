@@ -1,6 +1,8 @@
 #include "file.h"
 #include "utilities.h"
 #include <iostream>
+#include <algorithm>
+#include <limits>
 
 namespace aoc2015_day22 {
     struct spell {

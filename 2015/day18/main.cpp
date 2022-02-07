@@ -2,6 +2,7 @@
 #include "utilities.h"
 #include "grid.h"
 #include <iostream>
+#include <algorithm>
 
 namespace aoc2015_day18 {
     int part_1(std::string_view path, int steps) {

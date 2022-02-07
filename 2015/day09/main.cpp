@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <numeric>
+#include <functional>
+#include <limits>
 
 namespace aoc2015_day09 {
     unsigned long long solve(const std::vector<std::string>& input, const std::function<int( int, int )> &compare, int defaultValue, int SIZE = 8) {

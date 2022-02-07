@@ -3,6 +3,8 @@
 #include "verticalhexgrid.h"
 #include <iostream>
 #include <numeric>
+#include <limits>
+#include <algorithm>
 
 namespace aoc2015_day24 {
     long long minimumQE = std::numeric_limits<int>::max();

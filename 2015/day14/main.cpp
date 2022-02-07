@@ -3,6 +3,8 @@
 #include <iostream>
 #include <numeric>
 #include <map>
+#include <limits>
+#include <algorithm>
 
 namespace aoc2015_day14 {
     int travelDistance(int speed, int duration, int restTime, int totalTime) {
