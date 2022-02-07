@@ -50,3 +50,6 @@ test_*
 .DS_Store
 bin
 build
+
+# visual studio code
+.vscode

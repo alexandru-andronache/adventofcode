@@ -2,6 +2,8 @@
 #include "utilities.h"
 #include <fstream>
 #include <vector>
+#include <string>
+#include <iterator>
 
 namespace file {
 
@@ -20,7 +22,7 @@ namespace file {
     }
 
     std::vector<int> readFileAsArrayInt(std::string_view path) {
-        std::ifstream f(path);
+        std::ifstream f(path.data());
         std::istream_iterator<int> start(f), end;
         return std::vector<int>(start, end);
     }
@@ -46,7 +48,7 @@ namespace file {
     }
 
     std::vector<std::string> readFileAsArrayString(std::string_view path) {
-        std::ifstream f(path);
+        std::ifstream f(path.data());
         std::string line;
         std::vector<std::string> output;
         while (std::getline(f, line)) {
@@ -57,7 +59,7 @@ namespace file {
     }
 
     std::vector<std::vector<std::string>> readFileAndSplit(std::string_view path, std::string_view tokens) {
-        std::ifstream f(path);
+        std::ifstream f(path.data());
         std::string line;
         std::vector<std::vector<std::string>> output;
         while (std::getline(f, line)) {

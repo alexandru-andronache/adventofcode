@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 namespace file {
     std::string readFileAsString(std::string_view path);

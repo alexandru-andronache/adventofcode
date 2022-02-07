@@ -1,6 +1,7 @@
 #include "utilities.h"
 #include "direction.h"
 #include <array>
+#include <algorithm>
 
 namespace utils {
 

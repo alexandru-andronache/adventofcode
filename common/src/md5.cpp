@@ -1,6 +1,7 @@
 #include "md5.h"
 #include <sstream>
 #include <iomanip>
+#include <cstring>
 
 namespace md5 {
 #define F(x, y, z)   ((z) ^ ((x) & ((y) ^ (z))))

@@ -1,4 +1,5 @@
 #include "string_util.h"
+#include <algorithm>
 
 namespace string {
     int findNumberOfSubstrings(std::string_view str, std::string_view s) {
