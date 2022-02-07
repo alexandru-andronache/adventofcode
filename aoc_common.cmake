@@ -1,23 +1,24 @@
+function(pad_number_with_0 original_number total_size number)
+    string(LENGTH ${original_number} s)
+    MATH(EXPR s "${total_size}-${s}")
+    string(REPEAT "0" ${s} pad)
+    string(APPEND pad ${original_number})
+    set(${number} ${pad} PARENT_SCOPE)
+endfunction()
+
 function(get_files_for_year YEAR LIST_OF_SOURCE_FILES)
-    file(GLOB_RECURSE ${YEAR}_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.h")
-    file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
-
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
-    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
-
-    list(APPEND TMP_LIST_OF_SOURCE_FILES ${${YEAR}_src_files_cpp} ${${YEAR}_src_files_h})
+    foreach (day RANGE 1 25)
+        pad_number_with_0(${day} 2 day)
+        list(APPEND TMP_LIST_OF_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/day${day}/main.cpp")
+        list(APPEND TMP_LIST_OF_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/day${day}/test.h")
+        list(APPEND TMP_LIST_OF_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/day${day}/tests/TestClass.h")
+        list(APPEND TMP_LIST_OF_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/day${day}/tests/TestClass.cpp")
+    endforeach()
+    
     set("${LIST_OF_SOURCE_FILES}" "${TMP_LIST_OF_SOURCE_FILES}" PARENT_SCOPE)
 endfunction()
 
 function(add_year YEAR)
-    file(GLOB_RECURSE ${YEAR}_src_files_h "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.h")
-    file(GLOB_RECURSE ${YEAR}_src_files_cpp "${CMAKE_CURRENT_SOURCE_DIR}/${YEAR}/*.cpp")
-
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*test.cpp$")
-    list(FILTER ${YEAR}_src_files_h EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
-    list(FILTER ${YEAR}_src_files_cpp EXCLUDE REGEX ".*${CMAKE_BINARY_DIR}.*")
-
     get_files_for_year(${YEAR} LIST_OF_SOURCE_FILES)
 
     add_executable(${YEAR}.all.tests
