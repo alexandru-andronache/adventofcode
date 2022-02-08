@@ -3,6 +3,7 @@
 #include <iostream>
 #include <deque>
 #include <map>
+#include <algorithm>
 
 namespace aoc2020_day22 {
     int calculateScore(const std::deque<int> &player) {

@@ -1,6 +1,7 @@
 #include "file.h"
 #include "utilities.h"
 #include <iostream>
+#include <algorithm>
 
 namespace aoc2020_day06 {
     void fillArrayWithLetters(std::vector<int> &letters, std::string_view str) {

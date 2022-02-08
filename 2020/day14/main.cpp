@@ -3,6 +3,9 @@
 #include <iostream>
 #include <numeric>
 #include <map>
+#include <algorithm>
+#include <bitset>
+#include <cmath>
 
 namespace aoc2020_day14 {
     unsigned long long part_1(std::string_view path) {

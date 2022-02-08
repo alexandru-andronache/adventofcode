@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <algorithm>
 
 namespace aoc2020_day21 {
     unsigned long long part_1(std::string_view path) {

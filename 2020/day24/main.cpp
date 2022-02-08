@@ -3,6 +3,7 @@
 #include "verticalhexgrid.h"
 #include <iostream>
 #include <chrono>
+#include <algorithm>
 
 namespace aoc2020_day24 {
     int part_1(std::string_view path) {

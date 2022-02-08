@@ -2,6 +2,7 @@
 #include "utilities.h"
 #include <iostream>
 #include <numeric>
+#include <limits>
 
 namespace aoc2020_day13 {
     int part_1(std::string_view path) {
