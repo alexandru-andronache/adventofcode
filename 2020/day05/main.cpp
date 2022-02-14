@@ -2,6 +2,7 @@
 #include "utilities.h"
 #include <iostream>
 #include <map>
+#include <limits>
 
 namespace aoc2020_day05 {
     std::pair<int, int> processSeat(const std::string_view seat) {

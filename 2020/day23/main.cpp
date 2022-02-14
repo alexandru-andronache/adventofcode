@@ -3,6 +3,7 @@
 #include <iostream>
 #include <array>
 #include <list>
+#include <algorithm>
 
 namespace aoc2020_day23 {
     int part_1(int N, int repetitions = 100, int maxNumber = 9) {

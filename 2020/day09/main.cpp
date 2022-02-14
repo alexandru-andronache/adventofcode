@@ -2,6 +2,7 @@
 #include "utilities.h"
 #include <iostream>
 #include <deque>
+#include <algorithm>
 
 namespace aoc2020_day09 {
     int part_1(std::string_view path, int size = 25) {

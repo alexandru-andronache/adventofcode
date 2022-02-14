@@ -1,6 +1,7 @@
 #include "file.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 namespace aoc2020_day01 {
     int part_1(std::string_view path, int total_sum = 2020) {

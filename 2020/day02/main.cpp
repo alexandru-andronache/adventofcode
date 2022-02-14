@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <vector>
+#include <algorithm>
 
 namespace aoc2020_day02 {
     int part_1(std::string_view path) {

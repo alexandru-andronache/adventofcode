@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 #include <optional>
+#include <algorithm>
+#include <cassert>
 
 namespace aoc2020_day20 {
 
