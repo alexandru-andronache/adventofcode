@@ -129,6 +129,34 @@ namespace aoc2021_day23 {
         return (std::abs(target - start) + extra) * std::pow(10, letter - 'A');
     }
 
+    bool isSol(const state& s) {
+        for (const auto& l : s.topLine) {
+            if (l != 0) {
+                return false;
+            }
+        }
+        for (int i = 0; i < s.line1.size(); ++i) {
+            if (s.line1[i] != 'A' + i) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < s.line2.size(); ++i) {
+            if (s.line2[i] != 'A' + i) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool shouldAddPath(const state& s, int minSteps) {
+        if (s.score > minSteps) {
+            return false;
+        }
+        return true;
+    }
+
     int part_1(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         int minSteps = std::numeric_limits<int>::max();
@@ -137,9 +165,9 @@ namespace aoc2021_day23 {
         states.push_back({{}, {lines[2][3], lines[2][5], lines[2][7], lines[2][9]}, {lines[3][3], lines[3][5], lines[3][7], lines[3][9]}, 0});
 
         while (!states.empty()) {
-            FILE *f = fopen("../2021/day23/test.out", "a");
-            fprintf(f, "Steps : %d\n\n\n", steps);
-            fclose(f);
+            // FILE *f = fopen("../2021/day23/test.out", "a");
+            // fprintf(f, "Steps : %d\n\n\n", steps);
+            // fclose(f);
             std::cout << "Steps : " << steps << "\n";
             steps++;
             std::vector<state> newStates;
@@ -169,42 +197,130 @@ namespace aoc2021_day23 {
                                 }
                                 newState.topLine[i] = 0;
                                 newState.score = s.score + pathSize;
-                                newStates.push_back(newState);
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < s.line1.size(); ++i) {
-                        if (s.line1[i] != 'A' + i || (s.line1[i] == 'A' + i && s.line2[i] != 'A' + i)) {
-                            for (int j = 0; j < topPositions.size(); ++j) {
-                                int pathSize = isPath(s, letters[i], topPositions[j], 1, s.line1[i]);
-                                if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
-                                    state newState = s;
-                                    newState.topLine[topPositions[j]] = s.line1[i];
-                                    newState.score = s.score + pathSize;
-                                    // std::ostringstream os;
-                                    // os << "from line 1 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
-                                    // newState.moves.push_back(os.str());
-                                    newState.line1[i] = 0;
+                                if (isSol(newState)) {
+                                    minSteps = std::min(minSteps, newState.score);
+                                }
+                                else if (shouldAddPath(newState, minSteps)) {
                                     newStates.push_back(newState);
                                 }
                             }
                         }
                     }
 
-                    for (int i = 0; i < s.line2.size(); ++i) {
-                        if (s.line1[i] == 0 && s.line2[i] != 'A' + i) {
-                            for (int j = 0; j < topPositions.size(); ++j) {
-                                int pathSize = isPath(s, letters[i], topPositions[j], 2, s.line2[i]);
-                                if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
+                    for (int i = 0; i < s.line1.size(); ++i) {
+                        if (s.line1[i] >= 'A' && s.line1[i] <= 'D')
+                        if (s.line1[i] != 'A' + i || (s.line1[i] == 'A' + i && s.line2[i] != 'A' + i)) {
+
+                            // can i move it dirrectly into the final slot? 
+                            bool moved = false;
+                            int target = s.line1[i] - 'A';
+                            if (s.line1[target] == 0 || s.line2[target] == 0) {
+                                int path = isPath(s, letters[i], letters[target]);
+                                if (path > 0) {
+                                    moved = true;
                                     state newState = s;
-                                    newState.topLine[topPositions[j]] = s.line2[i];
-                                    newState.score = s.score + pathSize;
-                                    newState.line2[i] = 0;
-                                    // std::ostringstream os;
-                                    // os << "from line 2 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
-                                    // newState.moves.push_back(os.str());
-                                    newStates.push_back(newState);
+                                    if (s.line2[target] == 0) {
+                                        // state newState = s;
+                                        newState.score += isPath(s, letters[i], letters[target], 3, s.line1[i]);
+                                        newState.line2[target] = s.line1[i];
+                                        newState.line1[i] = 0;
+                                        // newStates.push_back(newState);
+                                    }
+                                    else {
+                                        // state newState = s;
+                                        newState.score += isPath(s, letters[i], letters[target], 2, s.line1[i]);
+                                        newState.line1[target] = s.line1[i];
+                                        newState.line1[i] = 0;
+                                        // newStates.push_back(newState);
+                                    }
+
+                                    if (isSol(newState)) {
+                                        minSteps = std::min(minSteps, newState.score);
+                                    }
+                                    else if (shouldAddPath(newState, minSteps)) {
+                                        newStates.push_back(newState);
+                                    }
+                                }
+                            }
+
+                            if (!moved) {
+                                for (int j = 0; j < topPositions.size(); ++j) {
+                                    int pathSize = isPath(s, letters[i], topPositions[j], 1, s.line1[i]);
+                                    if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
+                                        state newState = s;
+                                        newState.topLine[topPositions[j]] = s.line1[i];
+                                        newState.score = s.score + pathSize;
+                                        // std::ostringstream os;
+                                        // os << "from line 1 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
+                                        // newState.moves.push_back(os.str());
+                                        newState.line1[i] = 0;
+                                        // newStates.push_back(newState);
+                                        if (isSol(newState)) {
+                                            minSteps = std::min(minSteps, newState.score);
+                                        }
+                                        else if (shouldAddPath(newState, minSteps)) {
+                                            newStates.push_back(newState);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < s.line2.size(); ++i) {
+                        if (s.line2[i] >= 'A' && s.line2[i] <= 'D')
+                        if (s.line1[i] == 0 && s.line2[i] != 'A' + i) {
+
+                            // can i move it dirrectly into the final slot? 
+                            bool moved = false;
+                            int target = s.line2[i] - 'A';
+                            if (s.line1[target] == 0 || s.line2[target] == 0) {
+                                int path = isPath(s, letters[i], letters[target]);
+                                if (path > 0) {
+                                    moved = true;
+                                    state newState = s;
+                                    if (s.line2[target] == 0) {
+                                        // state newState = s;
+                                        newState.score += isPath(s, letters[i], letters[target], 4, s.line2[i]);
+                                        newState.line2[target] = s.line2[i];
+                                        newState.line2[i] = 0;
+                                        // newStates.push_back(newState);
+                                    }
+                                    else {
+                                        // state newState = s;
+                                        newState.score += isPath(s, letters[i], letters[target], 3, s.line2[i]);
+                                        newState.line1[target] = s.line2[i];
+                                        newState.line2[i] = 0;
+                                        // newStates.push_back(newState);
+                                    }
+                                    if (isSol(newState)) {
+                                        minSteps = std::min(minSteps, newState.score);
+                                    }
+                                    else if (shouldAddPath(newState, minSteps)) {
+                                        newStates.push_back(newState);
+                                    }
+                                }
+                            }
+
+                            if (!moved) {
+                                for (int j = 0; j < topPositions.size(); ++j) {
+                                    int pathSize = isPath(s, letters[i], topPositions[j], 2, s.line2[i]);
+                                    if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
+                                        state newState = s;
+                                        newState.topLine[topPositions[j]] = s.line2[i];
+                                        newState.score = s.score + pathSize;
+                                        newState.line2[i] = 0;
+                                        // std::ostringstream os;
+                                        // os << "from line 2 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
+                                        // newState.moves.push_back(os.str());
+                                        // newStates.push_back(newState);
+                                        if (isSol(newState)) {
+                                            minSteps = std::min(minSteps, newState.score);
+                                        }
+                                        else if (shouldAddPath(newState, minSteps)) {
+                                            newStates.push_back(newState);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -213,51 +329,51 @@ namespace aoc2021_day23 {
             }
             states = newStates;
 
-            for (const auto& s : states) {
-                if (minSteps > s.score) {
-                    bool sol = true;
-                    for (int i = 0; i < s.line1.size(); ++i) {
-                        if (s.line1[i] != 'A' + i) {
-                            sol = false;
-                        }
-                    }
+            // for (const auto& s : states) {
+            //     if (minSteps > s.score) {
+            //         bool sol = true;
+            //         for (int i = 0; i < s.line1.size(); ++i) {
+            //             if (s.line1[i] != 'A' + i) {
+            //                 sol = false;
+            //             }
+            //         }
 
-                    for (int i = 0; i < s.line2.size(); ++i) {
-                        if (s.line2[i] != 'A' + i) {
-                            sol = false;
-                        }
-                    }
-                    if (sol) {
-                        minSteps = std::min(minSteps, s.score);
-                        s.print();
-                    }
-                }
-            }
+            //         for (int i = 0; i < s.line2.size(); ++i) {
+            //             if (s.line2[i] != 'A' + i) {
+            //                 sol = false;
+            //             }
+            //         }
+            //         if (sol) {
+            //             minSteps = std::min(minSteps, s.score);
+            //             s.print();
+            //         }
+            //     }
+            // }
 
-            int oldSize = states.size();
-            states.erase(std::remove_if(states.begin(), states.end(), [](const state& s) {
-                bool sol = true;
-                for (const auto& l : s.topLine) {
-                    if (l != 0) {
-                        sol = false;
-                    }
-                }
+            // int oldSize = states.size();
+            // states.erase(std::remove_if(states.begin(), states.end(), [](const state& s) {
+            //     bool sol = true;
+            //     for (const auto& l : s.topLine) {
+            //         if (l != 0) {
+            //             sol = false;
+            //         }
+            //     }
 
-                for (int i = 0; i < s.line1.size(); ++i) {
-                    if (s.line1[i] != 'A' + i) {
-                        sol = false;
-                    }
-                }
+            //     for (int i = 0; i < s.line1.size(); ++i) {
+            //         if (s.line1[i] != 'A' + i) {
+            //             sol = false;
+            //         }
+            //     }
 
-                for (int i = 0; i < s.line2.size(); ++i) {
-                    if (s.line2[i] != 'A' + i) {
-                        sol = false;
-                    }
-                }
-                return sol;
-            }), states.end());
+            //     for (int i = 0; i < s.line2.size(); ++i) {
+            //         if (s.line2[i] != 'A' + i) {
+            //             sol = false;
+            //         }
+            //     }
+            //     return sol;
+            // }), states.end());
 
-            std::cout << "States removed: " << oldSize - states.size() << "\n";
+            // std::cout << "States removed: " << oldSize - states.size() << "\n";
             
             // for (const auto& s : states) {
             //     s.print_file();
