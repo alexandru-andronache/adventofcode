@@ -203,16 +203,10 @@ namespace aoc2021_day23 {
                                 if (s.line2[target] == 0) {
                                     newState.line2[target] = newState.topLine[i];
                                     pathSize = isPath(s, letters[target], i, 2, newState.topLine[i]);
-                                    // std::ostringstream os;
-                                    // os << "from top line position " << i << " into line 2 position " << target << " old score: " << s.score << " new score: " << s.score + pathSize;
-                                    // newState.moves.push_back(os.str());
                                 }
                                 else {
                                     newState.line1[target] = newState.topLine[i];
                                     pathSize = isPath(s, letters[target], i, 1, newState.topLine[i]);
-                                    // std::ostringstream os;
-                                    // os << "from top line position " << i << " into line 1 position " << target << " old score: " << s.score << " new score: " << s.score + pathSize;
-                                    // newState.moves.push_back(os.str());
                                 }
                                 newState.topLine[i] = 0;
                                 newState.score = s.score + pathSize;
@@ -240,18 +234,14 @@ namespace aoc2021_day23 {
                                     moved = true;
                                     state newState = s;
                                     if (s.line2[target] == 0) {
-                                        // state newState = s;
                                         newState.score += isPath(s, letters[i], letters[target], 3, s.line1[i]);
                                         newState.line2[target] = s.line1[i];
                                         newState.line1[i] = 0;
-                                        // newStates.push_back(newState);
                                     }
                                     else {
-                                        // state newState = s;
                                         newState.score += isPath(s, letters[i], letters[target], 2, s.line1[i]);
                                         newState.line1[target] = s.line1[i];
                                         newState.line1[i] = 0;
-                                        // newStates.push_back(newState);
                                     }
 
                                     if (isSol(newState)) {
@@ -271,11 +261,7 @@ namespace aoc2021_day23 {
                                         state newState = s;
                                         newState.topLine[topPositions[j]] = s.line1[i];
                                         newState.score = s.score + pathSize;
-                                        // std::ostringstream os;
-                                        // os << "from line 1 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
-                                        // newState.moves.push_back(os.str());
                                         newState.line1[i] = 0;
-                                        // newStates.push_back(newState);
                                         if (isSol(newState)) {
                                             minSteps = std::min(minSteps, newState.score);
                                         }
@@ -302,18 +288,14 @@ namespace aoc2021_day23 {
                                     moved = true;
                                     state newState = s;
                                     if (s.line2[target] == 0) {
-                                        // state newState = s;
                                         newState.score += isPath(s, letters[i], letters[target], 4, s.line2[i]);
                                         newState.line2[target] = s.line2[i];
                                         newState.line2[i] = 0;
-                                        // newStates.push_back(newState);
                                     }
                                     else {
-                                        // state newState = s;
                                         newState.score += isPath(s, letters[i], letters[target], 3, s.line2[i]);
                                         newState.line1[target] = s.line2[i];
                                         newState.line2[i] = 0;
-                                        // newStates.push_back(newState);
                                     }
                                     if (isSol(newState)) {
                                         minSteps = std::min(minSteps, newState.score);
@@ -333,10 +315,6 @@ namespace aoc2021_day23 {
                                         newState.topLine[topPositions[j]] = s.line2[i];
                                         newState.score = s.score + pathSize;
                                         newState.line2[i] = 0;
-                                        // std::ostringstream os;
-                                        // os << "from line 2 position " << i << " into top line position " << topPositions[j] << " old score: " << s.score << " new score: " << newState.score;
-                                        // newState.moves.push_back(os.str());
-                                        // newStates.push_back(newState);
                                         if (isSol(newState)) {
                                             minSteps = std::min(minSteps, newState.score);
                                         }
@@ -353,56 +331,6 @@ namespace aoc2021_day23 {
             }
             states = newStates;
             std::cout << "States size: " << states.size() << "\n";
-
-            // for (const auto& s : states) {
-            //     if (minSteps > s.score) {
-            //         bool sol = true;
-            //         for (int i = 0; i < s.line1.size(); ++i) {
-            //             if (s.line1[i] != 'A' + i) {
-            //                 sol = false;
-            //             }
-            //         }
-
-            //         for (int i = 0; i < s.line2.size(); ++i) {
-            //             if (s.line2[i] != 'A' + i) {
-            //                 sol = false;
-            //             }
-            //         }
-            //         if (sol) {
-            //             minSteps = std::min(minSteps, s.score);
-            //             s.print();
-            //         }
-            //     }
-            // }
-
-            // int oldSize = states.size();
-            // states.erase(std::remove_if(states.begin(), states.end(), [](const state& s) {
-            //     bool sol = true;
-            //     for (const auto& l : s.topLine) {
-            //         if (l != 0) {
-            //             sol = false;
-            //         }
-            //     }
-
-            //     for (int i = 0; i < s.line1.size(); ++i) {
-            //         if (s.line1[i] != 'A' + i) {
-            //             sol = false;
-            //         }
-            //     }
-
-            //     for (int i = 0; i < s.line2.size(); ++i) {
-            //         if (s.line2[i] != 'A' + i) {
-            //             sol = false;
-            //         }
-            //     }
-            //     return sol;
-            // }), states.end());
-
-            // std::cout << "States removed: " << oldSize - states.size() << "\n";
-            
-            // for (const auto& s : states) {
-            //     s.print_file();
-            // }
         }
 
         return minSteps;
