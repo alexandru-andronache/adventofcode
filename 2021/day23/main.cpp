@@ -4,10 +4,21 @@
 #include <array>
 #include <cmath>
 #include <sstream>
+#include <map>
 
 namespace aoc2021_day23 {
 
     int steps = 0;
+
+    struct stateWithoutScore {
+        std::array<char, 11> topLine{};
+        std::array<char, 4> line1{};
+        std::array<char, 4> line2{};
+
+        bool operator<(const stateWithoutScore &value) const {
+            return std::tie(topLine, line1, line2) < std::tie(value.topLine, value.line1, value.line2);
+        }
+    };
 
     struct state {
         std::array<char, 11> topLine{};
@@ -150,15 +161,23 @@ namespace aoc2021_day23 {
         return true;
     }
 
-    bool shouldAddPath(const state& s, int minSteps) {
+    bool shouldAddPath(const state& s, int minSteps, const std::map<stateWithoutScore, int>& prevStates) {
         if (s.score > minSteps) {
             return false;
         }
+        auto it = prevStates.find({s.topLine, s.line1, s.line2});
+         if (it != prevStates.end()) {
+             if (it->second <= s.score) {
+                 return false;
+             }
+        }
+
         return true;
     }
 
     int part_1(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
+        std::map<stateWithoutScore, int> prevStates;
         int minSteps = std::numeric_limits<int>::max();
         state initialState;
         std::vector<state> states;
@@ -200,8 +219,9 @@ namespace aoc2021_day23 {
                                 if (isSol(newState)) {
                                     minSteps = std::min(minSteps, newState.score);
                                 }
-                                else if (shouldAddPath(newState, minSteps)) {
+                                else if (shouldAddPath(newState, minSteps, prevStates)) {
                                     newStates.push_back(newState);
+                                    prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
                                 }
                             }
                         }
@@ -237,8 +257,9 @@ namespace aoc2021_day23 {
                                     if (isSol(newState)) {
                                         minSteps = std::min(minSteps, newState.score);
                                     }
-                                    else if (shouldAddPath(newState, minSteps)) {
+                                    else if (shouldAddPath(newState, minSteps, prevStates)) {
                                         newStates.push_back(newState);
+                                        prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
                                     }
                                 }
                             }
@@ -258,8 +279,9 @@ namespace aoc2021_day23 {
                                         if (isSol(newState)) {
                                             minSteps = std::min(minSteps, newState.score);
                                         }
-                                        else if (shouldAddPath(newState, minSteps)) {
+                                        else if (shouldAddPath(newState, minSteps, prevStates)) {
                                             newStates.push_back(newState);
+                                            prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
                                         }
                                     }
                                 }
@@ -296,8 +318,9 @@ namespace aoc2021_day23 {
                                     if (isSol(newState)) {
                                         minSteps = std::min(minSteps, newState.score);
                                     }
-                                    else if (shouldAddPath(newState, minSteps)) {
+                                    else if (shouldAddPath(newState, minSteps, prevStates)) {
                                         newStates.push_back(newState);
+                                        prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
                                     }
                                 }
                             }
@@ -317,8 +340,9 @@ namespace aoc2021_day23 {
                                         if (isSol(newState)) {
                                             minSteps = std::min(minSteps, newState.score);
                                         }
-                                        else if (shouldAddPath(newState, minSteps)) {
+                                        else if (shouldAddPath(newState, minSteps, prevStates)) {
                                             newStates.push_back(newState);
+                                            prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
                                         }
                                     }
                                 }
@@ -328,6 +352,7 @@ namespace aoc2021_day23 {
                 }
             }
             states = newStates;
+            std::cout << "States size: " << states.size() << "\n";
 
             // for (const auto& s : states) {
             //     if (minSteps > s.score) {
