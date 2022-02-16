@@ -171,13 +171,10 @@ namespace aoc2021_day23 {
         }
         int pow = 1;
         for (int i = 0; i < extra.size(); ++i) {
-            if (pieces[i] == 2) {
-                pieces[i] = 3;
-            }
-            sum = sum + (extra[i] + pieces[i]) * pow;
+            sum = sum + (extra[i] + (pieces[i] * (pieces[i] + 1) / 2)) * pow;
             pow *= 10;
         }
-        return sum; // to do
+        return sum;
     }
 
     int part_1(std::string_view path) {
