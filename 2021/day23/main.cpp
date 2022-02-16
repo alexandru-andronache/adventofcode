@@ -99,7 +99,7 @@ namespace aoc2021_day23 {
     std::array<int, 4> letters{2, 4, 6, 8};
     std::array<int, 7> topPositions{0, 1, 3, 5, 7, 9, 10};
 
-    int isPath(const state& currentState, int start, int target, int extra = 0, char letter = 'A') {
+    int isPath(const state& currentState, int start, int target, char letter = 'A') {
         if (start < target) {
             for (int i = start + 1; i < target; ++i) {
                 if (currentState.topLine[i] != 0) {
@@ -115,7 +115,7 @@ namespace aoc2021_day23 {
             }
         }
 
-        return (std::abs(target - start) + extra) * std::pow(10, letter - 'A');
+        return std::abs(target - start) * std::pow(10, letter - 'A');
     }
 
     bool isSol(const state& s) {
@@ -154,7 +154,30 @@ namespace aoc2021_day23 {
     }
 
     int calculateVerticalScore(const state& s) {
-        return 0; // to do
+        int sum = 0;
+        std::array<int, 4> extra{0, 0, 0, 0};
+        std::array<int, 4> pieces{0, 0, 0, 0};
+        for (int i = 0; i < s.line2.size(); ++i) {
+            if (s.line2[i] != i + 'A') {
+                extra[s.line2[i] - 'A'] += 2;
+                extra[s.line1[i] - 'A'] += 1;
+                pieces[s.line2[i] - 'A']++;
+                pieces[s.line1[i] - 'A']++;
+            }
+            else if (s.line1[i] != i + 'A') {
+                extra[s.line1[i] - 'A'] += 1;
+                pieces[s.line1[i] - 'A']++;
+            }
+        }
+        int pow = 1;
+        for (int i = 0; i < extra.size(); ++i) {
+            if (pieces[i] == 2) {
+                pieces[i] = 3;
+            }
+            sum = sum + (extra[i] + pieces[i]) * pow;
+            pow *= 10;
+        }
+        return sum; // to do
     }
 
     int part_1(std::string_view path) {
@@ -165,6 +188,7 @@ namespace aoc2021_day23 {
         std::vector<state> states;
         states.push_back({{}, {lines[2][3], lines[2][5], lines[2][7], lines[2][9]}, {lines[3][3], lines[3][5], lines[3][7], lines[3][9]}, 0});
 
+        int initialScore = calculateVerticalScore(states.front());
 
         while (states.front().score < minSteps) {
             std::pop_heap(states.begin(), states.end(), [](const auto &s1, const auto &s2)
@@ -182,11 +206,11 @@ namespace aoc2021_day23 {
                         state newState = s;
                         if (s.line2[target] == 0) {
                             newState.line2[target] = newState.topLine[i];
-                            pathSize = isPath(s, letters[target], i, 2, newState.topLine[i]);
+                            pathSize = isPath(s, letters[target], i, newState.topLine[i]);
                         }
                         else {
                             newState.line1[target] = newState.topLine[i];
-                            pathSize = isPath(s, letters[target], i, 1, newState.topLine[i]);
+                            pathSize = isPath(s, letters[target], i, newState.topLine[i]);
                         }
                         newState.topLine[i] = 0;
                         newState.score = s.score + pathSize;
@@ -217,12 +241,12 @@ namespace aoc2021_day23 {
                             moved = true;
                             state newState = s;
                             if (s.line2[target] == 0) {
-                                newState.score += isPath(s, letters[i], letters[target], 3, s.line1[i]);
+                                newState.score += isPath(s, letters[i], letters[target], s.line1[i]);
                                 newState.line2[target] = s.line1[i];
                                 newState.line1[i] = 0;
                             }
                             else {
-                                newState.score += isPath(s, letters[i], letters[target], 2, s.line1[i]);
+                                newState.score += isPath(s, letters[i], letters[target], s.line1[i]);
                                 newState.line1[target] = s.line1[i];
                                 newState.line1[i] = 0;
                             }
@@ -242,7 +266,7 @@ namespace aoc2021_day23 {
 
                     if (!moved) {
                         for (int j = 0; j < topPositions.size(); ++j) {
-                            int pathSize = isPath(s, letters[i], topPositions[j], 1, s.line1[i]);
+                            int pathSize = isPath(s, letters[i], topPositions[j], s.line1[i]);
                             if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
                                 state newState = s;
                                 newState.topLine[topPositions[j]] = s.line1[i];
@@ -276,12 +300,12 @@ namespace aoc2021_day23 {
                             moved = true;
                             state newState = s;
                             if (s.line2[target] == 0) {
-                                newState.score += isPath(s, letters[i], letters[target], 4, s.line2[i]);
+                                newState.score += isPath(s, letters[i], letters[target], s.line2[i]);
                                 newState.line2[target] = s.line2[i];
                                 newState.line2[i] = 0;
                             }
                             else {
-                                newState.score += isPath(s, letters[i], letters[target], 3, s.line2[i]);
+                                newState.score += isPath(s, letters[i], letters[target], s.line2[i]);
                                 newState.line1[target] = s.line2[i];
                                 newState.line2[i] = 0;
                             }
@@ -299,7 +323,7 @@ namespace aoc2021_day23 {
 
                     if (!moved) {
                         for (int j = 0; j < topPositions.size(); ++j) {
-                            int pathSize = isPath(s, letters[i], topPositions[j], 2, s.line2[i]);
+                            int pathSize = isPath(s, letters[i], topPositions[j], s.line2[i]);
                             if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
                                 state newState = s;
                                 newState.topLine[topPositions[j]] = s.line2[i];
@@ -321,7 +345,7 @@ namespace aoc2021_day23 {
             }
         }
 
-        return minSteps;
+        return minSteps + initialScore;
     }
 
     int part_2(std::string_view path) {
