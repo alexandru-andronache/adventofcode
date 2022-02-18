@@ -3,7 +3,6 @@
 #include <iostream>
 #include <array>
 #include <cmath>
-#include <sstream>
 #include <map>
 #include <algorithm>
 
@@ -26,73 +25,6 @@ namespace aoc2021_day23 {
         std::array<char, 11> topLine{};
         std::array<std::array<char, 4>, N> lines {};
         int score = 0;
-
-        void print() const
-        {
-            std::cout << "#############\n";
-            std::cout << "#";
-            for (const auto &c : topLine)
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-            }
-            std::cout << "#\n";
-            std::cout << "###";
-            for (const auto &c : lines[0])
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-                std::cout << "#";
-            }
-            std::cout << "##\n";
-            std::cout << "  #";
-            for (const auto &c : lines[1])
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-                std::cout << "#";
-            }
-            std::cout << "\n";
-            std::cout << "  #########\n";
-            std::cout << "Score: " << score << "\n";
-            std::cout << "\n";
-            std::cout << "\n";
-            std::cout << "\n";
-        }
-
-        // void print_file() const {
-        //     FILE *f = fopen("../2021/day23/test.out", "a");
-        //     fprintf(f, "#############\n");
-        //     fprintf(f, "#");
-        //     for (const auto& c : topLine) {
-        //         if (c == 0)
-        //             fprintf(f, ".");
-        //         else
-        //             fprintf(f, "%c", c);
-        //     }
-        //     fprintf(f, "#\n");
-        //     fprintf(f, "###");
-        //     for (const auto& c: lines[0]) {
-        //         if (c == 0)
-        //             fprintf(f, ".");
-        //         else
-        //             fprintf(f, "%c", c);
-        //         fprintf(f, "#");
-        //     }
-        //     fprintf(f, "##\n");
-        //     fprintf(f, "  #");
-        //     for (const auto &c : lines[1]) {
-        //         if (c == 0)
-        //             fprintf(f, ".");
-        //         else
-        //             fprintf(f, "%c", c);
-        //         fprintf(f, "#");
-        //     }
-        //     fprintf(f, "\n");
-        //     fprintf(f, "  #########\n");
-        //     fprintf(f, "Score: %d\n\n", score);
-        //     fclose(f);
-        // }
     };
 
     std::array<int, 4> letters{2, 4, 6, 8};
@@ -185,7 +117,7 @@ namespace aoc2021_day23 {
         std::vector<state<N>> states;
         states.push_back(startState);
 
-        while (states.front().score < minSteps) {
+        while (!states.empty() && states.front().score < minSteps) {
             std::pop_heap(states.begin(), states.end(), [](const auto &s1, const auto &s2)
                           { return s1.score > s2.score; });
             const auto s = states.front();
@@ -247,17 +179,24 @@ namespace aoc2021_day23 {
                         bool moved = false;
                         int target = s.lines[k][i] - 'A';
                         int targetLine = -1;
-                        for (int l = s.lines.size() - 1; l >= 0 && targetLine == -1; --l) {
+                        for (int l = 0; l < s.lines.size() && targetLine == -1; ++l) {
                             if (s.lines[l][target] == 0) {
                                 targetLine = l;
+                                break;
                             }
                         }
-                        if (targetLine != -1) {
-                            int path = isPath(s, letters[i], letters[target]);
+                        bool valid = true;
+                        for (int l = targetLine + 1; l < s.lines.size(); ++l) {
+                            if (s.lines[l][target] != s.lines[k][i]) {
+                                valid = false;
+                            }
+                        }
+                        if (targetLine != -1 && valid) {
+                            int path = isPath(s, letters[i], letters[target], s.lines[k][i]);
                             if (path > 0) {
                                 moved = true;
                                 state newState = s;
-                                newState.score += isPath(s, letters[i], letters[target], s.lines[k][i]);
+                                newState.score += path;
                                 newState.lines[targetLine][target] = s.lines[k][i];
                                 newState.lines[k][i] = 0;
 
@@ -277,7 +216,13 @@ namespace aoc2021_day23 {
                         if (!moved) {
                             for (int j = 0; j < topPositions.size(); ++j) {
                                 int pathSize = isPath(s, letters[i], topPositions[j], s.lines[k][i]);
-                                if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
+                                bool valid = true;
+                                for (int l = 0; l < k; ++l) {
+                                    if (s.lines[l][i] != 0) {
+                                        valid = false;
+                                    }
+                                }
+                                if (s.topLine[topPositions[j]] == 0 && pathSize > 0 && valid) {
                                     state newState = s;
                                     newState.topLine[topPositions[j]] = s.lines[k][i];
                                     newState.score = s.score + pathSize;
@@ -322,8 +267,6 @@ namespace aoc2021_day23 {
         initialState.lines[3] = {lines[3][3], lines[3][5], lines[3][7], lines[3][9]};
         initialState.score = 0;
         initialState.topLine = {};
-
-        std::cout << calculateVerticalScore(initialState) << "\n";
 
         return solve(initialState) + calculateVerticalScore(initialState);
     }
