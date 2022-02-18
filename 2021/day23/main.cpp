@@ -20,9 +20,10 @@ namespace aoc2021_day23 {
         }
     };
 
+    template<std::size_t N> 
     struct state {
         std::array<char, 11> topLine{};
-        std::array<std::array<char, 4>, 2> lines {};
+        std::array<std::array<char, 4>, N> lines {};
         int score = 0;
 
         // void print() const
@@ -96,7 +97,8 @@ namespace aoc2021_day23 {
     std::array<int, 4> letters{2, 4, 6, 8};
     std::array<int, 7> topPositions{0, 1, 3, 5, 7, 9, 10};
 
-    int isPath(const state& currentState, int start, int target, char letter = 'A') {
+    template<std::size_t N> 
+    int isPath(const state<N>& currentState, int start, int target, char letter = 'A') {
         if (start < target) {
             for (int i = start + 1; i < target; ++i) {
                 if (currentState.topLine[i] != 0) {
@@ -115,7 +117,8 @@ namespace aoc2021_day23 {
         return std::abs(target - start) * std::pow(10, letter - 'A');
     }
 
-    bool isSol(const state& s) {
+    template<std::size_t N> 
+    bool isSol(const state<N>& s) {
         for (const auto& l : s.topLine) {
             if (l != 0) {
                 return false;
@@ -133,7 +136,8 @@ namespace aoc2021_day23 {
         return true;
     }
 
-    bool shouldAddPath(const state& s, int minSteps, const std::map<stateWithoutScore, int>& prevStates) {
+    template<std::size_t N> 
+    bool shouldAddPath(const state<N>& s, int minSteps, const std::map<stateWithoutScore, int>& prevStates) {
         if (s.score > minSteps) {
             return false;
         }
@@ -147,7 +151,8 @@ namespace aoc2021_day23 {
         return true;
     }
 
-    int calculateVerticalScore(const state& s) {
+    template<std::size_t N> 
+    int calculateVerticalScore(const state<N>& s) {
         int sum = 0;
         std::array<int, 4> extra{0, 0, 0, 0};
         std::array<int, 4> pieces{0, 0, 0, 0};
@@ -175,8 +180,8 @@ namespace aoc2021_day23 {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         std::map<stateWithoutScore, int> prevStates;
         int minSteps = std::numeric_limits<int>::max();
-        state initialState;
-        std::vector<state> states;
+        state<2> initialState;
+        std::vector<state<2>> states;
         initialState.lines[0] = {lines[2][3], lines[2][5], lines[2][7], lines[2][9]};
         initialState.lines[1] = {lines[3][3], lines[3][5], lines[3][7], lines[3][9]};
         initialState.score = 0;
@@ -194,19 +199,20 @@ namespace aoc2021_day23 {
             for (int i = 0; i < s.topLine.size(); ++i) {
                 if (s.topLine[i] >= 'A' && s.topLine[i] <= 'D') {
                     int target = s.topLine[i] - 'A';
-                    int pathSize = isPath(s, letters[target], i);
-                    if (s.lines[0][target] == 0 &&
-                        (s.lines[1][target] == 0 || s.lines[1][target] == s.topLine[i]) &&
-                        pathSize > 0) {
+                    int pathSize = isPath(s, letters[target], i, s.topLine[i]);
+                    bool valid = true;
+                    int line = -1;
+                    for (int j = 0; j < s.lines.size(); ++j) {
+                        if (s.lines[j][target] != 0 && s.lines[j][target] != s.topLine[i]) {
+                            valid = false;
+                        }
+                        else if (s.lines[j][target] == 0) {
+                            line = j;
+                        }
+                    }
+                    if (valid && pathSize > 0) {
                         state newState = s;
-                        if (s.lines[1][target] == 0) {
-                            newState.lines[1][target] = newState.topLine[i];
-                            pathSize = isPath(s, letters[target], i, newState.topLine[i]);
-                        }
-                        else {
-                            newState.lines[0][target] = newState.topLine[i];
-                            pathSize = isPath(s, letters[target], i, newState.topLine[i]);
-                        }
+                        newState.lines[line][target] = newState.topLine[i];
                         newState.topLine[i] = 0;
                         newState.score = s.score + pathSize;
                         if (isSol(newState)) {
