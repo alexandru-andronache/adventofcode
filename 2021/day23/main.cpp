@@ -121,15 +121,12 @@ namespace aoc2021_day23 {
                 return false;
             }
         }
-        for (int i = 0; i < s.lines[0].size(); ++i) {
-            if (s.lines[0][i] != 'A' + i) {
-                return false;
-            }
-        }
 
-        for (int i = 0; i < s.lines[1].size(); ++i) {
-            if (s.lines[1][i] != 'A' + i) {
-                return false;
+        for (const auto& line : s.lines) {
+            for (int i = 0; i < line.size(); ++i) {
+                if (line[i] != 'A' + i) {
+                    return false;
+                }
             }
         }
 
