@@ -5,6 +5,7 @@
 #include <cmath>
 #include <sstream>
 #include <map>
+#include <algorithm>
 
 namespace aoc2021_day23 {
 
@@ -12,88 +13,84 @@ namespace aoc2021_day23 {
 
     struct stateWithoutScore {
         std::array<char, 11> topLine{};
-        std::array<char, 4> line1{};
-        std::array<char, 4> line2{};
+        std::array<std::array<char, 4>, 2> lines {};
 
         bool operator<(const stateWithoutScore &value) const {
-            return std::tie(topLine, line1, line2) < std::tie(value.topLine, value.line1, value.line2);
+            return std::tie(topLine, lines) < std::tie(value.topLine, value.lines);
         }
     };
 
     struct state {
         std::array<char, 11> topLine{};
-        std::array<char, 4> line1{};
-        std::array<char, 4> line2{};
+        std::array<std::array<char, 4>, 2> lines {};
         int score = 0;
 
-        // std::vector<std::string> moves;
+        // void print() const
+        // {
+        //     std::cout << "#############\n";
+        //     std::cout << "#";
+        //     for (const auto &c : topLine)
+        //     {
+        //         if (c == 0) std::cout << ".";
+        //         else std::cout << c;
+        //     }
+        //     std::cout << "#\n";
+        //     std::cout << "###";
+        //     for (const auto &c : lines[0])
+        //     {
+        //         if (c == 0) std::cout << ".";
+        //         else std::cout << c;
+        //         std::cout << "#";
+        //     }
+        //     std::cout << "##\n";
+        //     std::cout << "  #";
+        //     for (const auto &c : lines[1])
+        //     {
+        //         if (c == 0) std::cout << ".";
+        //         else std::cout << c;
+        //         std::cout << "#";
+        //     }
+        //     std::cout << "\n";
+        //     std::cout << "  #########\n";
+        //     std::cout << "Score: " << score << "\n";
+        //     std::cout << "\n";
+        //     std::cout << "\n";
+        //     std::cout << "\n";
+        // }
 
-        void print() const
-        {
-            std::cout << "#############\n";
-            std::cout << "#";
-            for (const auto &c : topLine)
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-            }
-            std::cout << "#\n";
-            std::cout << "###";
-            for (const auto &c : line1)
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-                std::cout << "#";
-            }
-            std::cout << "##\n";
-            std::cout << "  #";
-            for (const auto &c : line2)
-            {
-                if (c == 0) std::cout << ".";
-                else std::cout << c;
-                std::cout << "#";
-            }
-            std::cout << "\n";
-            std::cout << "  #########\n";
-            std::cout << "Score: " << score << "\n";
-            std::cout << "\n";
-            std::cout << "\n";
-            std::cout << "\n";
-        }
-
-        void print_file() const {
-            FILE *f = fopen("../2021/day23/test.out", "a");
-            fprintf(f, "#############\n");
-            fprintf(f, "#");
-            for (const auto& c : topLine) {
-                if (c == 0)
-                    fprintf(f, ".");
-                else
-                    fprintf(f, "%c", c);
-            }
-            fprintf(f, "#\n");
-            fprintf(f, "###");
-            for (const auto& c: line1) {
-                if (c == 0)
-                    fprintf(f, ".");
-                else
-                    fprintf(f, "%c", c);
-                fprintf(f, "#");
-            }
-            fprintf(f, "##\n");
-            fprintf(f, "  #");
-            for (const auto &c : line2) {
-                if (c == 0)
-                    fprintf(f, ".");
-                else
-                    fprintf(f, "%c", c);
-                fprintf(f, "#");
-            }
-            fprintf(f, "\n");
-            fprintf(f, "  #########\n");
-            fprintf(f, "Score: %d\n\n", score);
-            fclose(f);
-        }
+        // void print_file() const {
+        //     FILE *f = fopen("../2021/day23/test.out", "a");
+        //     fprintf(f, "#############\n");
+        //     fprintf(f, "#");
+        //     for (const auto& c : topLine) {
+        //         if (c == 0)
+        //             fprintf(f, ".");
+        //         else
+        //             fprintf(f, "%c", c);
+        //     }
+        //     fprintf(f, "#\n");
+        //     fprintf(f, "###");
+        //     for (const auto& c: lines[0]) {
+        //         if (c == 0)
+        //             fprintf(f, ".");
+        //         else
+        //             fprintf(f, "%c", c);
+        //         fprintf(f, "#");
+        //     }
+        //     fprintf(f, "##\n");
+        //     fprintf(f, "  #");
+        //     for (const auto &c : lines[1]) {
+        //         if (c == 0)
+        //             fprintf(f, ".");
+        //         else
+        //             fprintf(f, "%c", c);
+        //         fprintf(f, "#");
+        //     }
+        //     fprintf(f, "\n");
+        //     fprintf(f, "  #########\n");
+        //     fprintf(f, "Score: %d\n\n", score);
+        //     fclose(f);
+        // }
     };
 
     std::array<int, 4> letters{2, 4, 6, 8};
@@ -124,14 +121,14 @@ namespace aoc2021_day23 {
                 return false;
             }
         }
-        for (int i = 0; i < s.line1.size(); ++i) {
-            if (s.line1[i] != 'A' + i) {
+        for (int i = 0; i < s.lines[0].size(); ++i) {
+            if (s.lines[0][i] != 'A' + i) {
                 return false;
             }
         }
 
-        for (int i = 0; i < s.line2.size(); ++i) {
-            if (s.line2[i] != 'A' + i) {
+        for (int i = 0; i < s.lines[1].size(); ++i) {
+            if (s.lines[1][i] != 'A' + i) {
                 return false;
             }
         }
@@ -143,7 +140,7 @@ namespace aoc2021_day23 {
         if (s.score > minSteps) {
             return false;
         }
-        auto it = prevStates.find({s.topLine, s.line1, s.line2});
+        auto it = prevStates.find({s.topLine, s.lines});
          if (it != prevStates.end()) {
              if (it->second <= s.score) {
                  return false;
@@ -157,16 +154,16 @@ namespace aoc2021_day23 {
         int sum = 0;
         std::array<int, 4> extra{0, 0, 0, 0};
         std::array<int, 4> pieces{0, 0, 0, 0};
-        for (int i = 0; i < s.line2.size(); ++i) {
-            if (s.line2[i] != i + 'A') {
-                extra[s.line2[i] - 'A'] += 2;
-                extra[s.line1[i] - 'A'] += 1;
-                pieces[s.line2[i] - 'A']++;
-                pieces[s.line1[i] - 'A']++;
+        for (int i = 0; i < s.lines[1].size(); ++i) {
+            if (s.lines[1][i] != i + 'A') {
+                extra[s.lines[1][i] - 'A'] += 2;
+                extra[s.lines[0][i] - 'A'] += 1;
+                pieces[s.lines[1][i] - 'A']++;
+                pieces[s.lines[0][i] - 'A']++;
             }
-            else if (s.line1[i] != i + 'A') {
-                extra[s.line1[i] - 'A'] += 1;
-                pieces[s.line1[i] - 'A']++;
+            else if (s.lines[0][i] != i + 'A') {
+                extra[s.lines[0][i] - 'A'] += 1;
+                pieces[s.lines[0][i] - 'A']++;
             }
         }
         int pow = 1;
@@ -183,7 +180,11 @@ namespace aoc2021_day23 {
         int minSteps = std::numeric_limits<int>::max();
         state initialState;
         std::vector<state> states;
-        states.push_back({{}, {lines[2][3], lines[2][5], lines[2][7], lines[2][9]}, {lines[3][3], lines[3][5], lines[3][7], lines[3][9]}, 0});
+        initialState.lines[0] = {lines[2][3], lines[2][5], lines[2][7], lines[2][9]};
+        initialState.lines[1] = {lines[3][3], lines[3][5], lines[3][7], lines[3][9]};
+        initialState.score = 0;
+        initialState.topLine = {};
+        states.push_back(initialState);
 
         int initialScore = calculateVerticalScore(states.front());
 
@@ -197,16 +198,16 @@ namespace aoc2021_day23 {
                 if (s.topLine[i] >= 'A' && s.topLine[i] <= 'D') {
                     int target = s.topLine[i] - 'A';
                     int pathSize = isPath(s, letters[target], i);
-                    if (s.line1[target] == 0 &&
-                        (s.line2[target] == 0 || s.line2[target] == s.topLine[i]) &&
+                    if (s.lines[0][target] == 0 &&
+                        (s.lines[1][target] == 0 || s.lines[1][target] == s.topLine[i]) &&
                         pathSize > 0) {
                         state newState = s;
-                        if (s.line2[target] == 0) {
-                            newState.line2[target] = newState.topLine[i];
+                        if (s.lines[1][target] == 0) {
+                            newState.lines[1][target] = newState.topLine[i];
                             pathSize = isPath(s, letters[target], i, newState.topLine[i]);
                         }
                         else {
-                            newState.line1[target] = newState.topLine[i];
+                            newState.lines[0][target] = newState.topLine[i];
                             pathSize = isPath(s, letters[target], i, newState.topLine[i]);
                         }
                         newState.topLine[i] = 0;
@@ -219,33 +220,33 @@ namespace aoc2021_day23 {
                             std::push_heap(states.begin(), states.end(), [](const auto& s1, const auto& s2) {
                                 return s1.score > s2.score;
                             });
-                            prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
+                            prevStates.insert({{newState.topLine, newState.lines}, newState.score});
                         }
                     }
                 }
             }
 
-            for (int i = 0; i < s.line1.size(); ++i) {
-                if (s.line1[i] >= 'A' && s.line1[i] <= 'D')
-                if (s.line1[i] != 'A' + i || (s.line1[i] == 'A' + i && s.line2[i] != 'A' + i)) {
+            for (int i = 0; i < s.lines[0].size(); ++i) {
+                if (s.lines[0][i] >= 'A' && s.lines[0][i] <= 'D')
+                if (s.lines[0][i] != 'A' + i || (s.lines[0][i] == 'A' + i && s.lines[1][i] != 'A' + i)) {
 
                     // can i move it dirrectly into the final slot? 
                     bool moved = false;
-                    int target = s.line1[i] - 'A';
-                    if (s.line1[target] == 0 || s.line2[target] == 0) {
+                    int target = s.lines[0][i] - 'A';
+                    if (s.lines[0][target] == 0 || s.lines[1][target] == 0) {
                         int path = isPath(s, letters[i], letters[target]);
                         if (path > 0) {
                             moved = true;
                             state newState = s;
-                            if (s.line2[target] == 0) {
-                                newState.score += isPath(s, letters[i], letters[target], s.line1[i]);
-                                newState.line2[target] = s.line1[i];
-                                newState.line1[i] = 0;
+                            if (s.lines[1][target] == 0) {
+                                newState.score += isPath(s, letters[i], letters[target], s.lines[0][i]);
+                                newState.lines[1][target] = s.lines[0][i];
+                                newState.lines[0][i] = 0;
                             }
                             else {
-                                newState.score += isPath(s, letters[i], letters[target], s.line1[i]);
-                                newState.line1[target] = s.line1[i];
-                                newState.line1[i] = 0;
+                                newState.score += isPath(s, letters[i], letters[target], s.lines[0][i]);
+                                newState.lines[0][target] = s.lines[0][i];
+                                newState.lines[0][i] = 0;
                             }
 
                             if (isSol(newState)) {
@@ -256,19 +257,19 @@ namespace aoc2021_day23 {
                                 std::push_heap(states.begin(), states.end(), [](const auto& s1, const auto& s2) {
                                     return s1.score > s2.score;
                                 });
-                                prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
+                                prevStates.insert({{newState.topLine, newState.lines}, newState.score});
                             }
                         }
                     }
 
                     if (!moved) {
                         for (int j = 0; j < topPositions.size(); ++j) {
-                            int pathSize = isPath(s, letters[i], topPositions[j], s.line1[i]);
+                            int pathSize = isPath(s, letters[i], topPositions[j], s.lines[0][i]);
                             if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
                                 state newState = s;
-                                newState.topLine[topPositions[j]] = s.line1[i];
+                                newState.topLine[topPositions[j]] = s.lines[0][i];
                                 newState.score = s.score + pathSize;
-                                newState.line1[i] = 0;
+                                newState.lines[0][i] = 0;
                                 if (isSol(newState)) {
                                     minSteps = std::min(minSteps, newState.score);
                                 }
@@ -276,7 +277,7 @@ namespace aoc2021_day23 {
                                     states.push_back(newState);
                                     std::push_heap(states.begin(), states.end(), [](const auto &s1, const auto &s2)
                                                    { return s1.score > s2.score; });
-                                    prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
+                                    prevStates.insert({{newState.topLine, newState.lines}, newState.score});
                                 }
                             }
                         }
@@ -284,27 +285,27 @@ namespace aoc2021_day23 {
                 }
             }
 
-            for (int i = 0; i < s.line2.size(); ++i) {
-                if (s.line2[i] >= 'A' && s.line2[i] <= 'D')
-                if (s.line1[i] == 0 && s.line2[i] != 'A' + i) {
+            for (int i = 0; i < s.lines[1].size(); ++i) {
+                if (s.lines[1][i] >= 'A' && s.lines[1][i] <= 'D')
+                if (s.lines[0][i] == 0 && s.lines[1][i] != 'A' + i) {
 
                     // can i move it dirrectly into the final slot? 
                     bool moved = false;
-                    int target = s.line2[i] - 'A';
-                    if (s.line1[target] == 0 || s.line2[target] == 0) {
+                    int target = s.lines[1][i] - 'A';
+                    if (s.lines[0][target] == 0 || s.lines[1][target] == 0) {
                         int path = isPath(s, letters[i], letters[target]);
                         if (path > 0) {
                             moved = true;
                             state newState = s;
-                            if (s.line2[target] == 0) {
-                                newState.score += isPath(s, letters[i], letters[target], s.line2[i]);
-                                newState.line2[target] = s.line2[i];
-                                newState.line2[i] = 0;
+                            if (s.lines[1][target] == 0) {
+                                newState.score += isPath(s, letters[i], letters[target], s.lines[1][i]);
+                                newState.lines[1][target] = s.lines[1][i];
+                                newState.lines[1][i] = 0;
                             }
                             else {
-                                newState.score += isPath(s, letters[i], letters[target], s.line2[i]);
-                                newState.line1[target] = s.line2[i];
-                                newState.line2[i] = 0;
+                                newState.score += isPath(s, letters[i], letters[target], s.lines[1][i]);
+                                newState.lines[0][target] = s.lines[1][i];
+                                newState.lines[1][i] = 0;
                             }
                             if (isSol(newState)) {
                                 minSteps = std::min(minSteps, newState.score);
@@ -313,19 +314,19 @@ namespace aoc2021_day23 {
                                 states.push_back(newState);
                                 std::push_heap(states.begin(), states.end(), [](const auto &s1, const auto &s2)
                                                { return s1.score > s2.score; });
-                                prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
+                                prevStates.insert({{newState.topLine, newState.lines}, newState.score});
                             }
                         }
                     }
 
                     if (!moved) {
                         for (int j = 0; j < topPositions.size(); ++j) {
-                            int pathSize = isPath(s, letters[i], topPositions[j], s.line2[i]);
+                            int pathSize = isPath(s, letters[i], topPositions[j], s.lines[1][i]);
                             if (s.topLine[topPositions[j]] == 0 && pathSize > 0) {
                                 state newState = s;
-                                newState.topLine[topPositions[j]] = s.line2[i];
+                                newState.topLine[topPositions[j]] = s.lines[1][i];
                                 newState.score = s.score + pathSize;
-                                newState.line2[i] = 0;
+                                newState.lines[1][i] = 0;
                                 if (isSol(newState)) {
                                     minSteps = std::min(minSteps, newState.score);
                                 }
@@ -333,7 +334,7 @@ namespace aoc2021_day23 {
                                     states.push_back(newState);
                                     std::push_heap(states.begin(), states.end(), [](const auto &s1, const auto &s2)
                                                    { return s1.score > s2.score; });
-                                    prevStates.insert({{newState.topLine, newState.line1, newState.line2}, newState.score});
+                                    prevStates.insert({{newState.topLine, newState.lines}, newState.score});
                                 }
                             }
                         }
