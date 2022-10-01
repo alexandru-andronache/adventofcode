@@ -40,7 +40,6 @@ function(add_year YEAR)
             general libgtest${CMAKE_DEBUG_POSTFIX}.a)
 endfunction()
 
-
 function(day_common DAY)
     include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
     set(CMAKE_CXX_STANDARD 17)
