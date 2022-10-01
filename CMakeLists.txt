@@ -58,18 +58,14 @@ target_compile_definitions(${TESTS.ALL.YEARS} PRIVATE TESTING=1)
 target_compile_definitions(${TESTS.COMMON} PRIVATE TESTING=1)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        set(CMAKE_DEBUG_POSTFIX d)
+        set(CMAKE_DEBUG_POSTFIX "d")
 endif()
 
 target_link_libraries(${TESTS.ALL.YEARS}
         general pthread
-        general libgmock_maind.a
-        general libgmockd.a
-        general libgtest_maind.a
-        general libgtestd.a)
+        general libgmock${CMAKE_DEBUG_POSTFIX}.a
+        general libgtest${CMAKE_DEBUG_POSTFIX}.a)
 target_link_libraries(${TESTS.COMMON}
         general pthread
-        general libgmock_maind.a
-        general libgmockd.a
-        general libgtest_maind.a
-        general libgtestd.a)
+        general libgmock${CMAKE_DEBUG_POSTFIX}.a
+        general libgtest${CMAKE_DEBUG_POSTFIX}.a)
