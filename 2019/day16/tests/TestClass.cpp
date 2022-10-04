@@ -10,12 +10,24 @@ namespace aoc2019_day16 {
         ASSERT_EQ(part_1("../2019/day16/input_test2.in"), "73745418");
     }
 
+    TEST_F(Tests2019Day16, part_1_test_3) {
+        ASSERT_EQ(part_1("../2019/day16/input_test3.in"), "52432133");
+    }
+
     TEST_F(Tests2019Day16, part_1_real_test) {
         ASSERT_EQ(part_1("../2019/day16/input.in"), "59281788");
     }
 
     TEST_F(Tests2019Day16, part_2_test) {
-        ASSERT_EQ(part_2("../2019/day16/input_test3.in"), "84462026");
+        ASSERT_EQ(part_2("../2019/day16/input_test4.in"), "84462026");
+    }
+
+    TEST_F(Tests2019Day16, part_2_test_2) {
+        ASSERT_EQ(part_2("../2019/day16/input_test5.in"), "78725270");
+    }
+
+    TEST_F(Tests2019Day16, part_2_test_3) {
+        ASSERT_EQ(part_2("../2019/day16/input_test6.in"), "53553731");
     }
 
     TEST_F(Tests2019Day16, part_2_real_test) {

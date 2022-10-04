@@ -11,34 +11,33 @@ namespace aoc2019_day16 {
         for (const auto& c : input) {
             numbers.push_back(c - '0');
         }
-        std::array<int, 4> pattern{0, 1, 0, -1};
 
         for (int phase = 0; phase < phases; ++phase) {
-            std::vector<long long> t(numbers.size(), 0);
-            std::vector<long long> sums(numbers.size(), 0);
-            sums[0] = numbers[0];
-            for (int i = 1; i < numbers.size(); ++i) {
-                sums[i] = numbers[i] + sums[i - 1];
+            std::vector<long long> sums(numbers.size() + 1, 0);
+            sums[0] = 0;
+            for (int i = 0; i < numbers.size(); ++i) {
+                sums[i + 1] += sums[i] + numbers[i];
             }
 
+            int N = sums.size() - 1;
+
             for (int i = 0; i < numbers.size(); ++i) {
-                int startPos = i - 1;
+                int j = i;
                 int steps = i + 1;
-                while (startPos < (int)numbers.size()) {
-                    t[i] += sums[std::min(startPos + steps, (int)numbers.size() - 1)] - (startPos >= 0 ? sums[startPos] : 0);
-                    startPos += 2 * steps;
-                    if (startPos < (int)numbers.size()) {
-                        t[i] -= sums[std::min(startPos + steps, (int) numbers.size() - 1)] -
-                                (startPos >= 0 ? sums[startPos] : 0);
-                        startPos += 2 * steps;
+                numbers[i] = 0;
+                while (j < numbers.size()) {
+                    numbers[i] += sums[std::min(j + steps, N)] - sums[j];
+                    j += steps * 2;
+                    if (j < numbers.size()) {
+                        numbers[i] -= sums[std::min(j + steps, N)] - sums[j];
                     }
+                    j += steps * 2;
                 }
-                t[i] = t[i] % 10;
-                if (t[i] < 0) {
-                    t[i] = -t[i];
+                numbers[i] = numbers[i] % 10;
+                if (numbers[i] < 0) {
+                    numbers[i] = -numbers[i];
                 }
             }
-            numbers = t;
         }
 
         std::string sol;
@@ -63,24 +62,11 @@ namespace aoc2019_day16 {
             offset = offset * 10 + numbers[i];
         }
 
-        std::vector<long long> newNumbers;
-        for (int i = offset; i < numbers.size(); ++i) {
-            newNumbers.push_back(numbers[i]);
-        }
-        offset = 0;
+        std::vector<long long> newNumbers = numbers;
 
         for (int phase = 0; phase < phases; ++phase) {
-            std::vector<long long> sums(newNumbers.size(), 0);
-            sums[offset] = newNumbers[offset];
-            for (int i = offset + 1; i < newNumbers.size(); ++i) {
-                sums[i] = newNumbers[i] + sums[i - 1];
-            }
-            for (int i = offset; i < newNumbers.size(); ++i) {
-                newNumbers[i] = sums.back() - sums[i - 1];
-                newNumbers[i] = newNumbers[i] % 10;
-                if (newNumbers[i] < 0) {
-                    newNumbers[i] = -newNumbers[i];
-                }
+            for (int i = newNumbers.size() - 2; i >= offset; --i) {
+                newNumbers[i] = (newNumbers[i] + newNumbers[i + 1]) % 10;
             }
         }
 
