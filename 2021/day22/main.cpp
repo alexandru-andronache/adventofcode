@@ -3,75 +3,50 @@
 #include <iostream>
 #include <optional>
 #include <numeric>
+#include <array>
 
 namespace aoc2021_day22 {
 
     struct cube {
         cube () = default;
-        cube(bool t, int64_t a, int64_t b, int64_t c, int64_t d, int64_t e, int64_t f) {
+        cube(bool t, int64_t x1, int64_t x2, int64_t y1, int64_t y2, int64_t z1, int64_t z2) {
             type = t;
-            x1 = a;
-            x2 = b;
-            y1 = c;
-            y2 = d;
-            z1 = e;
-            z2 = f;
+            vertex[0] = {x1, x2};
+            vertex[1] = {y1, y2};
+            vertex[2] = {z1, z2};
         }
         bool type;
-        int64_t x1;
-        int64_t x2;
-        int64_t y1;
-        int64_t y2;
-        int64_t z1;
-        int64_t z2;
+        std::array<std::pair<int64_t, int64_t>, 3> vertex;
     };
 
     std::optional<cube> intersection(const cube& cube1, const cube& cube2) {
         cube c;
-        if (cube1.x1 >= cube2.x1 && cube1.x1 <= cube2.x2) {
-            c.x1 = cube1.x1;
-            c.x2 = std::min(cube1.x2, cube2.x2);
+        for (int i = 0; i < cube1.vertex.size(); ++i) {
+            if (cube1.vertex[i].first >= cube2.vertex[i].first && cube1.vertex[i].first <= cube2.vertex[i].second) {
+                c.vertex[i].first = cube1.vertex[i].first;
+                c.vertex[i].second = std::min(cube1.vertex[i].second, cube2.vertex[i].second);
+            }
+            else if (cube2.vertex[i].first >= cube1.vertex[i].first && cube2.vertex[i].first <= cube1.vertex[i].second) {
+                c.vertex[i].first = cube2.vertex[i].first;
+                c.vertex[i].second = std::min(cube1.vertex[i].second, cube2.vertex[i].second);
+            }
+            else {
+                return std::nullopt;
+            }
         }
-        else if (cube2.x1 >= cube1.x1 && cube2.x1 <= cube1.x2) {
-            c.x1 = cube2.x1;
-            c.x2 = std::min(cube1.x2, cube2.x2);
-        }
-        else {
-            return std::nullopt;
-        }
-
-        if (cube1.y1 >= cube2.y1 && cube1.y1 <= cube2.y2) {
-            c.y1 = cube1.y1;
-            c.y2 = std::min(cube1.y2, cube2.y2);
-        }
-        else if (cube2.y1 >= cube1.y1 && cube2.y1 <= cube1.y2) {
-            c.y1 = cube2.y1;
-            c.y2 = std::min(cube1.y2, cube2.y2);
-        }
-        else {
-            return std::nullopt;
-        }
-
-        if (cube1.z1 >= cube2.z1 && cube1.z1 <= cube2.z2) {
-            c.z1 = cube1.z1;
-            c.z2 = std::min(cube1.z2, cube2.z2);
-        }
-        else if (cube2.z1 >= cube1.z1 && cube2.z1 <= cube1.z2) {
-            c.z1 = cube2.z1;
-            c.z2 = std::min(cube1.z2, cube2.z2);
-        }
-        else {
-            return std::nullopt;
-        }
+        c.type = !cube1.type;
         return c;
     }
 
     int64_t calculateVolume(const std::vector<cube>& cubes) {
         return std::accumulate(cubes.begin(), cubes.end(), 0LL,[](int64_t sum, const auto& c) {
+            int64_t volume = std::accumulate(c.vertex.begin(), c.vertex.end(), 1LL, [](int64_t v, const auto& vertex) {
+                return v * (vertex.second - vertex.first + 1);
+            });
             if (c.type) {
-                return sum + (c.x2 - c.x1 + 1) * (c.y2 - c.y1 + 1) * (c.z2 - c.z1 + 1);
+                return sum + volume;
             }
-            return sum - (c.x2 - c.x1 + 1) * (c.y2 - c.y1 + 1) * (c.z2 - c.z1 + 1);
+            return sum - volume;
         });
     }
 
@@ -102,7 +77,6 @@ namespace aoc2021_day22 {
             for (const auto& c : cubes) {
                 std::optional<cube> intersect = intersection(c, activeCube);
                 if (intersect.has_value()) {
-                    intersect.value().type = !c.type;
                     newCubes.push_back(intersect.value());
                 }
             }
@@ -135,7 +109,6 @@ namespace aoc2021_day22 {
             for (const auto& c : cubes) {
                 std::optional<cube> intersect = intersection(c, activeCube);
                 if (intersect.has_value()) {
-                    intersect.value().type = !c.type;
                     newCubes.push_back(intersect.value());
                 }
             }
