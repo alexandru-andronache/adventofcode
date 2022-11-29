@@ -58,19 +58,33 @@ function(day_common DAY)
 
     add_executable(main main.cpp ${utils_src})
     add_executable(test main.cpp ${cpp_files} ${h_files} ${utils_src} ${cpp_files_test} ${h_files_test} ${COMMON_SOURCES}/test.cpp)
+    add_executable(test.sanitize main.cpp ${cpp_files} ${h_files} ${utils_src} ${cpp_files_test} ${h_files_test} ${COMMON_SOURCES}/test.cpp)
 
     target_include_directories(main PRIVATE ${COMMON_SOURCES}/include)
     target_include_directories(test PRIVATE ${COMMON_SOURCES}/include)
+    target_include_directories(test.sanitize PRIVATE ${COMMON_SOURCES}/include)
 
     add_dependencies(test googletest_utilities)
+    add_dependencies(test.sanitize googletest_utilities)
+
+    target_compile_options(test.sanitize PRIVATE -fsanitize=address -fsanitize=undefined -Wall -Werror -Wextra -Wsign-conversion -Wconversion -Wpedantic -Wshadow)
+    target_link_options(test.sanitize PRIVATE -fsanitize=address -fsanitize=undefined -Wall -Werror -Wextra -Wsign-conversion -Wconversion -Wpedantic -Wshadow)
 
     target_compile_definitions(test PRIVATE TESTING=1)
+    target_compile_definitions(test.sanitize PRIVATE TESTING=1)
 
     if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
             set(CMAKE_DEBUG_POSTFIX d)
     endif()
 
     target_link_libraries(test
+            general pthread
+            general c++
+            general libgtest${CMAKE_DEBUG_POSTFIX}.a
+            general libgmock${CMAKE_DEBUG_POSTFIX}.a
+            )
+
+    target_link_libraries(test.sanitize
             general pthread
             general c++
             general libgtest${CMAKE_DEBUG_POSTFIX}.a
