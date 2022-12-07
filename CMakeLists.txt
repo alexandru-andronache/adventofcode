@@ -3,7 +3,7 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 SET(NAME "advent.of.code")
 project(${NAME} VERSION 1.0
                 DESCRIPTION "Advent of Code"
-                LANGUAGES CXX)
+                LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 SET(COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/common)
