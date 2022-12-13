@@ -42,7 +42,7 @@ endfunction()
 
 function(day_common DAY)
     include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
     SET(COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../bin")
 
