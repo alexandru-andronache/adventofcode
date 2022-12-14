@@ -15,7 +15,7 @@ namespace aoc2022_day14 {
 
     void flow(int startX, int startY, std::vector<std::vector<terrain>> &map, int maxX) {
         bool overflow = false;
-        while (!overflow) {
+        while (!overflow && map[startX][startY] != terrain::Sand) {
             overflow = true;
 
             int x = startX;
@@ -42,35 +42,6 @@ namespace aoc2022_day14 {
             if (x < maxX) {
                 map[x][y] = terrain::Sand;
                 overflow = false;
-            }
-        }
-    }
-
-    void flowPart2(int startX, int startY, std::vector<std::vector<terrain>> &map, int maxX) {
-        while (map[startX][startY] != terrain::Sand) {
-            int x = startX;
-            int y = startY;
-            bool fall = true;
-            while (x <= maxX && fall) {
-                fall = false;
-                while (x <= maxX && map[x + 1][y] == terrain::Nothing) {
-                    x++;
-                    fall = true;
-                }
-                if (map[x + 1][y - 1] == terrain::Nothing) {
-                    x = x + 1;
-                    y = y - 1;
-                    fall = true;
-                }
-                else if (map[x + 1][y + 1] == terrain::Nothing) {
-                    x = x + 1;
-                    y = y + 1;
-                    fall = true;
-                }
-            }
-
-            if (x < maxX) {
-                map[x][y] = terrain::Sand;
             }
         }
     }
@@ -121,7 +92,7 @@ namespace aoc2022_day14 {
             map[maxX + 2][i] = terrain::Wall;
         }
 
-        flowPart2(0, 500, map, maxX + 2);
+        flow(0, 500, map, maxX + 2);
 
         int sand = 0;
         for (const auto& l : map) {
