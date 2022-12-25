@@ -5,5 +5,5 @@
 #pragma once
 
 namespace aoc2022_day25 {
-    int part_1(std::string_view path);
+    std::string part_1(std::string_view path);
 }
