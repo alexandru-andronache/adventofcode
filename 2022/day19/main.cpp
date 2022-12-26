@@ -4,6 +4,26 @@
 #include <algorithm>
 
 namespace aoc2022_day19 {
+    int maxGeode = 0;
+
+    void dfs(int oreRobots, int clayRobots, int obsidianRobots, int ore, int clay, int obsidian, int geodes, int timeLeft) {
+        if (timeLeft < 1) {
+            return;
+        }
+
+        maxGeode = std::max(maxGeode, geodes);
+        if (oreRobots < 4) {
+
+        }
+    }
+
+    int solveV2(int costRobotOre, int costRobotClay, int costRobotObsidian_ore, int costRobotObsidian_clay, int costRobotGeode_ore, int costRobotGeode_obsidian) {
+        int maxOre = std::max({costRobotOre, costRobotObsidian_ore, costRobotGeode_ore});
+        dfs(1, 0, 0, 0, 0, 0, 0, 30);
+    }
+
+
+
     int solve (int costRobotOre, int costRobotClay, int costRobotObsidian_ore, int costRobotObsidian_clay, int costRobotGeode_ore, int costRobotGeode_obsidian, int total) {
         struct state {
             std::vector<int> robots;
@@ -24,49 +44,49 @@ namespace aoc2022_day19 {
                     }
                     ns.robots[3]++;
                     newStates.push_back(ns);
-                }
-                if (s.gems[0] >= costRobotObsidian_ore && s.gems[1] >= costRobotObsidian_clay) {
-                    state ns = s;
-                    ns.gems[0] -= costRobotObsidian_ore;
-                    ns.gems[1] -= costRobotObsidian_clay;
-                    for (int i = 0; i < 4; ++i) {
-                        ns.gems[i] = s.robots[i] + ns.gems[i];
+                } else {
+                    if (s.gems[0] >= costRobotObsidian_ore && s.gems[1] >= costRobotObsidian_clay) {
+                        state ns = s;
+                        ns.gems[0] -= costRobotObsidian_ore;
+                        ns.gems[1] -= costRobotObsidian_clay;
+                        for (int i = 0; i < 4; ++i) {
+                            ns.gems[i] = s.robots[i] + ns.gems[i];
+                        }
+                        ns.robots[2]++;
+                        newStates.push_back(ns);
                     }
-                    ns.robots[2]++;
-                    newStates.push_back(ns);
-                }
-                if (s.gems[0] >= costRobotClay && s.robots[1] < costRobotObsidian_clay) {
-                    state ns = s;
-                    ns.gems[0] -= costRobotClay;
-                    for (int i = 0; i < 4; ++i) {
-                        ns.gems[i] = s.robots[i] + ns.gems[i];
+                    if (s.gems[0] >= costRobotClay && s.robots[1] < costRobotObsidian_clay) {
+                        state ns = s;
+                        ns.gems[0] -= costRobotClay;
+                        for (int i = 0; i < 4; ++i) {
+                            ns.gems[i] = s.robots[i] + ns.gems[i];
+                        }
+                        ns.robots[1]++;
+                        newStates.push_back(ns);
                     }
-                    ns.robots[1]++;
-                    newStates.push_back(ns);
-                }
-                if (s.gems[0] >= costRobotOre && s.robots[0] < 4) {
-                    state ns = s;
-                    ns.gems[0] -= costRobotOre;
-                    for (int i = 0; i < 4; ++i) {
-                        ns.gems[i] = s.robots[i] + ns.gems[i];
+                    if (s.gems[0] >= costRobotOre && s.robots[0] < 4) {
+                        state ns = s;
+                        ns.gems[0] -= costRobotOre;
+                        for (int i = 0; i < 4; ++i) {
+                            ns.gems[i] = s.robots[i] + ns.gems[i];
+                        }
+                        ns.robots[0]++;
+                        newStates.push_back(ns);
                     }
-                    ns.robots[0]++;
-                    newStates.push_back(ns);
+                    state newState = s;
+                    for (int i = 0; i < 4; ++i) {
+                        newState.gems[i] = s.robots[i] + s.gems[i];
+                    }
+                    newStates.push_back(newState);
                 }
-                state newState = s;
-                for (int i = 0; i < 4; ++i) {
-                    newState.gems[i] = s.robots[i] + s.gems[i];
-                }
-                newStates.push_back(newState);
-                // can i create ore robot
-
             }
             states = newStates;
             std::sort(states.begin(), states.end(), [](const auto& s1, const auto& s2) {
-                return (s1.robots[3]) * 1000 + (s1.robots[2]) * 100 + (s1.robots[1]) * 10 + s1.robots[0] > (s2.robots[3]) * 1000 + (s2.robots[2]) * 100 + (s2.robots[1]) * 10 + s2.robots[0];
+//                return (s1.robots[3]) * 10000 + (s1.robots[2]) * 1000 + (s1.robots[1]) * 10 + s1.robots[0] > (s2.robots[3]) * 10000 + (s2.robots[2]) * 1000 + (s2.robots[1]) * 10 + s2.robots[0];
+                return (s1.robots[3] + s1.gems[3]) * 1000 + (s1.robots[2]) * 100 + (s1.robots[1]) * 10 + s1.robots[0] > (s2.robots[3] + s2.gems[3]) * 1000 + (s2.robots[2]) * 100 + (s2.robots[1]) * 10 + s2.robots[0];
             });
-            if (states.size() > 10000) {
-                states.resize(10000);
+            if (states.size() > 7000) {
+                states.resize(7000);
             }
         }
 
@@ -88,7 +108,9 @@ namespace aoc2022_day19 {
             int costRobotGeode_ore = std::stoi(t[27]);
             int costRobotGeode_obsidian = std::stoi(t[30]);
 
-            sol += std::stoi(t[1]) * solve(costRobotOre, costRobotClay, costRobotObsidian_ore, costRobotObsidian_clay, costRobotGeode_ore, costRobotGeode_obsidian, 24);
+            int x = solve(costRobotOre, costRobotClay, costRobotObsidian_ore, costRobotObsidian_clay, costRobotGeode_ore, costRobotGeode_obsidian, 24);
+            sol += std::stoi(t[1]) * x;
+//            std::cout << x << "\n";
         }
         return sol;
     }

@@ -2,17 +2,14 @@
 #include "utilities.h"
 #include "verticalhexgrid.h"
 #include <iostream>
+#include <map>
 
 namespace aoc2022_day24 {
     struct tile {
-        bool isWall = false;
-        bool goLeft = false;
-        bool goRight = false;
-        bool goUp = false;
-        bool goDown = false;
+        int state;
         int time = 1000;
         bool isEmpty() {
-            return !isWall && !goLeft && !goRight && !goUp && !goDown;
+            return state == 0;
         }
     };
 
@@ -22,44 +19,7 @@ namespace aoc2022_day24 {
     };
 
     bool operator==(const tile& rhs, const tile& lhs) {
-        return rhs.isWall == lhs.isWall && rhs.goLeft == lhs.goLeft && rhs.goRight == lhs.goRight &&
-               rhs.goUp == lhs.goUp && rhs.goDown == lhs.goDown && rhs.time == lhs.time;
-    }
-
-    void print(const std::vector<std::vector<tile>>& map, bool printSteps = false) {
-        for (int i = 0; i < map.size(); ++i) {
-            for (int j = 0; j < map[0].size(); ++j) {
-                if (map[i][j].isWall) {
-                    std::cout << "#";
-                }
-                else if ((map[i][j].goLeft + map[i][j].goRight + map[i][j].goUp + map[i][j].goDown > 1) && (!printSteps)) {
-                    std::cout << map[i][j].goLeft + map[i][j].goRight + map[i][j].goUp + map[i][j].goDown;
-                }
-                else if (map[i][j].goDown) {
-                    std::cout << "v";
-                }
-                else if (map[i][j].goUp) {
-                    std::cout << "^";
-                }
-                else if (map[i][j].goRight) {
-                    std::cout << ">";
-                }
-                else if (map[i][j].goLeft) {
-                    std::cout << "<";
-                }
-                else {
-                    if (printSteps) {
-                        std::cout << map[i][j].time % 10;
-                    }
-                    else {
-                        std::cout << ".";
-                    }
-
-                }
-            }
-            std::cout << "\n";
-        }
-        std::cout << "\n";
+        return rhs.state == lhs.state && rhs.time == lhs.time;
     }
 
     int move(int startX, int startY,
@@ -111,67 +71,56 @@ namespace aoc2022_day24 {
     int part_1(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         std::vector<std::vector<std::vector<tile>>> states;
-        std::vector<std::vector<tile>> map(lines.size(), std::vector<tile>(lines[0].size(), {false, false, false, false, false, 1000}));
+        std::vector<std::vector<tile>> map(lines.size(), std::vector<tile>(lines[0].size(), {0, 1000}));
+        std::map<char, int> input {{'#', 0}, {'>', 1}, {'<', 2}, {'v', 3}, {'^', 4}};
 
         for (int i = 0; i < lines.size(); ++i) {
             for (int j = 0; j < lines[0].size(); ++j) {
-                if (lines[i][j] == '#') {
-                    map[i][j].isWall = true;
-                }
-                else if (lines[i][j] == '>') {
-                    map[i][j].goRight = true;
-                }
-                else if (lines[i][j] == '<') {
-                    map[i][j].goLeft = true;
-                }
-                else if (lines[i][j] == 'v') {
-                    map[i][j].goDown = true;
-                }
-                else if (lines[i][j] == '^') {
-                    map[i][j].goUp = true;
+                if (input.contains(lines[i][j])) {
+                    map[i][j].state |= (1 << input[lines[i][j]]);
                 }
             }
         }
 
         while (std::find(states.begin(), states.end(), map) == states.end()) {
             states.push_back(map);
-            std::vector<std::vector<tile>> newMap(lines.size(), std::vector<tile>(lines[0].size(), {false, false, false, false, false, 1000}));
+            std::vector<std::vector<tile>> newMap(lines.size(), std::vector<tile>(lines[0].size(), {0, 1000}));
             for (int i = 0; i < map.size(); ++i) {
                 for (int j = 0; j < map[i].size(); ++j) {
-                    if (map[i][j].goUp) {
-                        if (map[i - 1][j].isWall) {
-                            newMap[map.size() - 2][j].goUp = true;
+                    if (map[i][j].state & (1 << 4)) {
+                        if (map[i - 1][j].state & (1 << 0)) {
+                            newMap[map.size() - 2][j].state |= (1 << 4);
                         }
                         else {
-                            newMap[i - 1][j].goUp = true;
+                            newMap[i - 1][j].state |= (1 << 4);
                         }
                     }
-                    if (map[i][j].goDown) {
-                        if (map[i + 1][j].isWall) {
-                            newMap[1][j].goDown = true;
+                    if (map[i][j].state & (1 << 3)) {
+                        if (map[i + 1][j].state & (1 << 0)) {
+                            newMap[1][j].state |= (1 << 3);
                         }
                         else {
-                            newMap[i + 1][j].goDown = true;
+                            newMap[i + 1][j].state |= (1 << 3);
                         }
                     }
-                    if (map[i][j].goRight) {
-                        if (map[i][j + 1].isWall) {
-                            newMap[i][1].goRight = true;
+                    if (map[i][j].state & (1 << 1)) {
+                        if (map[i][j + 1].state & (1 << 0)) {
+                            newMap[i][1].state |= (1 << 1);
                         }
                         else {
-                            newMap[i][j + 1].goRight = true;
+                            newMap[i][j + 1].state |= (1 << 1);
                         }
                     }
-                    if (map[i][j].goLeft) {
-                        if (map[i][j - 1].isWall) {
-                            newMap[i][map[0].size() - 2].goLeft = true;
+                    if (map[i][j].state & (1 << 2)) {
+                        if (map[i][j - 1].state & (1 << 0)) {
+                            newMap[i][map[0].size() - 2].state |= (1 << 2);
                         }
                         else {
-                            newMap[i][j - 1].goLeft = true;
+                            newMap[i][j - 1].state |= (1 << 2);
                         }
                     }
-                    if (map[i][j].isWall) {
-                        newMap[i][j].isWall = true;
+                    if (map[i][j].state & (1 << 0)) {
+                        newMap[i][j].state |= (1 << 0);
                     }
                 }
             }
@@ -188,67 +137,56 @@ namespace aoc2022_day24 {
     int part_2(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         std::vector<std::vector<std::vector<tile>>> states;
-        std::vector<std::vector<tile>> map(lines.size(), std::vector<tile>(lines[0].size(), {false, false, false, false, false, 1000}));
+        std::vector<std::vector<tile>> map(lines.size(), std::vector<tile>(lines[0].size(), {0, 1000}));
+        std::map<char, int> input {{'#', 0}, {'>', 1}, {'<', 2}, {'v', 3}, {'^', 4}};
 
         for (int i = 0; i < lines.size(); ++i) {
             for (int j = 0; j < lines[0].size(); ++j) {
-                if (lines[i][j] == '#') {
-                    map[i][j].isWall = true;
-                }
-                else if (lines[i][j] == '>') {
-                    map[i][j].goRight = true;
-                }
-                else if (lines[i][j] == '<') {
-                    map[i][j].goLeft = true;
-                }
-                else if (lines[i][j] == 'v') {
-                    map[i][j].goDown = true;
-                }
-                else if (lines[i][j] == '^') {
-                    map[i][j].goUp = true;
+                if (input.contains(lines[i][j])) {
+                    map[i][j].state |= (1 << input[lines[i][j]]);
                 }
             }
         }
 
         while (std::find(states.begin(), states.end(), map) == states.end()) {
             states.push_back(map);
-            std::vector<std::vector<tile>> newMap(lines.size(), std::vector<tile>(lines[0].size(), {false, false, false, false, false, 1000}));
+            std::vector<std::vector<tile>> newMap(lines.size(), std::vector<tile>(lines[0].size(), {0, 1000}));
             for (int i = 0; i < map.size(); ++i) {
                 for (int j = 0; j < map[i].size(); ++j) {
-                    if (map[i][j].goUp) {
-                        if (map[i - 1][j].isWall) {
-                            newMap[map.size() - 2][j].goUp = true;
+                    if (map[i][j].state & (1 << 4)) {
+                        if (map[i - 1][j].state & (1 << 0)) {
+                            newMap[map.size() - 2][j].state |= (1 << 4);
                         }
                         else {
-                            newMap[i - 1][j].goUp = true;
+                            newMap[i - 1][j].state |= (1 << 4);
                         }
                     }
-                    if (map[i][j].goDown) {
-                        if (map[i + 1][j].isWall) {
-                            newMap[1][j].goDown = true;
+                    if (map[i][j].state & (1 << 3)) {
+                        if (map[i + 1][j].state & (1 << 0)) {
+                            newMap[1][j].state |= (1 << 3);
                         }
                         else {
-                            newMap[i + 1][j].goDown = true;
+                            newMap[i + 1][j].state |= (1 << 3);
                         }
                     }
-                    if (map[i][j].goRight) {
-                        if (map[i][j + 1].isWall) {
-                            newMap[i][1].goRight = true;
+                    if (map[i][j].state & (1 << 1)) {
+                        if (map[i][j + 1].state & (1 << 0)) {
+                            newMap[i][1].state |= (1 << 1);
                         }
                         else {
-                            newMap[i][j + 1].goRight = true;
+                            newMap[i][j + 1].state |= (1 << 1);
                         }
                     }
-                    if (map[i][j].goLeft) {
-                        if (map[i][j - 1].isWall) {
-                            newMap[i][map[0].size() - 2].goLeft = true;
+                    if (map[i][j].state & (1 << 2)) {
+                        if (map[i][j - 1].state & (1 << 0)) {
+                            newMap[i][map[0].size() - 2].state |= (1 << 2);
                         }
                         else {
-                            newMap[i][j - 1].goLeft = true;
+                            newMap[i][j - 1].state |= (1 << 2);
                         }
                     }
-                    if (map[i][j].isWall) {
-                        newMap[i][j].isWall = true;
+                    if (map[i][j].state & (1 << 0)) {
+                        newMap[i][j].state |= (1 << 0);
                     }
                 }
             }

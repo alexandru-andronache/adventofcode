@@ -11,7 +11,7 @@ namespace aoc2022_day19 {
     }
 
     TEST_F(Tests2022Day19, part_2_test) {
-        ASSERT_EQ(part_2("../2022/day19/input_test.in"), 0);
+        ASSERT_EQ(part_2("../2022/day19/input_test.in"), 3472);
     }
 
     TEST_F(Tests2022Day19, part_2_real_test) {
