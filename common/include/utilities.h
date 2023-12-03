@@ -7,6 +7,14 @@ namespace utils {
     struct point {
         int x;
         int y;
+        constexpr point()=default;
+        constexpr point(int _x, int _y) : x(_x), y(_y) {}
+        constexpr point(point&&) = default;
+        constexpr point(const point&) = default;
+        point& operator=(const point&) = default;
+        point& operator=(point&&) = default;
+
+        auto operator<=>(const point&) const = default;
     };
 
     struct point3d {
@@ -25,4 +33,5 @@ namespace utils {
     bool isAnagram(std::string_view s1, std::string_view s2);
     std::vector<point> getListOfNeighbours4Directions(int x, int y, const std::vector<std::vector<int>>& map);
     std::vector<point> getListOfNeighboursAllDirections(int x, int y, const std::vector<std::vector<int>>& map);
+    std::vector<point> getListOfNeighboursAllDirections(int x, int y, int sizeX, int sizeY);
 }

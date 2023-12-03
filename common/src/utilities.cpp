@@ -123,4 +123,15 @@ namespace utils {
         }
         return neighbours;
     }
+
+    std::vector<point> getListOfNeighboursAllDirections(int x, int y, int sizeX, int sizeY) {
+        direction::Direction dir;
+        std::vector<point> neighbours;
+        for (const auto& d : dir.fullDirections) {
+            if (x + d.x >= 0 && x + d.x < sizeX && y + d.y >= 0 && y + d.y < sizeY) {
+                neighbours.emplace_back(d.x, d.y);
+            }
+        }
+        return neighbours;
+    }
 }

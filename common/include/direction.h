@@ -10,7 +10,7 @@ namespace direction {
         static constexpr utils::point UP{-1, 0};
         static constexpr utils::point LEFT{0, -1};
         static constexpr utils::point RIGHT{0, 1};
-        const std::vector<utils::point> directions {UP, DOWN, LEFT, RIGHT};
+        const std::vector<utils::point> directions {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         const std::vector<utils::point> fullDirections {{-1, -1}, {-1, 0}, {-1, 1},
                                                     {0, -1}, {0, 1},
                                                     {1, -1}, {1, 0}, {1, 1}};
