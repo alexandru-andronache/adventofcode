@@ -1,13 +1,105 @@
 #include "file.h"
+#include "utilities.h"
 #include <iostream>
+#include <vector>
 
 namespace aoc2023_day05 {
-    int part_1(std::string_view path) {
-        return 0;
+    unsigned long long part_1(std::string_view path) {
+        std::vector<std::string> input = file::readFileAsArrayString(path);
+        std::vector<std::string> seed = utils::splitString(input[0], " ");
+        std::vector<unsigned long long> seeds;
+        for (int i = 1; i < seed.size(); ++i) {
+            seeds.push_back(std::stoull(seed[i]));
+        }
+        int index = 3;
+        while (index < input.size()) {
+            std::vector<std::pair<unsigned long long, unsigned long long>> pairs1;
+            std::vector<std::pair<unsigned long long, unsigned long long>> pairs2;
+            while (input[index] != "") {
+                std::vector<std::string> t = utils::splitString(input[index], " ");
+                pairs2.push_back({std::stoull(t[0]), std::stoull(t[0]) + std::stoull(t[2]) - 1});
+                pairs1.push_back({std::stoull(t[1]), std::stoull(t[1]) + std::stoull(t[2]) - 1});
+                index++;
+            }
+            for (int i = 0; i < seeds.size(); ++i) {
+                for (int j = 0; j < pairs1.size(); ++j) {
+                    if (seeds[i] >= pairs1[j].first && seeds[i] <= pairs1[j].second) {
+                        seeds[i] += pairs2[j].first - pairs1[j].first;
+                        break;
+                    }
+                }
+            }
+            index += 2;
+        }
+
+        return *std::min_element(seeds.begin(), seeds.end());
     }
 
-    int part_2(std::string_view path) {
-        return 0;
+    unsigned long long part_2(std::string_view path) {
+        std::vector<std::string> input = file::readFileAsArrayString(path);
+        std::vector<std::string> seed = utils::splitString(input[0], " ");
+        std::vector<std::pair<unsigned long long, unsigned long long>> seeds;
+        for (int i = 1; i < seed.size(); i += 2) {
+            seeds.emplace_back(std::stoull(seed[i]), std::stoull(seed[i]) + std::stoull(seed[i + 1]));
+        }
+        int index = 3;
+        while (index < input.size()) {
+            std::vector<std::pair<unsigned long long, unsigned long long>> pairs1;
+            std::vector<std::pair<unsigned long long, unsigned long long>> pairs2;
+            while (input[index] != "") {
+                std::vector<std::string> t = utils::splitString(input[index], " ");
+                pairs2.push_back({std::stoull(t[0]), std::stoull(t[0]) + std::stoull(t[2]) - 1});
+                pairs1.push_back({std::stoull(t[1]), std::stoull(t[1]) + std::stoull(t[2]) - 1});
+                index++;
+            }
+            std::vector<std::pair<unsigned long long, unsigned long long>> newSeeds;
+            int i = 0;
+            while (i < seeds.size()) {
+                bool found = false;
+                for (int j = 0; j < pairs1.size(); ++j) {
+                    if (seeds[i].first >= pairs1[j].first && seeds[i].second <= pairs1[j].second) {
+                        newSeeds.emplace_back(seeds[i].first + pairs2[j].first - pairs1[j].first,
+                                              seeds[i].second + pairs2[j].first - pairs1[j].first);
+                        found = true;
+                        break;
+                    }
+                    else if (seeds[i].first < pairs1[j].first && seeds[i].second >= pairs1[j].first) {
+                        newSeeds.emplace_back(pairs1[j].first + pairs2[j].first - pairs1[j].first,
+                                              seeds[i].second + pairs2[j].first - pairs1[j].first);
+                        seeds.emplace_back(seeds[i].first, pairs1[j].first - 1);
+                        found = true;
+                        break;
+                    }
+                    else if (seeds[i].first <= pairs1[j].second && seeds[i].second > pairs1[j].second) {
+                        newSeeds.emplace_back(seeds[i].first + pairs2[j].first - pairs1[j].first,
+                                              pairs1[j].second + pairs2[j].first - pairs1[j].first);
+                        seeds.emplace_back(pairs1[j].second + 1, seeds[i].second);
+                        found = true;
+                        break;
+                    }
+                    else if (seeds[i].first < pairs1[j].first && seeds[i].second > pairs1[j].second) {
+                        newSeeds.emplace_back(pairs1[j].first + pairs2[j].first - pairs1[j].first,
+                                              pairs1[j].second + pairs2[j].first - pairs1[j].first);
+                        seeds.emplace_back(seeds[i].first, pairs1[j].first - 1);
+                        seeds.emplace_back(pairs1[j].second + 1, seeds[i].second);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    newSeeds.emplace_back(seeds[i]);
+                }
+                i++;
+            }
+            index += 2;
+            seeds = newSeeds;
+        }
+
+        std::vector<unsigned long long> p;
+        for (const auto& s : seeds) {
+            p.push_back(s.first);
+        }
+        return *std::min_element(p.begin(), p.end());
     }
 }
 
