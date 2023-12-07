@@ -8,15 +8,17 @@
 
 namespace aoc2023_day07 {
     struct hand {
-        hand(std::string c, int b) {
+        hand(std::string c, int b, int t) {
             cards = std::move(c);
             bid = b;
+            type = t;
         }
         std::string cards;
         int bid;
+        int type;
     };
 
-    int type(std::string hand, bool withJokers) {
+    int type(std::string_view hand, bool withJokers) {
         std::map<char, int> t{{'2', 0}, {'3', 0}, {'4', 0}, {'5', 0}, {'6', 0}, {'7', 0},
                               {'8', 0}, {'9', 0}, {'T', 0}, {'Q', 0}, {'K', 0}, {'A', 0}};
         if (!withJokers){
@@ -39,7 +41,7 @@ namespace aoc2023_day07 {
             return a > b;
         });
         if (withJokers) {
-            if (occurance.size() > 0) {
+            if (!occurance.empty()) {
                 occurance[0] += jokers;
             }
             else {
@@ -56,11 +58,9 @@ namespace aoc2023_day07 {
         return 1;
     }
 
-    int compare(std::string card1, std::string card2, bool withJokers) {
-        int t1 = type(card1, withJokers);
-        int t2 = type(card2, withJokers);
-        if (t1 != t2) {
-            return t1 < t2;
+    int compare(const hand& hand1, const hand& hand2, bool withJokers) {
+        if (hand1.type != hand2.type) {
+            return hand1.type < hand2.type;
         }
         std::map<char, int> p{{'2', 1}, {'3', 2}, {'4', 3},
                               {'5', 4}, {'6', 5}, {'7', 6},
@@ -74,9 +74,9 @@ namespace aoc2023_day07 {
             p.insert({'J', 0});
         }
 
-        for (int i = 0; i < card1.size(); ++i) {
-            if (card1[i] != card2[i]) {
-                return p[card1[i]] < p[card2[i]];
+        for (int i = 0; i < hand1.cards.size(); ++i) {
+            if (hand1.cards[i] != hand2.cards[i]) {
+                return p[hand1.cards[i]] < p[hand2.cards[i]];
             }
         }
 
@@ -89,11 +89,11 @@ namespace aoc2023_day07 {
         std::vector<hand> hands;
         for (const auto& line : input) {
             std::vector<std::string> t = utils::splitString(line, " ");
-            hands.emplace_back(t[0], std::stoi(t[1]));
+            hands.emplace_back(t[0], std::stoi(t[1]), type(t[0], withJokers));
         }
 
         std::sort(hands.begin(), hands.end(), [withJokers](const auto& a, const auto& b) {
-            return compare(a.cards, b.cards, withJokers);
+            return compare(a, b , withJokers);
         });
 
         for (int i = 0; i < hands.size(); ++i) {
