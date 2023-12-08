@@ -15,7 +15,6 @@ namespace aoc2023_day07 {
     }
 
     TEST_F(Tests2023Day07, part_2_real_test) {
-        //245964977  246127855
         ASSERT_EQ(part_2("../2023/day07/input.in"), 245794069);
     }
 }
