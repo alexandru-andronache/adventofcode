@@ -14,6 +14,10 @@ namespace aoc2023_day10{
         ASSERT_EQ(part_2("../2023/day10/input_test2.in"), 4);
     }
 
+    TEST_F(Tests2023Day10, part_2_test_2) {
+        ASSERT_EQ(part_2("../2023/day10/input_test3.in"), 8);
+    }
+
     TEST_F(Tests2023Day10, part_2_real_test) {
         ASSERT_EQ(part_2("../2023/day10/input.in"), 525);
     }

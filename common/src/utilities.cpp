@@ -134,4 +134,14 @@ namespace utils {
         }
         return neighbours;
     }
+
+    std::pair<int, int> findValue(const std::vector<std::string>& map, char value) {
+        for (int i = 0; i < map.size(); ++i) {
+            for (int j = 0; j < map[0].size(); ++j) {
+                if (map[i][j] == 'S') return {i, j};
+            }
+        }
+
+        return {-1, -1};
+    }
 }
