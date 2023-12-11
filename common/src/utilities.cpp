@@ -138,10 +138,20 @@ namespace utils {
     std::pair<int, int> findValue(const std::vector<std::string>& map, char value) {
         for (int i = 0; i < map.size(); ++i) {
             for (int j = 0; j < map[0].size(); ++j) {
-                if (map[i][j] == 'S') return {i, j};
+                if (map[i][j] == value) return {i, j};
             }
         }
 
         return {-1, -1};
+    }
+
+    std::vector<point> findAll(const std::vector<std::string>& map, char value) {
+        std::vector<point> points;
+        for (int i = 0; i < map.size(); ++i) {
+            for (int j = 0; j < map[0].size(); ++j) {
+                if (map[i][j] == value) points.emplace_back(i, j);
+            }
+        }
+        return points;
     }
 }

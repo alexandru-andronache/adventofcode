@@ -7,53 +7,42 @@ namespace aoc2023_day11 {
     unsigned long long solve(std::string_view path, int extra) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
         unsigned long long sol = 0;
-        std::vector<int> index_2;
+        std::vector<int> emptyLines;
         for (int index = 0; const auto& line : input) {
-            std::vector<std::string> t = utils::splitString(line, "");
-            bool s = true;
-            for (int i = 0; i < line.size(); ++i) {
-                if (line[i] == '#') {
-                    s = false;
-                }
-            }
-            if (s) index_2.push_back(index);
+            bool emptyLine = std::all_of(line.begin(), line.end(), [](char c) {
+                return c == '.';
+            });
+            if (emptyLine) emptyLines.push_back(index);
             index++;
         }
 
-        std::vector<int> index;
+        std::vector<int> emptyCols;
         for (int j = 0; j < input[0].size(); ++j) {
-            int s = true;
-            for (int i = 0; i < input.size(); ++i) {
-                if (input[i][j] == '#')  {
-                    s = false;
+            bool emptyCol = true;
+            for (const auto& col : input) {
+                if (col[j] == '#')  {
+                    emptyCol = false;
                 }
             }
-            if (s) index.push_back(j);
+            if (emptyCol) emptyCols.push_back(j);
         }
 
-        std::vector<std::pair<int, int>> points;
-        for (int i = 0; i < input.size(); ++i) {
-            for (int j = 0; j < input[0].size(); ++j) {
-                if (input[i][j] == '#') {
-                    points.emplace_back(i, j);
-                }
-            }
-        }
+        std::vector<utils::point> points = utils::findAll(input, '#');
 
         for (int i = 0; i < points.size(); ++i) {
             for (int j = i + 1; j < points.size(); ++j) {
-                sol += utils::manhattanDistance(points[i].first, points[i].second, points[j].first, points[j].second);
+                sol += utils::manhattanDistance(points[i].x, points[i].y, points[j].x, points[j].y);
 
-                for (int k = 0; k < index.size(); ++k) {
-                    if ((index[k] >= points[i].second && index[k] <= points[j].second) ||
-                        (index[k] >= points[j].second && index[k] <= points[i].second)){
+                for (const auto& emptyCol : emptyCols) {
+                    if ((emptyCol >= points[i].y && emptyCol <= points[j].y) ||
+                        (emptyCol >= points[j].y && emptyCol <= points[i].y)) {
                         sol += extra - 1;
                     }
                 }
 
-                for (int k = 0; k < index_2.size(); ++k) {
-                    if ((index_2[k] >= points[i].first && index_2[k] <= points[j].first) ||
-                        (index_2[k] >= points[j].first && index_2[k] <= points[i].first)){
+                for (const auto& emptyLine : emptyLines) {
+                    if ((emptyLine >= points[i].x && emptyLine <= points[j].x) ||
+                        (emptyLine >= points[j].x && emptyLine <= points[i].x)) {
                         sol += extra - 1;
                     }
                 }
