@@ -94,7 +94,7 @@ namespace aoc2023_day12 {
         for (int i = 0; i < str.size(); ++i) {
             for (int j = 0; j < v.size(); ++j) {
                 for (int k = 0; k < str.size() + 1; ++k) {
-//                    if (solutions[i][j][k] != 0) {
+                    if (solutions[i][j][k] != 0) {
                         if (str[i] == '.' || str[i] == '?') {
                             if (k == 0 || (j > 0 && k == v[j - 1])) {
                                 solutions[i + 1][j][0] += solutions[i][j][k];
@@ -113,7 +113,7 @@ namespace aoc2023_day12 {
 
                         }
                     }
-//                }
+                }
             }
         }
 
