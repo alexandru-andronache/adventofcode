@@ -4,6 +4,10 @@
 #include <numeric>
 #include <map>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day14 {
     unsigned long long calculate(const std::vector<std::string>& input) {
         unsigned long long s = 0;
@@ -124,8 +128,28 @@ namespace aoc2023_day14 {
                 return calculate(p.first);
             }
         }
+
+        return 0;
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day14, part_1_test) {
+    ASSERT_EQ(aoc2023_day14::part_1("../2023/day14/input_test.in"), 136);
+}
+
+TEST(Tests2023Day14, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day14::part_1("../2023/day14/input.in"), 108889);
+}
+
+TEST(Tests2023Day14, part_2_test) {
+    ASSERT_EQ(aoc2023_day14::part_2("../2023/day14/input_test.in"), 64);
+}
+
+TEST(Tests2023Day14, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day14::part_2("../2023/day14/input.in"), 104671);
+}
+#endif
 
 #ifndef TESTING
 int main() {

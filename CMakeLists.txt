@@ -23,6 +23,7 @@ add_year(2019)
 add_year(2020)
 add_year(2021)
 add_year(2022)
+add_year(2023)
 
 file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
 file(GLOB tests_src "${COMMON_SOURCES}/tests/*.cpp")
@@ -36,6 +37,7 @@ get_files_for_year(2019 LIST_OF_SOURCE_FILES_2019)
 get_files_for_year(2020 LIST_OF_SOURCE_FILES_2020)
 get_files_for_year(2021 LIST_OF_SOURCE_FILES_2021)
 get_files_for_year(2022 LIST_OF_SOURCE_FILES_2022)
+get_files_for_year(2023 LIST_OF_SOURCE_FILES_2023)
 
 add_executable(${TESTS.ALL.YEARS} ${COMMON_SOURCES}/test.cpp ${utils_src}
         ${LIST_OF_SOURCE_FILES_2015}
@@ -45,7 +47,8 @@ add_executable(${TESTS.ALL.YEARS} ${COMMON_SOURCES}/test.cpp ${utils_src}
         ${LIST_OF_SOURCE_FILES_2019}
         ${LIST_OF_SOURCE_FILES_2020}
         ${LIST_OF_SOURCE_FILES_2021}
-        ${LIST_OF_SOURCE_FILES_2022})
+        ${LIST_OF_SOURCE_FILES_2022}
+        ${LIST_OF_SOURCE_FILES_2023})
 add_executable(${TESTS.COMMON} ${tests_include} ${COMMON_SOURCES}/test.cpp ${tests_src} ${utils_src})
 
 target_include_directories(${TESTS.ALL.YEARS} PRIVATE ${COMMON_SOURCES}/include)

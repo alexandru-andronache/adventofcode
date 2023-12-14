@@ -2,6 +2,10 @@
 #include "utilities.h"
 #include <iostream>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day13 {
     int compareString(std::string_view str1, std::string_view str2) {
         int diff = 0;
@@ -67,6 +71,24 @@ namespace aoc2023_day13 {
         return solve(path, 1);
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day13, part_1_test) {
+    ASSERT_EQ(aoc2023_day13::part_1("../2023/day13/input_test.in"), 405);
+}
+
+TEST(Tests2023Day13, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day13::part_1("../2023/day13/input.in"), 36041);
+}
+
+TEST(Tests2023Day13, part_2_test) {
+    ASSERT_EQ(aoc2023_day13::part_2("../2023/day13/input_test.in"), 400);
+}
+
+TEST(Tests2023Day13, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day13::part_2("../2023/day13/input.in"), 35915);
+}
+#endif
 
 #ifndef TESTING
 int main() {

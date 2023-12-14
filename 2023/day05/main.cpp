@@ -15,7 +15,7 @@ namespace aoc2023_day05 {
         while (index < input.size()) {
             std::vector<std::pair<unsigned long long, unsigned long long>> pairs1;
             std::vector<std::pair<unsigned long long, unsigned long long>> pairs2;
-            while (!input[index].empty()) {
+            while (index < input.size()  && !input[index].empty()) {
                 std::vector<std::string> t = utils::splitString(input[index], " ");
                 pairs2.emplace_back(std::stoull(t[0]), std::stoull(t[0]) + std::stoull(t[2]) - 1);
                 pairs1.emplace_back(std::stoull(t[1]), std::stoull(t[1]) + std::stoull(t[2]) - 1);
@@ -46,7 +46,7 @@ namespace aoc2023_day05 {
         while (index < input.size()) {
             std::vector<std::pair<unsigned long long, unsigned long long>> pairs1;
             std::vector<std::pair<unsigned long long, unsigned long long>> pairs2;
-            while (!input[index].empty()) {
+            while (index < input.size()  && !input[index].empty()) {
                 std::vector<std::string> t = utils::splitString(input[index], " ");
                 pairs2.emplace_back(std::stoull(t[0]), std::stoull(t[0]) + std::stoull(t[2]) - 1);
                 pairs1.emplace_back(std::stoull(t[1]), std::stoull(t[1]) + std::stoull(t[2]) - 1);
