@@ -3,6 +3,10 @@
 #include <iostream>
 #include <vector>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day05 {
     unsigned long long part_1(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
@@ -96,6 +100,24 @@ namespace aoc2023_day05 {
         })->first;
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day05, part_1_test) {
+    ASSERT_EQ(aoc2023_day05::part_1("../2023/day05/input_test.in"), 35);
+}
+
+TEST(Tests2023Day05, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day05::part_1("../2023/day05/input.in"), 157211394);
+}
+
+TEST(Tests2023Day05, part_2_test) {
+    ASSERT_EQ(aoc2023_day05::part_2("../2023/day05/input_test.in"), 46);
+}
+
+TEST(Tests2023Day05, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day05::part_2("../2023/day05/input.in"), 50855035);
+}
+#endif
 
 #ifndef TESTING
 int main() {

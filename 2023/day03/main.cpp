@@ -5,6 +5,10 @@
 #include <string>
 #include <numeric>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day03 {
     bool isCharacter(char c) {
         if (c >= '0' && c <= '9') {
@@ -81,6 +85,24 @@ namespace aoc2023_day03 {
         });
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day03, part_1_test) {
+    ASSERT_EQ(aoc2023_day03::part_1("../2023/day03/input_test.in"), 4361);
+}
+
+TEST(Tests2023Day03, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day03::part_1("../2023/day03/input.in"), 556057);
+}
+
+TEST(Tests2023Day03, part_2_test) {
+    ASSERT_EQ(aoc2023_day03::part_2("../2023/day03/input_test.in"), 467835);
+}
+
+TEST(Tests2023Day03, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day03::part_2("../2023/day03/input.in"), 82824352);
+}
+#endif
 
 #ifndef TESTING
 int main() {

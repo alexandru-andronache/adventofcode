@@ -3,6 +3,10 @@
 #include <vector>
 #include <map>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day01 {
     int solve(std::string_view path, std::vector<std::string> numbers) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
@@ -36,6 +40,24 @@ namespace aoc2023_day01 {
         return solve(path, {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "zero", "one","two", "three", "four", "five", "six", "seven", "eight", "nine"});
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day01, part_1_test) {
+    ASSERT_EQ(aoc2023_day01::part_1("../2023/day01/input_test.in"), 142);
+}
+
+TEST(Tests2023Day01, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day01::part_1("../2023/day01/input.in"), 55834);
+}
+
+TEST(Tests2023Day01, part_2_test) {
+    ASSERT_EQ(aoc2023_day01::part_2("../2023/day01/input_test2.in"), 281);
+}
+
+TEST(Tests2023Day01, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day01::part_2("../2023/day01/input.in"), 53221);
+}
+#endif
 
 #ifndef TESTING
 int main() {

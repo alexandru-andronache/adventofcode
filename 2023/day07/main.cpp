@@ -6,6 +6,10 @@
 #include <set>
 #include <algorithm>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day07 {
     struct hand {
         hand(std::string c, int b, int t) {
@@ -112,6 +116,24 @@ namespace aoc2023_day07 {
         return solve(path, true);
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day07, part_1_test) {
+    ASSERT_EQ(aoc2023_day07::part_1("../2023/day07/input_test.in"), 6440);
+}
+
+TEST(Tests2023Day07, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day07::part_1("../2023/day07/input.in"), 246163188);
+}
+
+TEST(Tests2023Day07, part_2_test) {
+    ASSERT_EQ(aoc2023_day07::part_2("../2023/day07/input_test.in"), 5905);
+}
+
+TEST(Tests2023Day07, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day07::part_2("../2023/day07/input.in"), 245794069);
+}
+#endif
 
 #ifndef TESTING
 int main() {

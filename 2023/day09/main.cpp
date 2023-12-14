@@ -5,6 +5,10 @@
 #include <vector>
 #include <map>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day09 {
     unsigned long long part_1(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
@@ -52,6 +56,24 @@ namespace aoc2023_day09 {
         return sol;
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day09, part_1_test) {
+    ASSERT_EQ(aoc2023_day09::part_1("../2023/day09/input_test.in"), 114);
+}
+
+TEST(Tests2023Day09, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day09::part_1("../2023/day09/input.in"), 1702218515);
+}
+
+TEST(Tests2023Day09, part_2_test) {
+    ASSERT_EQ(aoc2023_day09::part_2("../2023/day09/input_test.in"), 2);
+}
+
+TEST(Tests2023Day09, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day09::part_2("../2023/day09/input.in"), 925);
+}
+#endif
 
 #ifndef TESTING
 int main() {

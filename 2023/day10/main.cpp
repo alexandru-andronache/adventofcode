@@ -4,6 +4,10 @@
 #include <iostream>
 #include <array>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day10 {
     unsigned long long part_1(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
@@ -195,6 +199,28 @@ namespace aoc2023_day10 {
         return nr;
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day10, part_1_test) {
+    ASSERT_EQ(aoc2023_day10::part_1("../2023/day10/input_test.in"), 8);
+}
+
+TEST(Tests2023Day10, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day10::part_1("../2023/day10/input.in"), 6690);
+}
+
+TEST(Tests2023Day10, part_2_test) {
+    ASSERT_EQ(aoc2023_day10::part_2("../2023/day10/input_test2.in"), 4);
+}
+
+TEST(Tests2023Day10, part_2_test_2) {
+    ASSERT_EQ(aoc2023_day10::part_2("../2023/day10/input_test3.in"), 8);
+}
+
+TEST(Tests2023Day10, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day10::part_2("../2023/day10/input.in"), 525);
+}
+#endif
 
 #ifndef TESTING
 int main() {

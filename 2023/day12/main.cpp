@@ -3,6 +3,10 @@
 #include <iostream>
 #include <set>
 
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
+
 namespace aoc2023_day12 {
     bool isValid(std::string str, const std::vector<int>& v) {
         int j = 0, nr = v[0], valid = true;
@@ -108,7 +112,6 @@ namespace aoc2023_day12 {
                             }
                             else {
                                 solutions[i + 1][j][k + 1] += solutions[i][j][k];
-//                                std::cout << "case # " << i << " " << j << " " << k << solutions[i + 1][j][k + 1] << std::endl;
                             }
 
                         }
@@ -150,6 +153,24 @@ namespace aoc2023_day12 {
         return sol;
     }
 }
+
+#ifdef TESTING
+TEST(Tests2023Day12, part_1_test) {
+    ASSERT_EQ(aoc2023_day12::part_1("../2023/day12/input_test.in"), 21);
+}
+
+TEST(Tests2023Day12, part_1_real_test) {
+    ASSERT_EQ(aoc2023_day12::part_1("../2023/day12/input.in"), 8270);
+}
+
+TEST(Tests2023Day12, part_2_test) {
+    ASSERT_EQ(aoc2023_day12::part_2("../2023/day12/input_test.in"), 525152);
+}
+
+TEST(Tests2023Day12, part_2_real_test) {
+    ASSERT_EQ(aoc2023_day12::part_2("../2023/day12/input.in"), 204640299929836);
+}
+#endif
 
 #ifndef TESTING
 int main() {
