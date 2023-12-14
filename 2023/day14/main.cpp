@@ -21,7 +21,6 @@ namespace aoc2023_day14 {
 
     unsigned long long part_1(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
-        unsigned long long sol = 0;
 
         bool x = true;
         while (x) {
