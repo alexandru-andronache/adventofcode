@@ -7,6 +7,8 @@
 #include <gtest/gtest.h>
 #endif
 
+typedef unsigned long long ull;
+
 namespace aoc2023_day19 {
     struct tree {
         std::string key;
@@ -44,10 +46,10 @@ namespace aoc2023_day19 {
         return root;
     }
 
-    unsigned long long part_1(std::string_view path) {
+    ull part_1(std::string_view path) {
         std::vector<tree*> nodes;
 
-        unsigned long long sol = 0;
+        ull sol = 0;
         std::vector<std::string> input = file::readFileAsArrayString(path);
         std::map<std::string, int> initial;
         int start = 0;
@@ -76,21 +78,11 @@ namespace aoc2023_day19 {
             while (true) {
                 tree* r = nodes[current];
                 while (r->comp != ' ') {
-                    if (r->comp == '<') {
-                        if (values[r->key] < r->value) {
-                            r = r->left;
-                        }
-                        else {
-                            r = r->right;
-                        }
+                    if ((r->comp == '<' && values[r->key] < r->value) || (r->comp == '>' && values[r->key] > r->value)) {
+                        r = r->left;
                     }
                     else {
-                        if (values[r->key] > r->value) {
-                            r = r->left;
-                        }
-                        else {
-                            r = r->right;
-                        }
+                        r = r->right;
                     }
                 }
                 if (r->key == "A" || r->key == "R") {
@@ -107,67 +99,51 @@ namespace aoc2023_day19 {
         return sol;
     }
 
-    void solve_part_2(std::pair<unsigned long long, unsigned long long> x, std::pair<unsigned long long, unsigned long long> m, std::pair<unsigned long long, unsigned long long> a,
-                                    std::pair<unsigned long long, unsigned long long> s, const std::vector<tree*>& nodes, const std::map<std::string, int>& initial,
-                                    tree* r, unsigned long long& sum) {
-        if (r->comp != ' ') {
-            if (r->comp == '<') {
-                if (r->key == "x") {
-                    solve_part_2({x.first, r->value - 1}, m, a, s, nodes, initial, r->left, sum);
-                    solve_part_2({r->value, x.second}, m, a, s, nodes, initial, r->right, sum);
-                }
-                else if (r->key == "m") {
-                    solve_part_2(x, {m.first, r->value - 1}, a, s, nodes, initial, r->left, sum);
-                    solve_part_2(x, {r->value, m.second}, a, s, nodes, initial, r->right, sum);
-                }
-                else if (r->key == "a") {
-                    solve_part_2(x, m, {a.first, r->value - 1}, s, nodes, initial, r->left, sum);
-                    solve_part_2(x, m, {r->value, a.second}, s, nodes, initial, r->right, sum);
-                }
-                else if (r->key == "s") {
-                    solve_part_2(x, m, a, {s.first, r->value - 1}, nodes, initial, r->left, sum);
-                    solve_part_2(x, m, a, {r->value, s.second}, nodes, initial, r->right, sum);
-                }
+    ull solve_part_2(const std::map<std::string, std::pair<ull, ull>>& ranges,
+                     const std::vector<tree*>& nodes,
+                     const std::map<std::string, int>& initial,
+                     tree* root) {
+        ull sum = 0;
+        if (root->comp != ' ') {
+            std::map<std::string, std::pair<ull, ull>> rangesLeft = ranges;
+            std::map<std::string, std::pair<ull, ull>> rangesRight = ranges;
+            if (root->comp == '<') {
+                rangesLeft.at(root->key) = {rangesLeft.at(root->key).first, root->value - 1};
+                rangesRight.at(root->key) = {root->value, rangesRight.at(root->key).second};
+                sum += solve_part_2(rangesLeft, nodes, initial, root->left);
+                sum += solve_part_2(rangesRight, nodes, initial, root->right);
             }
             else {
-                if (r->key == "x") {
-                    solve_part_2({x.first, r->value}, m, a, s, nodes, initial, r->right, sum);
-                    solve_part_2({r->value + 1, x.second}, m, a, s, nodes, initial, r->left, sum);
-                }
-                else if (r->key == "m") {
-                    solve_part_2(x, {m.first, r->value}, a, s, nodes, initial, r->right, sum);
-                    solve_part_2(x, {r->value + 1, m.second}, a, s, nodes, initial, r->left, sum);
-                }
-                else if (r->key == "a") {
-                    solve_part_2(x, m, {a.first, r->value}, s, nodes, initial, r->right, sum);
-                    solve_part_2(x, m, {r->value + 1, a.second}, s, nodes, initial, r->left, sum);
-                }
-                else if (r->key == "s") {
-                    solve_part_2(x, m, a, {s.first, r->value}, nodes, initial, r->right, sum);
-                    solve_part_2(x, m, a, {r->value + 1, s.second}, nodes, initial, r->left, sum);
-                }
+                rangesLeft.at(root->key) = {root->value + 1, rangesLeft.at(root->key).second};
+                rangesRight.at(root->key) = {rangesRight.at(root->key).first, root->value};
+                sum += solve_part_2(rangesLeft, nodes, initial, root->left);
+                sum += solve_part_2(rangesRight, nodes, initial, root->right);
             }
         }
         else {
-            if (r->key == "A" || r->key == "R") {
-                if (r->key == "A") {
-                    sum += (x.second - x.first + 1) * (m.second - m.first + 1) * (a.second - a.first + 1) *
-                             (s.second - s.first + 1);
+            if (root->key == "A") {
+                ull value = 1;
+                for (const auto& range : ranges) {
+                    value = value * (range.second.second - range.second.first + 1);
                 }
-                return;
-            } else {
-                solve_part_2(x, m, a, s, nodes, initial, nodes[initial.at(r->key)], sum);
+                return sum + value;
+            }
+            else if (root->key == "R") {
+                return sum;
+            }
+            else {
+                return sum + solve_part_2(ranges, nodes, initial, nodes[initial.at(root->key)]);
             }
         }
+        return sum;
     }
 
     unsigned long long part_2(std::string_view path) {
         std::vector<tree*> nodes;
 
-        unsigned long long sol = 0;
         std::vector<std::string> input = file::readFileAsArrayString(path);
         std::map<std::string, int> initial;
-        std::map<char, std::pair<unsigned long long, unsigned long long>> pairs {{'x', {1, 4000}}, {'m', {1, 4000}}, {'a', {1, 4000}}, {'s', {1, 4000}}};
+        std::map<std::string, std::pair<unsigned long long, unsigned long long>> pairs {{"x", {1, 4000}}, {"m", {1, 4000}}, {"a", {1, 4000}}, {"s", {1, 4000}}};
         int start = 0;
         for (int k = 0; k < input.size(); ++k) {
             if (input[k] == "") {
@@ -182,9 +158,7 @@ namespace aoc2023_day19 {
             }
         }
 
-        solve_part_2({1, 4000}, {1, 4000}, {1, 4000}, {1, 4000}, nodes, initial, nodes[initial["in"]], sol);
-
-        return sol;
+        return solve_part_2(pairs, nodes, initial, nodes[initial["in"]]);
     }
 }
 
