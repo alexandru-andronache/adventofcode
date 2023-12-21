@@ -34,6 +34,7 @@ namespace utils {
     std::vector<point> getListOfNeighbours4Directions(int x, int y, const std::vector<std::vector<int>>& map);
     std::vector<point> getListOfNeighboursAllDirections(int x, int y, const std::vector<std::vector<int>>& map);
     std::vector<point> getListOfNeighboursAllDirections(int x, int y, int sizeX, int sizeY);
+    std::vector<point> getListOfNeighbours4Directions2(int x, int y, int sizeX, int sizeY);
 
     std::pair<int, int> findValue(const std::vector<std::string>& map, char value);
     std::vector<point> findAll(const std::vector<std::string>& map, char value);

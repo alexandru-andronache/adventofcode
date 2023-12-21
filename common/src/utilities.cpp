@@ -135,6 +135,17 @@ namespace utils {
         return neighbours;
     }
 
+    std::vector<point> getListOfNeighbours4Directions2(int x, int y, int sizeX, int sizeY) {
+        direction::Direction dir;
+        std::vector<point> neighbours;
+        for (const auto& d : dir.directions) {
+            if (x + d.x >= 0 && x + d.x < sizeX && y + d.y >= 0 && y + d.y < sizeY) {
+                neighbours.emplace_back(x + d.x, y + d.y);
+            }
+        }
+        return neighbours;
+    }
+
     std::pair<int, int> findValue(const std::vector<std::string>& map, char value) {
         for (int i = 0; i < map.size(); ++i) {
             for (int j = 0; j < map[0].size(); ++j) {
