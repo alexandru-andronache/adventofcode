@@ -50,12 +50,12 @@ namespace aoc2023_day23 {
             adj[sx][sy].push_back({x, y, d});
             return;
         }
-        for (const auto& p : d1.directions) {
-            int nx = x + p.x, ny = y + p.y;
-            if (nx < 0 || ny < 0 || nx >= input.size() || ny >= input[0].size()) continue;
-            if (input[nx][ny] == '#') continue;
-            if (nx == px && ny == py) continue;
-            dfs_part_2(nx, ny, x, y, sx, sy, d + 1, input, junctions, adj);
+        std::vector<utils::point> po = utils::getListOfNeighbours4Directions2(x, y, input.size(),
+                                                                              input[0].size());
+        for (const auto& p : po) {
+            if ((input[p.x][p.y] != '#') && (p.x != px || p.y != py)) {
+                dfs_part_2(p.x, p.y, x, y, sx, sy, d + 1, input, junctions, adj);
+            }
         }
     }
 
@@ -80,25 +80,25 @@ namespace aoc2023_day23 {
 
     int part_1(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
-
         return dfs(0, 1, 0, 0, input, 0);
     }
 
     int part_2(std::string_view path) {
         std::vector<std::string> input = file::readFileAsArrayString(path);
-        direction::Direction d;
 
         std::set<utils::point> junctions{{0, 1}, {(int)input.size() - 1, (int)input[0].size() - 2}};
         for (int x = 0; x < input.size(); ++x) {
             for (int y = 0; y < input[0].size(); ++y) {
-                if (input[x][y] == '#') continue;
-                int free_neighbours = 0;
-                std::vector<utils::point> po = utils::getListOfNeighbours4Directions2(x, y, input.size(), input[0].size());
-                for (const auto& p : po) {
-                    if (input[p.x][p.y] != '#') free_neighbours++;
-                }
-                if (free_neighbours >= 3) {
-                    junctions.insert({x, y});
+                if (input[x][y] != '#') {
+                    int free_neighbours = 0;
+                    std::vector<utils::point> po = utils::getListOfNeighbours4Directions2(x, y, input.size(),
+                                                                                          input[0].size());
+                    for (const auto &p: po) {
+                        if (input[p.x][p.y] != '#') free_neighbours++;
+                    }
+                    if (free_neighbours >= 3) {
+                        junctions.insert({x, y});
+                    }
                 }
             }
         }
