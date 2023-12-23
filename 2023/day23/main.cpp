@@ -43,10 +43,10 @@ namespace aoc2023_day23 {
     void dfs_part_2(int x, int y, int px, int py,
                     int sx, int sy, int d,
                     const std::vector<std::string>& input,
-                    const std::set<std::pair<int, int>>& candidates,
+                    const std::set<utils::point>& junctions,
                     std::vector<std::vector<std::vector<edge>>>& adj) {
         direction::Direction d1;
-        if (candidates.count({x, y}) && (x != sx || y != sy)) {
+        if (junctions.count({x, y}) && (x != sx || y != sy)) {
             adj[sx][sy].push_back({x, y, d});
             return;
         }
@@ -55,7 +55,7 @@ namespace aoc2023_day23 {
             if (nx < 0 || ny < 0 || nx >= input.size() || ny >= input[0].size()) continue;
             if (input[nx][ny] == '#') continue;
             if (nx == px && ny == py) continue;
-            dfs_part_2(nx, ny, x, y, sx, sy, d + 1, input, candidates, adj);
+            dfs_part_2(nx, ny, x, y, sx, sy, d + 1, input, junctions, adj);
         }
     }
 
@@ -68,10 +68,11 @@ namespace aoc2023_day23 {
         }
         visited[x][y] = 1;
         for (const auto& a : adj[x][y]) {
-            if (visited[a.x][a.y]) continue;
-            steps += a.d;
-            sol = std::max(sol, solve_part_2(a.x, a.y, sizeX, sizeY, visited, steps, adj));
-            steps -= a.d;
+            if (visited[a.x][a.y] == 0) {
+                steps += a.d;
+                sol = std::max(sol, solve_part_2(a.x, a.y, sizeX, sizeY, visited, steps, adj));
+                steps -= a.d;
+            }
         }
         visited[x][y] = 0;
         return sol;
@@ -87,26 +88,24 @@ namespace aoc2023_day23 {
         std::vector<std::string> input = file::readFileAsArrayString(path);
         direction::Direction d;
 
-        std::set<std::pair<int, int>> candidates {{0, 1}, {input.size() - 1, input[0].size() - 2}};
+        std::set<utils::point> junctions{{0, 1}, {(int)input.size() - 1, (int)input[0].size() - 2}};
         for (int x = 0; x < input.size(); ++x) {
             for (int y = 0; y < input[0].size(); ++y) {
                 if (input[x][y] == '#') continue;
                 int free_neighbours = 0;
-                for (int dir = 0; dir < 4; ++dir) {
-                    int nx = x + d.directions[dir].x, ny = y + d.directions[dir].y;
-                    if (nx < 0 || ny < 0 || nx >= input.size() || ny >= input[0].size()) continue;
-                    if (input[nx][ny] == '#') continue;
-                    free_neighbours++;
+                std::vector<utils::point> po = utils::getListOfNeighbours4Directions2(x, y, input.size(), input[0].size());
+                for (const auto& p : po) {
+                    if (input[p.x][p.y] != '#') free_neighbours++;
                 }
                 if (free_neighbours >= 3) {
-                    candidates.insert({x, y});
+                    junctions.insert({x, y});
                 }
             }
         }
 
         std::vector<std::vector<std::vector<edge>>> adj(input.size(), std::vector<std::vector<edge>>(input[0].size()));
-        for (auto [x, y] : candidates) {
-            dfs_part_2(x, y, x, y, x, y, 0, input, candidates, adj);
+        for (auto junction : junctions) {
+            dfs_part_2(junction.x, junction.y, junction.x, junction.y, junction.x, junction.y, 0, input, junctions, adj);
         }
 
         std::vector<std::vector<int>> visited(input.size(), std::vector<int>(input.size(), 0));
