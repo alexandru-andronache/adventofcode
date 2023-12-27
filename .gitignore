@@ -53,3 +53,8 @@ build
 
 # visual studio code
 .vscode
+
+
+# https://github.com/LiquidFun/aoc_tiles
+.aoc_tiles/*
+!.aoc_tiles/tiles/
