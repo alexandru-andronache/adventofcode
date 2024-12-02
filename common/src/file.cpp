@@ -81,4 +81,25 @@ namespace file {
         }
         return output;
     }
+
+    std::vector<std::vector<int>> readFileAsVectorOfVectors(std::string_view path) {
+        std::string str = file::readFileAsString(path);
+        std::vector<std::string> lines = utils::splitString(str, "\n");
+        std::vector<std::vector<std::string>> map;
+        map.reserve(lines.size());
+        for (const auto& line : lines) {
+            map.emplace_back(utils::splitString(line, " "));
+        }
+        std::vector<std::vector<int>> input;
+        for (auto & line : map) {
+            std::vector<int> temp;
+            temp.reserve(line.size());
+            for (const auto & nr : line) {
+                temp.emplace_back(std::stoi(nr));
+            }
+            input.emplace_back(temp);
+        }
+
+        return input;
+    }
 }
