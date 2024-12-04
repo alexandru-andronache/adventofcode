@@ -82,6 +82,19 @@ namespace file {
         return output;
     }
 
+    std::vector<std::vector<char>> readFileAsMapChar(std::string_view path) {
+        std::vector<std::string> lines = file::readFileAsArrayString(path);
+        std::vector<std::vector<char>> output;
+        for (const auto& line : lines) {
+            std::vector<char> numbers;
+            for (const auto& c : line) {
+                numbers.push_back(c);
+            }
+            output.push_back(numbers);
+        }
+        return output;
+    }
+
     std::vector<std::vector<int>> readFileAsVectorOfVectors(std::string_view path) {
         std::string str = file::readFileAsString(path);
         std::vector<std::string> lines = utils::splitString(str, "\n");

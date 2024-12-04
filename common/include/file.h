@@ -10,4 +10,5 @@ namespace file {
     std::vector<std::vector<std::string>> readFileAndSplit(std::string_view path, std::string_view tokens);
     std::vector<std::vector<int>> readFileAsMap(std::string_view path);
     std::vector<std::vector<int>> readFileAsVectorOfVectors(std::string_view path);
+    std::vector<std::vector<char>> readFileAsMapChar(std::string_view path);
 }
