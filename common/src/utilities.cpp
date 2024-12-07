@@ -56,6 +56,24 @@ namespace utils {
         return nr;
     }
 
+    std::vector<long long> splitStringToLL(std::string_view str, std::string_view delimeters) {
+        std::vector<std::string> output = splitString(str, delimeters);
+        std::vector<long long> nr(output.size(), 0);
+        for (int i = 0; i < output.size(); ++i) {
+            nr[i] = std::stoll(output[i]);
+        }
+        return nr;
+    }
+
+    std::vector<unsigned long long> splitStringToULL(std::string_view str, std::string_view delimeters) {
+        std::vector<std::string> output = splitString(str, delimeters);
+        std::vector<unsigned long long> nr(output.size(), 0);
+        for (int i = 0; i < output.size(); ++i) {
+            nr[i] = std::stoull(output[i]);
+        }
+        return nr;
+    }
+
     /*
      * return the decimal value of binary string str with 1 being represented by the character
      * typically call this with '1' as default but sometimes the value might be represented by another character
