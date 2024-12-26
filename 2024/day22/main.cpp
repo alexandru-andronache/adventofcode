@@ -47,8 +47,8 @@ namespace aoc2024_day22 {
                 prev = secret % 10;
             }
             for (int i = 0; i < history.size() - 3; ++i) {
-                long long key = (history[i].first) * std::pow(19, 3) +
-                          history[i + 1].first * std::pow(19, 2) +
+                int key = history[i].first * 19 * 19 * 19 +
+                          history[i + 1].first * 19 * 19 +
                           history[i + 2].first * 19 +
                           history[i + 3].first;
                 if (!visited.test(key)) {
