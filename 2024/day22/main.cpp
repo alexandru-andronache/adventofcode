@@ -14,6 +14,14 @@ namespace aoc2024_day22 {
         secret = ((secret << 11) ^ secret) % 16777216;
         return secret;
     }
+
+    int advance(long long& secret, int& prev) {
+        int old = prev;
+        secret = get_next(secret);
+        prev = secret % 10;
+        return secret % 10 - old + 9;
+    }
+
     unsigned long long part_1(std::string_view path) {
         std::vector<int> input = file::readFileAsArrayInt(path);
         unsigned long long sum = 0;
@@ -33,28 +41,25 @@ namespace aoc2024_day22 {
         constexpr int MAX = 18 * 19 * 19 * 19 + 18 * 19 * 19 + 18 * 19 + 18 + 1;
         std::vector<int> input = file::readFileAsArrayInt(path);
         std::vector<int> total(MAX, 0);
-        std::vector<std::pair<int, int>> history;
-        std::bitset<MAX> visited;
+        int a, b, c, d;
 
         for (const auto& nr : input) {
-            history.clear();
-            visited.reset();
+            std::bitset<MAX> visited;
             long long secret = nr;
             int prev = secret % 10;
-            for (int step = 0; step < 2000; ++step) {
-                secret = get_next(secret);
-                history.emplace_back(secret % 10 - prev + 9, secret % 10);
-                prev = secret % 10;
-            }
-            for (int i = 0; i < history.size() - 3; ++i) {
-                int key = history[i].first * 19 * 19 * 19 +
-                          history[i + 1].first * 19 * 19 +
-                          history[i + 2].first * 19 +
-                          history[i + 3].first;
+            a = advance(secret, prev);
+            b = advance(secret, prev);
+            c = advance(secret, prev);
+            for (int step = 3; step < 2000; ++step) {
+                d = advance(secret, prev);
+                int key = a * 19 * 19 * 19 + b * 19 * 19 + c * 19 + d;
                 if (!visited.test(key)) {
-                    total[key] += history[i + 3].second;
+                    total[key] += secret % 10;
                     visited.flip(key);
                 }
+                a = b;
+                b = c;
+                c = d;
             }
         }
 
