@@ -40,4 +40,16 @@ namespace utils {
 
     std::pair<int, int> findValue(const std::vector<std::string>& map, char value);
     std::vector<point> findAll(const std::vector<std::string>& map, char value);
+
+    template<typename T>
+    std::string vectorToString(const std::vector<T>& vec, char delimiter) {
+        if (vec.empty()) {
+            return "";
+        }
+        std::string output = std::to_string(vec[0]);
+        for (int i = 1; i < vec.size(); ++i) {
+            output += delimiter + std::to_string(vec[i]);
+        }
+        return output;
+    }
 }
