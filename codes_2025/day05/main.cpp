@@ -1,8 +1,12 @@
 #include "file.h"
 #include "utilities.h"
-#include <iostream>
 #include <algorithm>
 #include <ranges>
+#include <fmt/printf.h>
+
+#ifdef TESTING
+#include <gtest/gtest.h>
+#endif
 
 namespace aoccodes_2025_day05 {
     struct row {
@@ -106,10 +110,39 @@ namespace aoccodes_2025_day05 {
     }
 }
 
+#ifdef TESTING
+namespace aoccodes_2025_day05 {
+    TEST(Testscodes_2025Day05, part_1_test) {
+        ASSERT_EQ(part_1("../codes_2025/day05/input/input_part_1_test.in"), 581078);
+    }
+
+    TEST(Testscodes_2025Day05, part_1_real_test) {
+        ASSERT_EQ(part_1("../codes_2025/day05/input/input_part_1.in"), 2754578356);
+    }
+
+    TEST(Testscodes_2025Day05, part_2_test) {
+        ASSERT_EQ(part_2("../codes_2025/day05/input/input_part_2_test.in"), 77053);
+    }
+
+    TEST(Testscodes_2025Day05, part_2_real_test) {
+        ASSERT_EQ(part_2("../codes_2025/day05/input/input_part_2.in"), 8436060100176);
+    }
+
+    TEST(Testscodes_2025Day05, part_3_test) {
+        ASSERT_EQ(part_3("../codes_2025/day05/input/input_part_3_test.in"), 260);
+    }
+
+    TEST(Testscodes_2025Day05, part_3_real_test) {
+        ASSERT_EQ(part_3("../codes_2025/day05/input/input_part_3.in"), 31212509);
+    }
+}
+#endif
+
 #ifndef TESTING
 int main() {
-    std::cout << "Part 1: " << aoccodes_2025_day05::part_1("../codes_2025/day05/input.in") << std::endl;
-    std::cout << "Part 2: " << aoccodes_2025_day05::part_2("../codes_2025/day05/input.in") << std::endl;
+    fmt::print("Part 1: {}\n", aoccodes_2025_day05::part_1("../codes_2025/day05/input/input_part_1.in"));
+    fmt::print("Part 2: {}\n", aoccodes_2025_day05::part_2("../codes_2025/day05/input/input_part_2.in"));
+    fmt::print("Part 3: {}\n", aoccodes_2025_day05::part_3("../codes_2025/day05/input/input_part_3.in"));
 
     return 0;
 }
