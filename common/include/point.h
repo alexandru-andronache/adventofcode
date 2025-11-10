@@ -14,6 +14,18 @@ namespace point {
             return *this;
         }
 
+        point& operator+=(const point& rhs) {
+            x += rhs.getX();
+            y += rhs.getY();
+            return *this;
+        }
+
+        point& operator%=(const point& rhs) {
+            x %= rhs.getX();
+            y %= rhs.getY();
+            return *this;
+        }
+
         friend point operator+(point lhs, const direction::direction& rhs)
         {
             lhs += rhs;

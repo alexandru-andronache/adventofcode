@@ -63,6 +63,25 @@ namespace aoc2024_day21 {
 
     std::map<std::pair<std::string, int>, unsigned long long> cache;
 
+    void generateBigKeypad() {
+        std::vector<std::vector<char>> keypad{{'7', '8', '9'}, {'4', '5', '6'}, {'1', '2', '3'}, {'*', '0', 'A'}};
+        std::map<std::string_view, std::vector<std::string>> bigKeypad1;
+
+        for (int i = 0; i < keypad.size(); ++i) {
+            for (int j = 0; j < keypad.size(); ++j) {
+                for (int k = 0; k < keypad.size(); ++k) {
+                    for (int l = 0; l < keypad.size(); ++l) {
+                        if (keypad[i][j] != '*' && keypad[k][l] != '*' && (i != k || j != l)) {
+                            if (i == k) {
+                                std::string s =
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     std::vector<std::string> processBigKeypad(const std::vector<std::string>& lines) {
         std::vector<std::string> final;
         for (auto line : lines) {

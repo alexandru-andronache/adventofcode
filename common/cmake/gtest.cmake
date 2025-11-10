@@ -3,7 +3,7 @@ SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/third_party)
 ExternalProject_Add(
         googletest_utilities
         GIT_REPOSITORY https://github.com/google/googletest
-        GIT_TAG release-1.11.0
+        GIT_TAG v1.17.0
         TIMEOUT 10
         SOURCE_DIR ${CMAKE_BINARY_DIR}/third_party/googletest/googletest
         CMAKE_ARGS

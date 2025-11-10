@@ -174,6 +174,16 @@ namespace utils {
         return {-1, -1};
     }
 
+    point findValue(const std::vector<std::vector<char>>& map, char value) {
+        for (int i = 0; i < map.size(); ++i) {
+            for (int j = 0; j < map[0].size(); ++j) {
+                if (map[i][j] == value) return {i, j};
+            }
+        }
+
+        return {-1, -1};
+    }
+
     std::vector<point> findAll(const std::vector<std::string>& map, char value) {
         std::vector<point> points;
         for (int i = 0; i < map.size(); ++i) {

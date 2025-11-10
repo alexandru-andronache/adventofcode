@@ -3,18 +3,18 @@
 
 namespace aoc2024_day12 {
     TEST_F(Tests2024Day12, part_1_test) {
-        ASSERT_EQ(part_1("../2024/day12/input_test.in"), 0);
+        ASSERT_EQ(part_1("../2024/day12/input_test.in"), 1930);
     }
 
     TEST_F(Tests2024Day12, part_1_real_test) {
-        ASSERT_EQ(part_1("../2024/day12/input.in"), 0);
+        ASSERT_EQ(part_1("../2024/day12/input.in"), 1431440);
     }
 
     TEST_F(Tests2024Day12, part_2_test) {
-        ASSERT_EQ(part_2("../2024/day12/input_test.in"), 0);
+        ASSERT_EQ(part_2("../2024/day12/input_test.in"), 1206);
     }
 
     TEST_F(Tests2024Day12, part_2_real_test) {
-        ASSERT_EQ(part_2("../2024/day12/input.in"), 0);
+        ASSERT_EQ(part_2("../2024/day12/input.in"), 869070);
     }
 }

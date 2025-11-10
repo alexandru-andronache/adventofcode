@@ -36,23 +36,27 @@ function(add_year YEAR)
 
     add_dependencies(${YEAR}.all.tests googletest_utilities)
 
-    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        set(CMAKE_DEBUG_POSTFIX d)
-    endif()
-
     target_compile_definitions(${YEAR}.all.tests PRIVATE TESTING=1)
     target_link_libraries(${YEAR}.all.tests
             general pthread
-            general libgtest${CMAKE_DEBUG_POSTFIX}.a)
+            general libgtest.a)
 endfunction()
 
 function(day_common DAY)
     include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 23)
     SET(COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../bin")
 
     include(${COMMON_SOURCES}/cmake/gtest.cmake)
+
+    include(FetchContent)
+
+    FetchContent_Declare(
+      fmt
+      GIT_REPOSITORY https://github.com/fmtlib/fmt
+      GIT_TAG        11.1.3)
+    FetchContent_MakeAvailable(fmt)
 
     file(GLOB utils_src "${COMMON_SOURCES}/src/*.cpp")
 
@@ -79,21 +83,22 @@ function(day_common DAY)
     target_compile_definitions(test PRIVATE TESTING=1)
     target_compile_definitions(test.sanitize PRIVATE TESTING=1)
 
-    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-            set(CMAKE_DEBUG_POSTFIX d)
-    endif()
+    target_link_libraries(main
+                         fmt::fmt)
 
     target_link_libraries(test
             general pthread
             general c++
-            general libgtest${CMAKE_DEBUG_POSTFIX}.a
-            general libgmock${CMAKE_DEBUG_POSTFIX}.a
+            general libgtest.a
+            general libgmock.a
+            fmt::fmt
             )
 
     target_link_libraries(test.sanitize
             general pthread
             general c++
-            general libgtest${CMAKE_DEBUG_POSTFIX}.a
-            general libgmock${CMAKE_DEBUG_POSTFIX}.a
+            general libgtest.a
+            general libgmock.a
+            fmt::fmt
             )
 endfunction()
