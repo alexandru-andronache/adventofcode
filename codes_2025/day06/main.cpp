@@ -93,6 +93,17 @@ namespace aoccodes_2025_day06 {
 
     unsigned long long part_3(std::string_view path, int repeat = 1000, int distance = 1000) {
         std::string line = file::readFileAsString(path);
+        std::string originalLine = line;
+        if (line.size() < distance) {
+            int c = 1;
+            while (line.size() < distance || (repeat % c != 0)) {
+                c++;
+                line += originalLine;
+            }
+            if (c > 0) {
+                repeat = repeat / c;
+            }
+        }
         std::vector<count> counts;
         count current{};
         counts.push_back(current);
@@ -146,9 +157,9 @@ namespace aoccodes_2025_day06 {
         ASSERT_EQ(part_3("../codes_2025/day06/input/input_part_3_test.in", 2, 10), 72);
     }
 
-    // TEST(Testscodes_2025Day06, part_3_test_2) {
-    //     ASSERT_EQ(part_3("../codes_2025/day06/input/input_part_3_test.in", 1000, 1000), 3442321);
-    // }
+    TEST(Testscodes_2025Day06, part_3_test_2) {
+        ASSERT_EQ(part_3("../codes_2025/day06/input/input_part_3_test.in", 1000, 1000), 3442321);
+    }
 
     TEST(Testscodes_2025Day06, part_3_real_test) {
         ASSERT_EQ(part_3("../codes_2025/day06/input/input_part_3.in"), 1666826546);
