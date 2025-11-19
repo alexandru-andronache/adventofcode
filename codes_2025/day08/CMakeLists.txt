@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-SET(NAME "codes_2024.day08")
+SET(NAME "codes_2025.day08")
 project(${NAME})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../aoc_common.cmake)
