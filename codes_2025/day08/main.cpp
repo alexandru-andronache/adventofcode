@@ -57,19 +57,22 @@ namespace aoccodes_2025_day08 {
             grid[numbers[i + 1]][numbers[i]]++;
         }
 
+        for (int i = 1; i <= max; i++) {
+            for (int j = 1; j <= max; j++) {
+                grid[i][j] += grid[i][j - 1];
+            }
+        }
+
+
         int sol = 0;
         for (int i = 1; i <= max; i++) {
             for (int j = i + 1; j <= max; j++) {
                 int count = 0;
                 for (int k = i + 1; k < j; k++) {
-                    for (int l = 1; l < i; l++) {
-                        count += grid[k][l];
-                    }
-                    for (int l = j + 1; l <= max; l++) {
-                        count += grid[k][l];
-                    }
+                    count += grid[k][i - 1];
+                    count += grid[k][max] - grid[k][j];
                 }
-                count += grid[i][j];
+                count += grid[i][j] - grid[i][j - 1];
                 sol = std::max(sol, count);
             }
         }
