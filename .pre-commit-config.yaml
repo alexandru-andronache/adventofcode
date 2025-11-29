@@ -13,3 +13,4 @@ repos:
             #     - --auto-add-tiles-to-git=amend
             #     - --language-sorting=jl,kt,py,rs
             #     - --exclude-patterns=2021/*/*.apl,2021/*/*.py,2021/*/*.cpp
+          - --what-to-show-on-right-side: time_and_rank
