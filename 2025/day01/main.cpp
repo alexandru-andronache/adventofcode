@@ -9,10 +9,11 @@
 #endif
 
 namespace aoc2025_day01 {
+    const int START = 50;
     int part_1(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         int result = 0;
-        int rotation = 50;
+        int rotation = START;
 
         for (const auto& line : lines) {
             int nr = utils::getNumber(line, 1);
@@ -23,13 +24,9 @@ namespace aoc2025_day01 {
             }
             else if (line[0] == 'L') {
                 rotation -= nr;
-                if (rotation < 0) {
-                    rotation += 100;
-                }
+                rotation = (rotation + 100) % 100;
             }
-            if (rotation == 0) {
-                result ++;
-            }
+            result += (rotation == 0);
         }
 
         return result;
@@ -38,7 +35,7 @@ namespace aoc2025_day01 {
     int part_2(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         int result = 0;
-        int rotation = 50;
+        int rotation = START;
 
         for (const auto& line : lines) {
             int nr = utils::getNumber(line, 1);
