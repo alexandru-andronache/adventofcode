@@ -32,6 +32,20 @@ namespace utils {
         return isNegative * (-1) * nr + !isNegative * nr;
     }
 
+    int getNumber(std::string_view str, int pos) {
+        int nr = 0;
+        bool isNegative = false;
+        if (str[pos] == '-') {
+            isNegative = true;
+            pos++;
+        }
+        while (pos < str.size() && str[pos] >= '0' && str[pos] <= '9') {
+            nr = nr * 10 + str[pos] - '0';
+            pos++;
+        }
+        return isNegative * (-1) * nr + !isNegative * nr;
+    }
+
     std::vector<std::string> splitString(std::string_view str, std::string_view delimeters) {
         std::vector<std::string> output;
         std::size_t prev = 0, pos;

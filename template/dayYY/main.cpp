@@ -47,7 +47,7 @@ namespace aocXXXX_dayYY {
 #ifndef TESTING
 int main() {
     fmt::print("Part 1: {}\n", aocXXXX_dayYY::part_1("../XXXX/dayYY/input.in"));
-    fmt::print("Part 2: {}\n", aocXXXX_dayYY::part_1("../XXXX/dayYY/input.in"));
+    fmt::print("Part 2: {}\n", aocXXXX_dayYY::part_2("../XXXX/dayYY/input.in"));
 
     return 0;
 }
