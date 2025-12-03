@@ -10,35 +10,14 @@
 #endif
 
 namespace aoc2025_day03 {
-    int part_1(std::string_view path) {
-        // std::string input = file::readFileAsString(path);
-        std::vector<std::string> lines = file::readFileAsArrayString(path);
-        int result = 0;
-
-        for (const auto& line : lines) {
-            int max = 0;
-            for (int i = 0; i < line.size(); ++i) {
-                for (int j = i + 1; j < line.size(); ++j) {
-                    int nr = (line[i] - '0') * 10 + (line[j] - '0');
-                    if (nr > max) {
-                        max = nr;
-                    }
-                }
-            }
-            result += max;
-        }
-
-        return result;
-    }
-
-    unsigned long long part_2(std::string_view path) {
+    unsigned long long solve(std::string_view path, int length) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         unsigned long long result = 0;
 
         for (const auto& line : lines) {
             unsigned long long max = 0;
             int index = 0;
-            for (int k = 12; k > 0; --k) {
+            for (int k = length; k > 0; --k) {
                 int maxN = 0;
                 for (int i = index; i <= line.size() - k; ++i) {
                     if (line[i] - '0' > maxN) {
@@ -53,6 +32,13 @@ namespace aoc2025_day03 {
         }
 
         return result;
+    }
+    int part_1(std::string_view path) {
+        return solve(path, 2);
+    }
+
+    unsigned long long part_2(std::string_view path) {
+        return solve(path, 12);
     }
 }
 
