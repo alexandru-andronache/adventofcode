@@ -70,7 +70,7 @@ namespace aoc2025_day03 {
     }
 
     TEST(Test2025Day03, part_2_real_test) {
-        ASSERT_EQ(aoc2025_day03::part_2("../2025/day03/input.in"), 0);
+        ASSERT_EQ(aoc2025_day03::part_2("../2025/day03/input.in"), 171989894144198);
     }
 #endif
 
