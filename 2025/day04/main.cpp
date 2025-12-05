@@ -11,7 +11,6 @@
 
 namespace aoc2025_day04 {
     int part_1(std::string_view path) {
-        // std::string input = file::readFileAsString(path);
         std::vector<std::string> lines = file::readFileAsArrayString(path);
 
         int result = 0;
@@ -36,7 +35,6 @@ namespace aoc2025_day04 {
 
     int part_2(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
-        std::vector<std::string> copy = lines;
 
         int result = 0;
         bool keep = true;
@@ -55,16 +53,12 @@ namespace aoc2025_day04 {
                         }
                         if (c < 4) {
                             result++;
-                            copy[i][j] = '.';
+                            lines[i][j] = '.';
                             keep = true;
-                        }
-                        else {
-                            copy[i][j] = lines[i][j];
                         }
                     }
                 }
             }
-            lines = copy;
         }
 
         return result;
