@@ -32,7 +32,7 @@ namespace utils {
         return isNegative * (-1) * nr + !isNegative * nr;
     }
 
-    int getNumber(std::string_view str, int pos) {
+    int getNumberWithoutUpdate(std::string_view str, int pos) {
         int nr = 0;
         bool isNegative = false;
         if (str[pos] == '-') {

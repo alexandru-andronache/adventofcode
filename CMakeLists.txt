@@ -49,7 +49,8 @@ add_executable(${TESTS.ALL.YEARS} ${COMMON_SOURCES}/test.cpp ${utils_src}
         ${LIST_OF_SOURCE_FILES_2021}
         ${LIST_OF_SOURCE_FILES_2022}
         ${LIST_OF_SOURCE_FILES_2023})
-add_executable(${TESTS.COMMON} ${tests_include} ${COMMON_SOURCES}/test.cpp ${tests_src} ${utils_src})
+add_executable(${TESTS.COMMON} ${tests_include} ${COMMON_SOURCES}/test.cpp ${tests_src} ${utils_src}
+        common/tests/RangesTests.cpp)
 
 target_include_directories(${TESTS.ALL.YEARS} PRIVATE ${COMMON_SOURCES}/include)
 target_include_directories(${TESTS.COMMON} PRIVATE ${COMMON_SOURCES}/include)

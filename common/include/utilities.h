@@ -25,7 +25,7 @@ namespace utils {
 
     bool isInteger(std::string_view str);
     int getNumber(std::string_view str, int& pos);
-    int getNumber(std::string_view str, int pos);
+    int getNumberWithoutUpdate(std::string_view str, int pos);
     std::vector<std::string> splitString(std::string_view str, std::string_view delimeters);
     std::vector<int> splitStringToInt(std::string_view str, std::string_view delimeters);
     std::vector<long long> splitStringToLL(std::string_view str, std::string_view delimeters);
