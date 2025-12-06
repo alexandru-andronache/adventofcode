@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "file.h"
 #include "utilities.h"
 #include <vector>
@@ -10,34 +12,24 @@
 
 namespace aoc2025_day06 {
     unsigned long long part_1(std::string_view path) {
-        // std::string input = file::readFileAsString(path);
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         unsigned long long result = 0;
         std::vector<std::vector<unsigned long long>> data;
 
         for (int i = 0; i < lines.size() - 1; ++i) {
-            std::vector<std::string> tokens = utils::splitString(lines[i],  " ");
-            std::vector<unsigned long long> data2;
-            for (const auto& token : tokens) {
-                data2.push_back(std::stoull(token));
-            }
-            data.push_back(data2);
+            data.push_back(utils::splitStringToULL(lines[i],  " "));
         }
         std::vector<std::string> tokens = utils::splitString(lines.back(),  " ");
         for (int i = 0; i < tokens.size(); ++i) {
             if (tokens[i] == "+") {
-                unsigned long long sum = 0;
-                for (int j = 0; j < data.size(); ++j) {
-                    sum += data[j][i];
-                }
-                result += sum;
+               result += std::accumulate(data.begin(), data.end(), 0ULL, [i](auto s, const auto& col) {
+                    return s + col[i];
+               });
             }
             else if (tokens[i] == "*") {
-                unsigned long long p = 1;
-                for (int j = 0; j < data.size(); ++j) {
-                    p *= data[j][i];
-                }
-                result += p;
+                result += std::accumulate(data.begin(), data.end(), 1ULL, [i](auto s, const auto& col) {
+                    return s * col[i];
+                });
             }
         }
 
@@ -47,82 +39,51 @@ namespace aoc2025_day06 {
     unsigned long long part_2(std::string_view path) {
         std::vector<std::string> lines = file::readFileAsArrayString(path);
         unsigned long long result = 0;
-        std::vector<std::vector<unsigned long long>> data;
-        std::vector<unsigned long long> data2;
-        for (int i = 0; i < 100; ++i) {
-            data2.push_back(0);
-        }
+        std::vector<unsigned long long> currentNumbers;
 
         char current_op;
         int index = 0;
         int max = 0;
         for (int i = 0; i < lines.size() - 1; ++i) {
-            if (lines[i].size() > max) {
-                max = lines[i].size();
-            }
+            max = std::max(max, static_cast<int>(lines[i].size()));
         }
 
         for (int i = 0; i < max; ++i) {
             std::vector<char> column;
             bool space = true;
             for (int j = 0; j < lines.size() - 1; ++j) {
-                column.push_back(lines[j][i]);
-                if (lines[j][i] != ' ') {
-                    space = false;
+                if (lines[j][i] - '0' >= 0 && lines[j][i] - '0' <= 9) {
+                    column.push_back(lines[j][i]);
                 }
+                space = space && (lines[j][i] == ' ');
             }
             if (lines.back()[i] == '+' || lines.back()[i] == '*') {
                 current_op = lines.back()[i];
             }
             if (!space) {
-                for (int j = 0; j < column.size(); ++j) {
-                    if (column[j] - '0' < 0 || column[j] - '0' > 9) {
-                        continue;
-                    }
-                    data2[index] = data2[index] * 10 + (column[j] - '0');
+                currentNumbers.push_back(0);
+                for (const auto& j : column) {
+                    currentNumbers[index] = currentNumbers[index] * 10 + (j - '0');
                 }
                 index++;
             }
             else {
                 if (current_op == '+') {
-                    unsigned long long sum = 0;
-                    for (const auto& n : data2) {
-                        sum += n;
-                    }
-                    result += sum;
+                    result += std::accumulate(currentNumbers.begin(), currentNumbers.end(), 0ULL, std::plus<unsigned long long>());
                 }
                 else if (current_op == '*') {
-                    unsigned long long p = 1;
-                    for (const auto& n : data2) {
-                        if (n > 0) {
-                            p *= n;
-                        }
-                    }
-                    result += p;
+                    result += std::accumulate(currentNumbers.begin(), currentNumbers.end(), 1ULL, std::multiplies<unsigned long long>());
                 }
-                data2.clear();
-                for (int k = 0; k < 100; ++k) {
-                    data2.push_back(0);
-                }
+                currentNumbers.clear();
                 index = 0;
             }
         }
 
         if (current_op == '+') {
-            unsigned long long sum = 0;
-            for (const auto& n : data2) {
-                sum += n;
-            }
-            result += sum;
+            result += std::accumulate(currentNumbers.begin(), currentNumbers.end(), 0ULL, std::plus<unsigned long long>());
         }
         else if (current_op == '*') {
-            unsigned long long p = 1;
-            for (const auto& n : data2) {
-                if (n > 0) {
-                    p *= n;
-                }
-            }
-            result += p;
+            result += std::accumulate(currentNumbers.begin(), currentNumbers.end(), 1ULL, std::multiplies<unsigned long long>());
         }
 
         return result;
