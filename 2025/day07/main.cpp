@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "file.h"
 #include "utilities.h"
 #include <vector>
@@ -47,22 +49,21 @@ namespace aoc2025_day07 {
     }
 
     unsigned long long part_2(std::string_view path) {
-        unsigned long long result = 0;
-
         std::vector<std::vector<char>> map = file::readFileAsMapChar(path);
-        std::vector<std::vector<unsigned long long>> visited(map.size(), std::vector<unsigned long long>(map[0].size(), 0));
+        std::vector<std::vector<unsigned long long>> visited(map.size(), std::vector<unsigned long long>(map[0].size(), 0ULL));
 
         utils::point start = utils::findValue(map, 'S');
         std::set<utils::point> current_positions = {start};
         visited[start.x][start.y] = 1;
-        while (!current_positions.empty()) {
+        int level = start.x;
+        while (level + 1 < map.size()) {
             std::set<utils::point> new_positions;
             for (const auto& pos : current_positions) {
-                if (pos.x + 1 < map.size() && map[pos.x + 1][pos.y] == '.') {
+                if (map[pos.x + 1][pos.y] == '.') {
                     new_positions.insert({pos.x + 1, pos.y});
                     visited[pos.x + 1][pos.y] += visited[pos.x][pos.y];
                 }
-                else if (pos.x + 1 < map.size() && map[pos.x + 1][pos.y] == '^') {
+                else if (map[pos.x + 1][pos.y] == '^') {
                     if (pos.y - 1 >= 0) {
                         new_positions.insert({pos.x + 1, pos.y - 1});
                         visited[pos.x + 1][pos.y - 1] += visited[pos.x][pos.y];
@@ -74,11 +75,9 @@ namespace aoc2025_day07 {
                 }
             }
             current_positions = new_positions;
+            level++;
         }
-        for (int i = 0; i < map[0].size(); i++) {
-            result += visited.back()[i];
-        }
-        return result;
+        return std::accumulate(visited.back().begin(), visited.back().end(), 0ULL);
     }
 }
 
@@ -102,7 +101,7 @@ namespace aoc2025_day07 {
 
 #ifndef TESTING
 int main() {
-    fmt::print("Part 1: {}\n", aoc2025_day07::part_1("../2025/day07/input_test.in"));
+    fmt::print("Part 1: {}\n", aoc2025_day07::part_1("../2025/day07/input.in"));
     fmt::print("Part 2: {}\n", aoc2025_day07::part_2("../2025/day07/input.in"));
 
     return 0;
