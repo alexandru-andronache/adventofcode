@@ -4,6 +4,50 @@
 #include <vector>
 
 namespace utils {
+    template <typename T>
+    struct pointT {
+        T x;
+        T y;
+        constexpr pointT() = default;
+        constexpr pointT(T _x, T _y) : x(_x), y(_y) {}
+        constexpr pointT(pointT&&) = default;
+        constexpr pointT(const pointT&) = default;
+        pointT& operator=(const pointT&) = default;
+        pointT& operator=(pointT&&) = default;
+
+        auto operator<=>(const pointT&) const = default;
+
+        T distanceX(const pointT& other) const {
+            return other.x >= x ? other.x - x + 1 : x - other.x + 1;
+        }
+        T distanceY(const pointT& other) const {
+            return other.y >= y ? other.y - y + 1 : y - other.y + 1;
+        }
+    };
+
+    template <typename T>
+    class edge{
+    public:
+        utils::pointT<T> u;
+        utils::pointT<T> v;
+        constexpr edge() = default;
+        constexpr edge(utils::pointT<T> _x, utils::pointT<T> _y) : u(_x), v(_y) {}
+
+        constexpr edge(edge&&) = default;
+        constexpr edge(const edge&) = default;
+        edge& operator=(const edge&) = default;
+        edge& operator=(edge&&) = default;
+
+        auto operator<=>(const edge&) const = default;
+        [[nodiscard]] bool vertical() const {
+            return u.x == v.x;
+        }
+        [[nodiscard]] bool horizontal() const {
+            return u.y == v.y;
+        }
+    };
+
+
     struct point {
         int x;
         int y;
