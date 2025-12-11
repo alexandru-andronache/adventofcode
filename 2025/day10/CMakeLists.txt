@@ -5,4 +5,4 @@ project(${NAME})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../aoc_common.cmake)
 
-day_common(${NAME})
+day_common_with_z3(${NAME})
